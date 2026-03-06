@@ -1,0 +1,860 @@
+{
+  "waste_rate": {
+    "label": "廢棄率",
+    "label_en": "Waste Rate",
+    "foodb_name": null,
+    "taiwan_col": "waste_rate",
+    "unit": "%",
+    "group": "basic"
+  },
+  "cal_per_100g": {
+    "label": "熱量",
+    "label_en": "Calories",
+    "foodb_name": null,
+    "taiwan_col": "cal_per_100g",
+    "unit": "kcal",
+    "group": "basic"
+  },
+  "modified_cal_per_100g": {
+    "label": "修正熱量",
+    "label_en": "Modified Calories",
+    "foodb_name": null,
+    "taiwan_col": "modified_cal_per_100g",
+    "unit": "kcal",
+    "group": "basic"
+  },
+  "water_per_100g": {
+    "label": "水分",
+    "label_en": "Water",
+    "foodb_name": "Water",
+    "taiwan_col": "water_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "protein_per_100g": {
+    "label": "蛋白質",
+    "label_en": "Protein",
+    "foodb_name": "Protein",
+    "taiwan_col": "protein_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "fats_per_100g": {
+    "label": "脂肪",
+    "label_en": "Fat",
+    "foodb_name": null,
+    "taiwan_col": "fats_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "saturated_fat_per_100g": {
+    "label": "飽和脂肪",
+    "label_en": "Saturated Fat",
+    "foodb_name": null,
+    "taiwan_col": "saturated_fat_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "ash_per_100g": {
+    "label": "灰分",
+    "label_en": "Ash",
+    "foodb_name": null,
+    "taiwan_col": "ash_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "carbon_per_100g": {
+    "label": "碳水化合物",
+    "label_en": "Carbohydrates",
+    "foodb_name": null,
+    "taiwan_col": "carbon_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "dietary_fiber_per_100g": {
+    "label": "膳食纖維",
+    "label_en": "Dietary Fiber",
+    "foodb_name": "Fiber",
+    "taiwan_col": "dietary_fiber_per_100g",
+    "unit": "g",
+    "group": "basic"
+  },
+  "total_sugar_per_100g": {
+    "label": "總糖",
+    "label_en": "Total Sugar",
+    "foodb_name": null,
+    "taiwan_col": "total_sugar_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "glucose_per_100g": {
+    "label": "葡萄糖",
+    "label_en": "Glucose",
+    "foodb_name": "Glucose",
+    "taiwan_col": "glucose_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "fructose_per_100g": {
+    "label": "果糖",
+    "label_en": "Fructose",
+    "foodb_name": "Fructose",
+    "taiwan_col": "fructose_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "galactose_per_100g": {
+    "label": "半乳糖",
+    "label_en": "Galactose",
+    "foodb_name": "Galactose",
+    "taiwan_col": "galactose_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "maltose_per_100g": {
+    "label": "麥芽糖",
+    "label_en": "Maltose",
+    "foodb_name": "Maltose",
+    "taiwan_col": "maltose_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "sucrose_per_100g": {
+    "label": "蔗糖",
+    "label_en": "Sucrose",
+    "foodb_name": "Sucrose",
+    "taiwan_col": "sucrose_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "lactose_per_100g": {
+    "label": "乳糖",
+    "label_en": "Lactose",
+    "foodb_name": "Lactose",
+    "taiwan_col": "lactose_per_100g",
+    "unit": "g",
+    "group": "sugar"
+  },
+  "sodium_per_100g": {
+    "label": "鈉",
+    "label_en": "Sodium",
+    "foodb_name": "Sodium",
+    "taiwan_col": "sodium_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "potassium_per_100g": {
+    "label": "鉀",
+    "label_en": "Potassium",
+    "foodb_name": "Potassium",
+    "taiwan_col": "potassium_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "calcium_per_100g": {
+    "label": "鈣",
+    "label_en": "Calcium",
+    "foodb_name": "Calcium",
+    "taiwan_col": "calcium_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "magnesium_per_100g": {
+    "label": "鎂",
+    "label_en": "Magnesium",
+    "foodb_name": "Magnesium",
+    "taiwan_col": "magnesium_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "iron_per_100g": {
+    "label": "鐵",
+    "label_en": "Iron",
+    "foodb_name": "Iron",
+    "taiwan_col": "iron_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "zinc_per_100g": {
+    "label": "鋅",
+    "label_en": "Zinc",
+    "foodb_name": "Zinc",
+    "taiwan_col": "zinc_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "phosphorus_per_100g": {
+    "label": "磷",
+    "label_en": "Phosphorus",
+    "foodb_name": "Phosphorus",
+    "taiwan_col": "phosphorus_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "copper_per_100g": {
+    "label": "銅",
+    "label_en": "Copper",
+    "foodb_name": "Copper",
+    "taiwan_col": "copper_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "manganese_per_100g": {
+    "label": "錳",
+    "label_en": "Manganese",
+    "foodb_name": "Manganese",
+    "taiwan_col": "manganese_per_100g",
+    "unit": "mg",
+    "group": "mineral"
+  },
+  "vitamin_a_total_iu": {
+    "label": "維生素A總量",
+    "label_en": "Vitamin A (IU)",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_a_total_iu",
+    "unit": "IU",
+    "group": "vitamin"
+  },
+  "retinol_equivalent_ug": {
+    "label": "視網醇當量",
+    "label_en": "Retinol Equivalent",
+    "foodb_name": "Vitamin A",
+    "taiwan_col": "retinol_equivalent_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "retinol_ug": {
+    "label": "視網醇",
+    "label_en": "Retinol",
+    "foodb_name": "Retinol",
+    "taiwan_col": "retinol_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "alpha_carotene_ug": {
+    "label": "α-胡蘿蔔素",
+    "label_en": "Alpha-Carotene",
+    "foodb_name": "Alpha-Carotene",
+    "taiwan_col": "alpha_carotene_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "beta_carotene_ug": {
+    "label": "β-胡蘿蔔素",
+    "label_en": "Beta-Carotene",
+    "foodb_name": "Beta-Carotene",
+    "taiwan_col": "beta_carotene_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_d_total_iu": {
+    "label": "維生素D(IU)",
+    "label_en": "Vitamin D (IU)",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_d_total_iu",
+    "unit": "IU",
+    "group": "vitamin"
+  },
+  "vitamin_d_total_ug": {
+    "label": "維生素D(μg)",
+    "label_en": "Vitamin D (μg)",
+    "foodb_name": "Vitamin D",
+    "taiwan_col": "vitamin_d_total_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_d2_ug": {
+    "label": "維生素D2",
+    "label_en": "Vitamin D2",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_d2_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_d3_ug": {
+    "label": "維生素D3",
+    "label_en": "Vitamin D3",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_d3_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_e_total_mg": {
+    "label": "維生素E總量",
+    "label_en": "Vitamin E Total",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_e_total_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "alpha_vitamin_e_te_mg": {
+    "label": "α-維生素E當量",
+    "label_en": "Alpha-TE",
+    "foodb_name": "Vitamin E",
+    "taiwan_col": "alpha_vitamin_e_te_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "alpha_tocopherol_mg": {
+    "label": "α-生育醇",
+    "label_en": "Alpha-Tocopherol",
+    "foodb_name": null,
+    "taiwan_col": "alpha_tocopherol_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "beta_tocopherol_mg": {
+    "label": "β-生育醇",
+    "label_en": "Beta-Tocopherol",
+    "foodb_name": null,
+    "taiwan_col": "beta_tocopherol_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "gamma_tocopherol_mg": {
+    "label": "γ-生育醇",
+    "label_en": "Gamma-Tocopherol",
+    "foodb_name": null,
+    "taiwan_col": "gamma_tocopherol_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "delta_tocopherol_mg": {
+    "label": "δ-生育醇",
+    "label_en": "Delta-Tocopherol",
+    "foodb_name": null,
+    "taiwan_col": "delta_tocopherol_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "vitamin_k1_ug": {
+    "label": "維生素K1",
+    "label_en": "Vitamin K1",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_k1_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_k2_mk4_ug": {
+    "label": "維生素K2(MK-4)",
+    "label_en": "Vitamin K2 (MK-4)",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_k2_mk4_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_k2_mk7_ug": {
+    "label": "維生素K2(MK-7)",
+    "label_en": "Vitamin K2 (MK-7)",
+    "foodb_name": null,
+    "taiwan_col": "vitamin_k2_mk7_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_b1_mg": {
+    "label": "維生素B1",
+    "label_en": "Thiamine (B1)",
+    "foodb_name": "Thiamin",
+    "taiwan_col": "vitamin_b1_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "vitamin_b2_mg": {
+    "label": "維生素B2",
+    "label_en": "Riboflavin (B2)",
+    "foodb_name": "Riboflavin",
+    "taiwan_col": "vitamin_b2_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "niacin_mg": {
+    "label": "菸鹼素",
+    "label_en": "Niacin (B3)",
+    "foodb_name": "Niacin",
+    "taiwan_col": "niacin_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "vitamin_b6_mg": {
+    "label": "維生素B6",
+    "label_en": "Vitamin B6",
+    "foodb_name": "Vitamin B6",
+    "taiwan_col": "vitamin_b6_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "vitamin_b12_ug": {
+    "label": "維生素B12",
+    "label_en": "Vitamin B12",
+    "foodb_name": "Vitamin B12",
+    "taiwan_col": "vitamin_b12_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "folate_ug": {
+    "label": "葉酸",
+    "label_en": "Folate",
+    "foodb_name": "Folate",
+    "taiwan_col": "folate_ug",
+    "unit": "μg",
+    "group": "vitamin"
+  },
+  "vitamin_c_mg": {
+    "label": "維生素C",
+    "label_en": "Vitamin C",
+    "foodb_name": "Vitamin C",
+    "taiwan_col": "vitamin_c_mg",
+    "unit": "mg",
+    "group": "vitamin"
+  },
+  "saturated_fatty_acids_total_mg": {
+    "label": "飽和脂肪酸總量",
+    "label_en": "Saturated FA Total",
+    "foodb_name": null,
+    "taiwan_col": "saturated_fatty_acids_total_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "butyric_acid_4_0_mg": {
+    "label": "丁酸(4:0)",
+    "label_en": "Butyric Acid (4:0)",
+    "foodb_name": null,
+    "taiwan_col": "butyric_acid_4_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "caproic_acid_6_0_mg": {
+    "label": "己酸(6:0)",
+    "label_en": "Caproic Acid (6:0)",
+    "foodb_name": null,
+    "taiwan_col": "caproic_acid_6_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "caprylic_acid_8_0_mg": {
+    "label": "辛酸(8:0)",
+    "label_en": "Caprylic Acid (8:0)",
+    "foodb_name": null,
+    "taiwan_col": "caprylic_acid_8_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "capric_acid_10_0_mg": {
+    "label": "癸酸(10:0)",
+    "label_en": "Capric Acid (10:0)",
+    "foodb_name": null,
+    "taiwan_col": "capric_acid_10_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "lauric_acid_12_0_mg": {
+    "label": "月桂酸(12:0)",
+    "label_en": "Lauric Acid (12:0)",
+    "foodb_name": "Lauric acid",
+    "taiwan_col": "lauric_acid_12_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "tridecanoic_acid_13_0_mg": {
+    "label": "十三酸(13:0)",
+    "label_en": "Tridecanoic Acid (13:0)",
+    "foodb_name": null,
+    "taiwan_col": "tridecanoic_acid_13_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "myristic_acid_14_0_mg": {
+    "label": "肉豆蔻酸(14:0)",
+    "label_en": "Myristic Acid (14:0)",
+    "foodb_name": "Myristic acid",
+    "taiwan_col": "myristic_acid_14_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "pentadecanoic_acid_15_0_mg": {
+    "label": "十五酸(15:0)",
+    "label_en": "Pentadecanoic (15:0)",
+    "foodb_name": null,
+    "taiwan_col": "pentadecanoic_acid_15_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "palmitic_acid_16_0_mg": {
+    "label": "棕櫚酸(16:0)",
+    "label_en": "Palmitic Acid (16:0)",
+    "foodb_name": "Palmitic acid",
+    "taiwan_col": "palmitic_acid_16_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "heptadecanoic_acid_17_0_mg": {
+    "label": "十七酸(17:0)",
+    "label_en": "Heptadecanoic (17:0)",
+    "foodb_name": null,
+    "taiwan_col": "heptadecanoic_acid_17_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "stearic_acid_18_0_mg": {
+    "label": "硬脂酸(18:0)",
+    "label_en": "Stearic Acid (18:0)",
+    "foodb_name": "Stearic acid",
+    "taiwan_col": "stearic_acid_18_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "nonadecanoic_acid_19_0_mg": {
+    "label": "十九酸(19:0)",
+    "label_en": "Nonadecanoic (19:0)",
+    "foodb_name": null,
+    "taiwan_col": "nonadecanoic_acid_19_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "arachidic_acid_20_0_mg": {
+    "label": "花生酸(20:0)",
+    "label_en": "Arachidic Acid (20:0)",
+    "foodb_name": null,
+    "taiwan_col": "arachidic_acid_20_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "behenic_acid_22_0_mg": {
+    "label": "山崳酸(22:0)",
+    "label_en": "Behenic Acid (22:0)",
+    "foodb_name": null,
+    "taiwan_col": "behenic_acid_22_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "lignoceric_acid_24_0_mg": {
+    "label": "木蠟酸(24:0)",
+    "label_en": "Lignoceric Acid (24:0)",
+    "foodb_name": null,
+    "taiwan_col": "lignoceric_acid_24_0_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "monounsaturated_fatty_acids_total_mg": {
+    "label": "單元不飽和脂肪酸總量",
+    "label_en": "Monounsat. FA Total",
+    "foodb_name": null,
+    "taiwan_col": "monounsaturated_fatty_acids_total_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "myristoleic_acid_14_1_mg": {
+    "label": "肉豆蔻油酸(14:1)",
+    "label_en": "Myristoleic (14:1)",
+    "foodb_name": null,
+    "taiwan_col": "myristoleic_acid_14_1_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "palmitoleic_acid_16_1_mg": {
+    "label": "棕櫚油酸(16:1)",
+    "label_en": "Palmitoleic (16:1)",
+    "foodb_name": null,
+    "taiwan_col": "palmitoleic_acid_16_1_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "oleic_acid_18_1_mg": {
+    "label": "油酸(18:1)",
+    "label_en": "Oleic Acid (18:1)",
+    "foodb_name": "Oleic acid",
+    "taiwan_col": "oleic_acid_18_1_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "gadoleic_acid_20_1_mg": {
+    "label": "鱈油酸(20:1)",
+    "label_en": "Gadoleic Acid (20:1)",
+    "foodb_name": null,
+    "taiwan_col": "gadoleic_acid_20_1_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "erucic_acid_22_1_mg": {
+    "label": "芥酸(22:1)",
+    "label_en": "Erucic Acid (22:1)",
+    "foodb_name": null,
+    "taiwan_col": "erucic_acid_22_1_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "polyunsaturated_fatty_acids_total_mg": {
+    "label": "多元不飽和脂肪酸總量",
+    "label_en": "Polyunsat. FA Total",
+    "foodb_name": null,
+    "taiwan_col": "polyunsaturated_fatty_acids_total_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "linoleic_acid_18_2_mg": {
+    "label": "亞麻油酸(18:2)",
+    "label_en": "Linoleic Acid (18:2)",
+    "foodb_name": "Linoleic acid",
+    "taiwan_col": "linoleic_acid_18_2_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "linolenic_acid_18_3_mg": {
+    "label": "次亞麻油酸(18:3)",
+    "label_en": "Linolenic Acid (18:3)",
+    "foodb_name": "Linolenic acid",
+    "taiwan_col": "linolenic_acid_18_3_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "octadecatetraenoic_acid_18_4_mg": {
+    "label": "十八碳四烯酸(18:4)",
+    "label_en": "Stearidonic (18:4)",
+    "foodb_name": null,
+    "taiwan_col": "octadecatetraenoic_acid_18_4_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "arachidonic_acid_20_4_mg": {
+    "label": "花生四烯酸(20:4)",
+    "label_en": "Arachidonic (20:4)",
+    "foodb_name": "Arachidonic acid",
+    "taiwan_col": "arachidonic_acid_20_4_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "epa_20_5_mg": {
+    "label": "EPA(20:5)",
+    "label_en": "EPA (20:5)",
+    "foodb_name": "EPA",
+    "taiwan_col": "epa_20_5_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "dpa_22_5_mg": {
+    "label": "DPA(22:5)",
+    "label_en": "DPA (22:5)",
+    "foodb_name": null,
+    "taiwan_col": "dpa_22_5_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "dha_22_6_mg": {
+    "label": "DHA(22:6)",
+    "label_en": "DHA (22:6)",
+    "foodb_name": "DHA",
+    "taiwan_col": "dha_22_6_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "other_fatty_acids_mg": {
+    "label": "其他脂肪酸",
+    "label_en": "Other Fatty Acids",
+    "foodb_name": null,
+    "taiwan_col": "other_fatty_acids_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "trans_fat_mg": {
+    "label": "反式脂肪",
+    "label_en": "Trans Fat",
+    "foodb_name": null,
+    "taiwan_col": "trans_fat_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "cholesterol_mg": {
+    "label": "膽固醇",
+    "label_en": "Cholesterol",
+    "foodb_name": "Cholesterol",
+    "taiwan_col": "cholesterol_mg",
+    "unit": "mg",
+    "group": "fatty_acid"
+  },
+  "total_amino_acids_mg": {
+    "label": "胺基酸總量",
+    "label_en": "Total Amino Acids",
+    "foodb_name": null,
+    "taiwan_col": "total_amino_acids_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "aspartic_acid_mg": {
+    "label": "天門冬胺酸",
+    "label_en": "Aspartic Acid",
+    "foodb_name": "Aspartic acid",
+    "taiwan_col": "aspartic_acid_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "threonine_mg": {
+    "label": "蘇胺酸",
+    "label_en": "Threonine",
+    "foodb_name": "Threonine",
+    "taiwan_col": "threonine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "serine_mg": {
+    "label": "絲胺酸",
+    "label_en": "Serine",
+    "foodb_name": "Serine",
+    "taiwan_col": "serine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "glutamic_acid_mg": {
+    "label": "麩胺酸",
+    "label_en": "Glutamic Acid",
+    "foodb_name": "Glutamic acid",
+    "taiwan_col": "glutamic_acid_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "proline_mg": {
+    "label": "脯胺酸",
+    "label_en": "Proline",
+    "foodb_name": "Proline",
+    "taiwan_col": "proline_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "glycine_mg": {
+    "label": "甘胺酸",
+    "label_en": "Glycine",
+    "foodb_name": "Glycine",
+    "taiwan_col": "glycine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "alanine_mg": {
+    "label": "丙胺酸",
+    "label_en": "Alanine",
+    "foodb_name": "Alanine",
+    "taiwan_col": "alanine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "cystine_mg": {
+    "label": "胱胺酸",
+    "label_en": "Cystine",
+    "foodb_name": "Cystine",
+    "taiwan_col": "cystine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "valine_mg": {
+    "label": "纈胺酸",
+    "label_en": "Valine",
+    "foodb_name": "Valine",
+    "taiwan_col": "valine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "methionine_mg": {
+    "label": "甲硫胺酸",
+    "label_en": "Methionine",
+    "foodb_name": "Methionine",
+    "taiwan_col": "methionine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "isoleucine_mg": {
+    "label": "異白胺酸",
+    "label_en": "Isoleucine",
+    "foodb_name": "Isoleucine",
+    "taiwan_col": "isoleucine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "leucine_mg": {
+    "label": "白胺酸",
+    "label_en": "Leucine",
+    "foodb_name": "Leucine",
+    "taiwan_col": "leucine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "tyrosine_mg": {
+    "label": "酪胺酸",
+    "label_en": "Tyrosine",
+    "foodb_name": "Tyrosine",
+    "taiwan_col": "tyrosine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "phenylalanine_mg": {
+    "label": "苯丙胺酸",
+    "label_en": "Phenylalanine",
+    "foodb_name": "Phenylalanine",
+    "taiwan_col": "phenylalanine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "lysine_mg": {
+    "label": "離胺酸",
+    "label_en": "Lysine",
+    "foodb_name": "Lysine",
+    "taiwan_col": "lysine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "histidine_mg": {
+    "label": "組胺酸",
+    "label_en": "Histidine",
+    "foodb_name": "Histidine",
+    "taiwan_col": "histidine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "arginine_mg": {
+    "label": "精胺酸",
+    "label_en": "Arginine",
+    "foodb_name": "Arginine",
+    "taiwan_col": "arginine_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "tryptophan_mg": {
+    "label": "色胺酸",
+    "label_en": "Tryptophan",
+    "foodb_name": "Tryptophan",
+    "taiwan_col": "tryptophan_mg",
+    "unit": "mg",
+    "group": "amino_acid"
+  },
+  "alcohol_content_g": {
+    "label": "酒精含量",
+    "label_en": "Alcohol",
+    "foodb_name": null,
+    "taiwan_col": "alcohol_content_g",
+    "unit": "g",
+    "group": "other"
+  },
+  "vitamin_k_ug": {
+    "label": "維生素 K",
+    "label_en": "Vitamin K (total)",
+    "foodb_name": "Vitamin K",
+    "taiwan_cols": [
+      "vitamin_k1_ug",
+      "vitamin_k2_mk4_ug",
+      "vitamin_k2_mk7_ug"
+    ],
+    "unit": "μg",
+    "group": "vitamin",
+    "note": "HPA 第八版合計值 = K1 + K2(MK-4) + K2(MK-7)"
+  },
+  "n3_pufa_total_mg": {
+    "label": "n-3 多元不飽和脂肪酸",
+    "label_en": "Omega-3 PUFA (total)",
+    "foodb_name": null,
+    "taiwan_cols": [
+      "linolenic_acid_18_3_mg",
+      "epa_20_5_mg",
+      "dha_22_6_mg"
+    ],
+    "unit": "mg",
+    "group": "fatty_acid",
+    "note": "HPA 第八版合計值 = 次亞麻油酸 + EPA + DHA"
+  }
+}

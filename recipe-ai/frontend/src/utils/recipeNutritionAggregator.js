@@ -1,0 +1,34 @@
+// 共用的食譜營養聚合工具：把多筆食譜（或行事曆 entry）的 nutrition_detail 與 5 大營養素合計。
+// 來源從 SavedRecipesPage.sumRecipeNutrients 抽出，使日分析行事曆可重用同一邏輯。
+
+function toNum(v) {
+  if (v === null || v === undefined || v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+export function sumRecipeNutrients(recipes) {
+  const sum = {
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    fiber: 0,
+  };
+
+  for (const recipe of recipes || []) {
+    const detail = recipe?.nutrition_detail || {};
+    const multiplier = toNum(recipe?.servings_override) ?? 1;
+    sum.calories += ((toNum(recipe?.calories) ?? toNum(detail.cal_per_100g) ?? 0) * multiplier);
+    sum.protein += ((toNum(recipe?.protein) ?? toNum(detail.protein_per_100g) ?? 0) * multiplier);
+    sum.carbs += ((toNum(recipe?.carbs) ?? toNum(detail.carbon_per_100g) ?? 0) * multiplier);
+    sum.fat += ((toNum(recipe?.fat) ?? toNum(detail.fats_per_100g) ?? 0) * multiplier);
+    sum.fiber += ((toNum(recipe?.fiber) ?? toNum(detail.dietary_fiber_per_100g) ?? 0) * multiplier);
+
+    Object.entries(detail).forEach(([k, v]) => {
+      sum[k] = (sum[k] || 0) + ((toNum(v) || 0) * multiplier);
+    });
+  }
+
+  return sum;
+}

@@ -1,0 +1,122 @@
+// taiwan_foods 原始欄位 → 中文顯示名稱 對照表
+//
+// 注意:此檔僅供 TaiwanFoodModal 等「單筆食物詳情」UI 使用,用來把 DB 原始
+// 欄位 (e.g. retinol_ug, copper_per_100g, 各脂肪酸/胺基酸細項) 展示成中文。
+//
+// DRI 缺口分析、FIELD_META_MAP、getNutrientMeta 等已改由
+// `./hpa_dri_v8.json` (HPA v8 33 欄主表) 驅動,不再 import 這裡的陣列。
+// 若要新增 DRI 目標欄位,請改動 control/resources/hpa_dri_v8.json 並同步
+// frontend/src/utils/hpa_dri_v8.json,不是這個檔。
+
+// 維生素欄位映射
+export const vitaminFields = [
+  { field: "retinol_equivalent_ug", name: "視網醇當量 (RE)", unit: "μg" },
+  { field: "retinol_ug", name: "視網醇", unit: "μg" },
+  { field: "alpha_carotene_ug", name: "α-胡蘿蔔素", unit: "μg" },
+  { field: "beta_carotene_ug", name: "β-胡蘿蔔素", unit: "μg" },
+  { field: "vitamin_d_total_ug", name: "維生素D總量", unit: "μg" },
+  { field: "vitamin_d2_ug", name: "維生素D2", unit: "μg" },
+  { field: "vitamin_d3_ug", name: "維生素D3", unit: "μg" },
+  { field: "alpha_vitamin_e_te_mg", name: "α-維生素E當量", unit: "mg" },
+  { field: "alpha_tocopherol_mg", name: "α-生育酚", unit: "mg" },
+  { field: "beta_tocopherol_mg", name: "β-生育酚", unit: "mg" },
+  { field: "gamma_tocopherol_mg", name: "γ-生育酚", unit: "mg" },
+  { field: "delta_tocopherol_mg", name: "δ-生育酚", unit: "mg" },
+  { field: "vitamin_k1_ug", name: "維生素K1", unit: "μg" },
+  { field: "vitamin_k2_mk4_ug", name: "維生素K2 (MK-4)", unit: "μg" },
+  { field: "vitamin_k2_mk7_ug", name: "維生素K2 (MK-7)", unit: "μg" },
+  { field: "vitamin_b1_mg", name: "維生素B1", unit: "mg" },
+  { field: "vitamin_b2_mg", name: "維生素B2", unit: "mg" },
+  { field: "niacin_mg", name: "菸鹼素", unit: "mg" },
+  { field: "vitamin_b6_mg", name: "維生素B6", unit: "mg" },
+  { field: "vitamin_b12_ug", name: "維生素B12", unit: "μg" },
+  { field: "folate_ug", name: "葉酸", unit: "μg" },
+  { field: "vitamin_c_mg", name: "維生素C", unit: "mg" },
+];
+
+// 礦物質欄位映射
+export const mineralFields = [
+  { field: "sodium_per_100g", name: "鈉", unit: "mg" },
+  { field: "potassium_per_100g", name: "鉀", unit: "mg" },
+  { field: "calcium_per_100g", name: "鈣", unit: "mg" },
+  { field: "magnesium_per_100g", name: "鎂", unit: "mg" },
+  { field: "iron_per_100g", name: "鐵", unit: "mg" },
+  { field: "zinc_per_100g", name: "鋅", unit: "mg" },
+  { field: "phosphorus_per_100g", name: "磷", unit: "mg" },
+  { field: "copper_per_100g", name: "銅", unit: "mg" },
+  { field: "manganese_per_100g", name: "錳", unit: "mg" },
+];
+
+// 糖類欄位映射
+export const sugarFields = [
+  { field: "total_sugar_per_100g", name: "糖質總量", unit: "g" },
+  { field: "glucose_per_100g", name: "葡萄糖", unit: "g" },
+  { field: "fructose_per_100g", name: "果糖", unit: "g" },
+  { field: "galactose_per_100g", name: "半乳糖", unit: "g" },
+  { field: "maltose_per_100g", name: "麥芽糖", unit: "g" },
+  { field: "sucrose_per_100g", name: "蔗糖", unit: "g" },
+  { field: "lactose_per_100g", name: "乳糖", unit: "g" },
+];
+
+// 飽和脂肪酸欄位映射
+export const saturatedFAFields = [
+  { field: "butyric_acid_4_0_mg", name: "酪酸 (4:0)", unit: "mg" },
+  { field: "caproic_acid_6_0_mg", name: "己酸 (6:0)", unit: "mg" },
+  { field: "caprylic_acid_8_0_mg", name: "辛酸 (8:0)", unit: "mg" },
+  { field: "capric_acid_10_0_mg", name: "癸酸 (10:0)", unit: "mg" },
+  { field: "lauric_acid_12_0_mg", name: "月桂酸 (12:0)", unit: "mg" },
+  { field: "myristic_acid_14_0_mg", name: "肉豆蔻酸 (14:0)", unit: "mg" },
+  { field: "palmitic_acid_16_0_mg", name: "棕櫚酸 (16:0)", unit: "mg" },
+  { field: "stearic_acid_18_0_mg", name: "硬脂酸 (18:0)", unit: "mg" },
+  { field: "arachidic_acid_20_0_mg", name: "花生酸 (20:0)", unit: "mg" },
+  { field: "behenic_acid_22_0_mg", name: "山酸 (22:0)", unit: "mg" },
+  { field: "saturated_fatty_acids_total_mg", name: "飽和脂肪酸總量", unit: "mg", highlight: true },
+];
+
+// 單元不飽和脂肪酸欄位映射
+export const monoFAFields = [
+  { field: "myristoleic_acid_14_1_mg", name: "肉豆蔻烯酸 (14:1)", unit: "mg" },
+  { field: "palmitoleic_acid_16_1_mg", name: "棕櫚烯酸 (16:1)", unit: "mg" },
+  { field: "oleic_acid_18_1_mg", name: "油酸 (18:1)", unit: "mg" },
+  { field: "gadoleic_acid_20_1_mg", name: "鱈烯酸 (20:1)", unit: "mg" },
+  { field: "erucic_acid_22_1_mg", name: "芥子酸 (22:1)", unit: "mg" },
+  { field: "monounsaturated_fatty_acids_total_mg", name: "單元不飽和脂肪酸總量", unit: "mg", highlight: true },
+];
+
+// 多元不飽和脂肪酸欄位映射
+export const polyFAFields = [
+  { field: "linoleic_acid_18_2_mg", name: "亞麻油酸 (18:2)", unit: "mg" },
+  { field: "linolenic_acid_18_3_mg", name: "次亞麻油酸 (18:3)", unit: "mg" },
+  { field: "arachidonic_acid_20_4_mg", name: "花生油酸 (20:4)", unit: "mg" },
+  { field: "epa_20_5_mg", name: "EPA (20:5) Ω-3", unit: "mg", highlight: true },
+  { field: "dpa_22_5_mg", name: "DPA (22:5)", unit: "mg" },
+  { field: "dha_22_6_mg", name: "DHA (22:6) Ω-3", unit: "mg", highlight: true },
+  { field: "polyunsaturated_fatty_acids_total_mg", name: "多元不飽和脂肪酸總量", unit: "mg", highlight: true },
+];
+
+// 必需胺基酸欄位映射
+export const essentialAAFields = [
+  { field: "threonine_mg", name: "酥胺酸 (Thr)", unit: "mg" },
+  { field: "valine_mg", name: "纈胺酸 (Val)", unit: "mg" },
+  { field: "methionine_mg", name: "甲硫胺酸 (Met)", unit: "mg" },
+  { field: "isoleucine_mg", name: "異白胺酸 (Ile)", unit: "mg" },
+  { field: "leucine_mg", name: "白胺酸 (Leu)", unit: "mg" },
+  { field: "phenylalanine_mg", name: "苯丙胺酸 (Phe)", unit: "mg" },
+  { field: "lysine_mg", name: "離胺酸 (Lys)", unit: "mg" },
+  { field: "histidine_mg", name: "組胺酸 (His)", unit: "mg" },
+  { field: "tryptophan_mg", name: "色胺酸 (Trp)", unit: "mg" },
+  { field: "total_amino_acids_mg", name: "胺基酸總量", unit: "mg", highlight: true },
+];
+
+// 非必需胺基酸欄位映射
+export const nonEssentialAAFields = [
+  { field: "aspartic_acid_mg", name: "天門冬胺酸 (Asp)", unit: "mg" },
+  { field: "serine_mg", name: "絲胺酸 (Ser)", unit: "mg" },
+  { field: "glutamic_acid_mg", name: "麩胺酸 (Glu)", unit: "mg" },
+  { field: "proline_mg", name: "脯胺酸 (Pro)", unit: "mg" },
+  { field: "glycine_mg", name: "甘胺酸 (Gly)", unit: "mg" },
+  { field: "alanine_mg", name: "丙胺酸 (Ala)", unit: "mg" },
+  { field: "cystine_mg", name: "胱胺酸 (Cys)", unit: "mg" },
+  { field: "tyrosine_mg", name: "酪胺酸 (Tyr)", unit: "mg" },
+  { field: "arginine_mg", name: "精胺酸 (Arg)", unit: "mg" },
+];

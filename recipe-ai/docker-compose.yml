@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: recipe_ai_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: recipe_ai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recipe_ai_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d recipe_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: recipe_ai_backend
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      BACKEND_DB_HOST: postgres
+      BACKEND_DB_PORT: 5432
+      BACKEND_DB_NAME: recipe_ai
+      BACKEND_DB_USER: postgres
+      BACKEND_DB_PASSWORD: ${POSTGRES_PASSWORD:-recipe_ai_pass}
+      TZ: Asia/Taipei
+    volumes:
+      - ./backend/logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  control:
+    build:
+      context: ./control
+      dockerfile: Dockerfile
+    container_name: recipe_ai_control
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      BACKEND_URL: http://backend:8001
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_DAYS: 7
+    depends_on:
+      - backend
+    volumes:
+      - control_logs:/app/logs
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: recipe_ai_frontend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    depends_on:
+      - control
+
+volumes:
+  postgres_data:
+  control_logs:
