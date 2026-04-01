@@ -1,0 +1,1142 @@
+{
+  "version": 1,
+  "updated_at": "2026-06-03T02:17:12.381555+00:00",
+  "entries": [
+    {
+      "word": "的",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216437+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "了",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216446+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "在",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216450+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "是",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216453+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "我",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216457+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "有",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216461+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "和",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216464+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "就",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216469+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "不",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216473+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "人",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216480+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "都",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216483+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "一",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216486+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "一個",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216489+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "上",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216491+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "也",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216494+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "很",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216497+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "到",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216500+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "說",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216503+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "要",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216506+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "去",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216510+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "你",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216514+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "會",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216517+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "著",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216520+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "沒有",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216523+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "看",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216526+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "好",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216529+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "自己",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216532+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "這",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216536+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "他",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216539+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "她",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216542+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "它",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216546+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "把",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216549+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "那",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216553+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "被",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216556+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "從",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216560+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "如果",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216564+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "什麼",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216567+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "但",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216571+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "可以",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216574+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "讓",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216578+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "再",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216582+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "後",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216586+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "然後",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216590+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "接著",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216594+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "最後",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216598+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "先",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216603+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "用",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216607+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "加入",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216611+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "放入",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216615+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "倒入",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216619+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "適量",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216623+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "少許",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216628+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "一些",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216632+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "備用",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216636+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "準備",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216640+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "半條",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216645+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "半顆",
+      "category": "general",
+      "created_at": "2026-04-22T03:00:51.216649+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切丁",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217296+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切片",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217306+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切塊",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217311+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切段",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217316+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切絲",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217320+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切末",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217325+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "切碎",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217330+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "翻炒",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217335+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "拌炒",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217340+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "快炒",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217345+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "熱鍋",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217349+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "熱油",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217354+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "起鍋",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217359+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "下鍋",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217364+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "上桌",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217369+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "即可",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217375+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "均勻",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217380+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "變色",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217385+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "調味",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217390+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "醃製",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217395+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "預備",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217401+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "食材",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217406+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "做法",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217411+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "步驟",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217416+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "作法",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217422+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "分鐘",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217428+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "小時",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217433+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "煮沸",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217439+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "煮熟",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217445+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "燒開",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217450+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "加熱",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217456+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "冷卻",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217461+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "靜置",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217467+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "攪拌",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217473+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "盛盤",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217479+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "裝盤",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217485+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "撒上",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217491+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "淋上",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217497+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "鋪上",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217503+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "完成",
+      "category": "cooking",
+      "created_at": "2026-04-22T03:00:51.217509+00:00",
+      "created_by": "system_seed",
+      "created_by_email": "system@seed",
+      "source_context": "bootstrap_seed"
+    },
+    {
+      "word": "調味料",
+      "category": "user_flag",
+      "created_at": "2026-04-22T04:19:04.798623+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "熱鍋倒入",
+      "category": "user_flag",
+      "created_at": "2026-04-22T06:09:16.347963+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "開蓋",
+      "category": "user_flag",
+      "created_at": "2026-04-29T06:49:22.068004+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "鍋內",
+      "category": "user_flag",
+      "created_at": "2026-04-29T06:49:25.038824+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "時間",
+      "category": "user_flag",
+      "created_at": "2026-04-29T06:49:27.498252+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "份量",
+      "category": "user_flag",
+      "created_at": "2026-04-29T06:49:28.383727+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "開始",
+      "category": "user_flag",
+      "created_at": "2026-04-29T06:49:31.114595+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "預備食材",
+      "category": "user_flag",
+      "created_at": "2026-04-29T11:52:07.494473+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "接著在",
+      "category": "cooking",
+      "created_at": "2026-04-30T02:23:13.608553+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": null
+    },
+    {
+      "word": "上面打入",
+      "category": "cooking",
+      "created_at": "2026-04-30T02:23:26.560787+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": null
+    },
+    {
+      "word": "務必",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:10:15.864056+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "鍋中",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:10:16.947343+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "手時",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:10:18.941661+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "懶人蘿阿姨",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:10:20.427953+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "家常食材",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:10:21.660853+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "家常菜色",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:10:23.188564+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "拿張潤餅皮",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:12:46.854700+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "餡料",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:19:24.303179+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "recipe_analyzer"
+    },
+    {
+      "word": "裝飾",
+      "category": "user_flag",
+      "created_at": "2026-05-06T06:19:26.245001+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "recipe_analyzer"
+    },
+    {
+      "word": "一小撮",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:10:24.426646+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "其他",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:36:23.761626+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "材料",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:36:26.371034+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "將糖炒至融化最後總共下了",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:37:28.270628+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "開吃",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:37:29.278350+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "材料大集合",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:37:40.731464+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "酸菜沖洗乾淨",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:37:46.869116+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "玉米筍比較難熟",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:38:46.086344+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "水真不必太多",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:38:46.672794+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "沒有梅花肉",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:38:47.328875+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "梅花肉加回鍋裡",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:38:49.670373+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "小撇步",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:38:52.440036+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "分割好麵團",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:42:54.210986+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "發酵",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:42:55.994101+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "麵團刷上蛋液",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:42:56.825640+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "放置",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:42:57.815894+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "裝",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:42:58.491024+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "滴雞精裝減開一角",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:44:48.837788+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "雞湯沸騰後",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:44:50.121852+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "趁著",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:44:50.709829+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "最後淋入醬油雞湯",
+      "category": "user_flag",
+      "created_at": "2026-05-13T00:44:51.257770+00:00",
+      "created_by": "13",
+      "created_by_email": "te@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "categories",
+      "category": "user_flag",
+      "created_at": "2026-05-13T01:32:56.717419+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "幾乎全部",
+      "category": "user_flag",
+      "created_at": "2026-05-13T01:37:28.629650+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "熱鍋不放油",
+      "category": "user_flag",
+      "created_at": "2026-05-20T07:19:41.553271+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "食材至軟",
+      "category": "user_flag",
+      "created_at": "2026-05-30T06:26:17.003910+00:00",
+      "created_by": "17",
+      "created_by_email": "t@gmail.com",
+      "source_context": "unified_analysis"
+    },
+    {
+      "word": "配方",
+      "category": "user_flag",
+      "created_at": "2026-06-03T02:17:12.381543+00:00",
+      "created_by": "19",
+      "created_by_email": "jackwang91203@gmail.com",
+      "source_context": "unified_analysis"
+    }
+  ]
+}
