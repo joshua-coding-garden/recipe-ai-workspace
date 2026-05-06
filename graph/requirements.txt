@@ -1,0 +1,12 @@
+networkx>=3.2
+python-louvain>=0.16
+igraph>=0.11
+leidenalg>=0.10
+sentence-transformers>=2.5
+chromadb>=0.4.22
+pypdf>=4.0
+pdfplumber>=0.10
+pyvis>=0.3.2
+matplotlib>=3.8
+tiktoken>=0.5
+tqdm
