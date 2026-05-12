@@ -1,0 +1,4948 @@
+"""advisor.py - AI 營養顧問（6-Step LLM Pipeline + 雙記憶系統）
+
+Architecture:
+  Step 1 (Echo):       LLM 即時確認回應 → SSE 送出
+  Step 2 (Phase1):     LLM 讀系統說明書 → 表層意圖判定
+  Step 3 (Phase2):     LLM 結合意圖+structured_store → 深層工具調用
+  Step 4 (Execute):    執行工具
+  Step 5 (Analysis):   LLM 根據工具結果生成分析
+  Step 6 (DualMemory): 並行 — narrative summary + structured extraction
+
+SSE phase_status 協定（任何 Pipeline 路徑都必須遵守）:
+  "echo"      → phase_status {"phase": "echo"}
+  "intent"    → phase_status {"phase": "intent"}
+  "toolcall"  → phase_status {"phase": "toolcall"}
+  "execute"   → phase_status {"phase": "execute"}
+  "analysis"  → phase_status {"phase": "analysis"}
+  "memory"    → phase_status {"phase": "memory"}
+  前端 ThinkingPanel 靠 phase_status 驅動六顆燈號，漏發任何一個都會導致燈號卡在 ○。
+  新增分支路徑時務必逐項確認。
+"""
+import asyncio
+import json
+import pathlib as _pathlib
+import re
+import httpx
+from dataclasses import dataclass, field as dc_field
+from datetime import datetime, date, timedelta
+from typing import Any, AsyncGenerator
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from loguru import logger
+
+from app.config import settings
+from app.middleware.auth_middleware import require_auth
+from app.services.recovery import diagnose as _recovery_diagnose, plan_recovery as _recovery_plan, execute_recovery as _recovery_execute
+from app.services.embedding_service import embed as _embed_text
+from app.services import manual_rag_service as _manual_rag
+
+_MANUAL_PATH = _pathlib.Path(__file__).resolve().parent.parent.parent / "resources" / "system_manual.md"
+SYSTEM_MANUAL = _MANUAL_PATH.read_text(encoding="utf-8") if _MANUAL_PATH.exists() else ""
+
+router = APIRouter(prefix="/advisor", tags=["advisor"])
+
+
+@router.on_event("startup")
+async def _init_manual_rag():
+    await _manual_rag.initialize()
+
+_GEMMA_TIMEOUT = httpx.Timeout(120.0, connect=10.0)
+_BACKEND_TIMEOUT = httpx.Timeout(30.0)
+_CONTROL_URL = "http://localhost:8000"
+_GRAPHRAG_URL = "http://localhost:8002"
+_MAX_ROUNDS = 3
+
+_PHASE_ORDER = ("echo", "intent", "toolcall", "execute", "analysis")
+_PHASE_FILL_LABELS = {
+    "echo": "已收到", "intent": "已理解", "toolcall": "已確定",
+    "execute": "已完成", "analysis": "已分析",
+}
+
+
+def _yield_phase(ws, phase: str, label: str) -> str:
+    ws._emitted_phases.add(phase)
+    return _sse_event("phase_status", {"phase": phase, "label": label})
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Step 1: Echo Prompt（前台渲染 — 立即回應）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROMPT_ECHO = """請你根據使用者的訊息和對話脈絡，用繁體中文回應。
+
+## 規則
+- 簡潔回應
+- 如果使用者的訊息需要查詢工具（記錄飲食、查營養、查症狀等）：概括需求，表達「已收到、正在處理」
+- 如果是一般對話（打招呼、感謝、閒聊）：直接給出友善回應
+- 不要回答營養問題本身，不要提供營養數據或建議
+- 語氣親切自然
+
+## 範例
+使用者：「營養夠嗎」
+→ 收到，我先查看你的個人資料，再幫你分析今天的營養攝取是否達標。
+
+使用者：「最近常覺得疲勞」
+→ 了解，我來查詢與疲勞相關的營養素和推薦食物。
+
+使用者：「為什麼蛋白質對肌肉修復很重要？」
+→ 好問題，我來搜尋相關的學術文獻幫你找答案。
+
+使用者：「你好」
+→ 你好！我是你的 AI 營養顧問，有什麼飲食或營養問題可以幫你的嗎？
+
+使用者：「謝謝」
+→ 不客氣！如果之後有其他營養問題，隨時問我。
+
+---
+
+{memory_block}
+
+對話歷史：
+{history}
+
+使用者訊息：{message}
+
+請直接輸出回應（不要加引號或其他格式）："""
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Phase 1: Surface Intent — 表層意圖判定（讀系統說明書）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROMPT_PHASE1 = """你是 AI 營養顧問系統的意圖判定器。今天是 {current_date}。根據使用者訊息、對話脈絡和下方的相關功能說明，判斷需要呼叫哪些工具。
+
+## 與使用者問題最相關的系統功能
+{relevant_manual_context}
+
+---
+
+## 可用工具（intents 欄位只允許下表名稱，不可用其他名稱）
+
+| intent | 必要參數 | 說明 |
+|---|---|---|
+| search_symptom | symptom（中文症狀描述） | 搜尋症狀相關的營養素和推薦食物（系統自動翻譯，直接傳中文） |
+| search_graphrag | query（英文學術查詢） | 學術論文知識圖譜問答 |
+| nutrient_ranking | nutrient_field（如 calcium_per_100g） | 營養素含量排名（可選 top_n） |
+| get_recipes | （無） | 查看已儲存的食譜 |
+| get_calendar | start_date, end_date（YYYY-MM-DD） | 行事曆查詢 |
+| add_to_calendar | entry_date（YYYY-MM-DD） | 將最近分析的食譜儲存並加入行事曆（可選 recipe_id 直接加已存食譜） |
+| delete_calendar | entry_date（YYYY-MM-DD） | 刪除行事曆中的食譜（可指定 recipe_name 刪特定筆，否則刪全部） |
+| delete_recipe | （可選 recipe_name, created_date, confirmed, recipe_ids） | 刪除已儲存食譜。多筆時先列表預覽，使用者確認後才刪（confirmed=true） |
+| search_food | food_name | 搜尋食物營養成分 |
+| browse_food_database | （無，可選 search, category） | 瀏覽台灣食品資料庫 |
+| analyze_recipe | recipe_text | 分析食譜的營養成分 |
+| browse_literature | （無，可選 search） | 瀏覽學術論文列表 |
+| synthesize_advice | （無） | 根據已分析的食譜與 DRI 缺口，生成飲食建議（不需重新分析食譜） |
+| get_profile | （無） | 讀取使用者個人資料 |
+| update_profile | 至少一欄：age/gender/height_cm/weight_kg/activity_level/goal | 更新個人資料 |
+| general_chat | — | 一般對話，不需要工具 |
+
+⚠️ 禁止使用上表以外的名稱。常見錯誤：get_user_profile（正確：get_profile）、get_nutrient_ranking（正確：nutrient_ranking）、browse_taiwan_food（正確：browse_food_database）、get_saved_recipes（正確：get_recipes）、get_calendar_entries（正確：get_calendar）、update_user_profile（正確：update_profile）、get_literature_papers（正確：browse_literature）、add_calendar_entry（正確：add_to_calendar）、delete_calendar_entry（正確：delete_calendar）、delete_saved_recipe（正確：delete_recipe）。
+
+## 營養素欄位名對照
+蛋白質=protein_per_100g、鈣=calcium_per_100g、鐵=iron_per_100g、
+鋅=zinc_per_100g、鎂=magnesium_per_100g、維生素C=vitamin_c_mg、
+膳食纖維=dietary_fiber_per_100g、維生素A=retinol_ug、維生素D=vitamin_d_ug、
+維生素E=vitamin_e_mg、鉀=potassium_per_100g、鈉=sodium_per_100g、
+熱量=cal_per_100g、碳水化合物=carbon_per_100g、脂肪=fats_per_100g
+
+## 確認詞處理
+使用者說「好」「好啊」「可以」「對」「嗯」「幫我查」「全部刪除」「確定」= 確認上一輪 AI 提議的動作。
+請從對話歷史中找出上一輪 AI 建議了什麼，將其轉為對應的 intent。
+
+## delete_recipe 確認流程
+若上一輪工具回傳了待刪食譜預覽（pending_ids），使用者確認時：
+- confirmed=true + recipe_ids=上一輪的 pending_ids → 全部刪除
+- 使用者指定名稱 → recipe_name 篩選 + confirmed=true
+- 使用者指定編號（如「刪除第 1、3 個」「刪掉 id=30」）→ recipe_ids=[對應 id] + confirmed=true
+
+---
+
+### 當前對話脈絡
+{narrative_memory}
+
+### 長期記憶（來自過去的對話，僅供參考）
+{long_term_context}
+
+### 對話歷史
+{history}
+
+{previous_results_block}
+
+### 使用者最新訊息
+{message}
+
+### 輸出格式（嚴格 JSON，不要用 ``` 包裹）
+{{
+  "intents": ["intent_name"],
+  "entities": {{
+    "food_name": "",
+    "recipe_text": "",
+    "search": "",
+    "category": "",
+    "symptom": "",
+    "query_en": "",
+    "nutrient_field": "",
+    "profile_fields": {{"gender": "male 或 female（男/男性→male、女/女性→female）", "age": 0, "height_cm": 0, "weight_kg": 0, "activity_level": "", "goal": ""}},
+    "start_date": "",
+    "end_date": "",
+    "entry_date": "YYYY-MM-DD，用於 add_to_calendar / delete_calendar",
+    "recipe_name": "",
+    "created_date": "",
+    "confirmed": false,
+    "recipe_ids": []
+  }},
+  "needs_profile": false,
+  "reasoning": "一句話說明為什麼選這個工具"
+}}
+
+### 規則
+- 讀完功能說明書後，理解每個功能的完整作用，才能正確判斷
+- analyze_recipe 工具已內建 DRI 缺口分析，不需引導到其他頁面
+- intents 可以有多個（例如 ["update_profile", "search_symptom"]）
+- 複合任務：使用者說「今天吃了雞胸肉和花椰菜，加到5/20行事曆」→ intents: ["analyze_recipe", "add_to_calendar"]，entities 填 recipe_text="雞胸肉和花椰菜" 且 entry_date="2026-05-20"（使用者指定的日期，不是今天）。analyze_recipe 已內建 DRI 缺口，不需額外工具
+- 複合任務（已有食譜）：使用者之前已分析過食譜，現在說「加入行事曆，告訴我還缺什麼、該怎麼吃」→ intents: ["add_to_calendar", "synthesize_advice"]。synthesize_advice 會從已存的食譜資料生成營養建議，不需重新分析
+- synthesize_advice 使用時機：使用者問「還缺什麼」「該怎麼吃」「營養夠嗎」「怎麼補」等，且對話中已有分析過的食譜時，用 synthesize_advice（不是 analyze_recipe）
+- needs_profile = true：當 intent 需要個人資料但不知道時
+- 所有 entities 欄位都可選，沒有的留空字串或 null
+
+JSON："""
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Phase 2: Deep Tool Invocation — 深層工具調用
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROMPT_PHASE2 = """你是工具調用生成模組。根據意圖判定結果和已知的使用者資訊，生成具體的工具呼叫指令。
+
+### 意圖判定結論（來自上一步）
+{phase1_json}
+
+### 系統已儲存的使用者資訊（結構化資料）
+{structured_store_json}
+
+### 對話脈絡摘要
+{narrative_memory}
+
+### 長期記憶（補充上下文）
+{long_term_context}
+
+### 使用者最新訊息
+{message}
+
+### 可用工具與參數
+| 工具名 | 必要參數 | 可選參數 | 說明 |
+|--------|---------|---------|------|
+| search_symptom | symptom(中文) | — | 症狀→化合物→推薦食物（系統自動翻譯+語義搜尋） |
+| search_graphrag | query(英文學術詞) | — | 學術論文知識圖譜問答 |
+| get_nutrient_ranking | nutrient_field | top_n(預設10) | 營養素含量排名 |
+| get_saved_recipes | （無） | — | 查看已存食譜 |
+| get_calendar_entries | start_date, end_date(YYYY-MM-DD) | — | 行事曆查詢 |
+| add_to_calendar | entry_date(YYYY-MM-DD) | recipe_id, recipe_name | 儲存最近分析的食譜並加入行事曆（若有 recipe_id 則直接加已存食譜） |
+| delete_calendar_entry | entry_date(YYYY-MM-DD) | recipe_name, entry_id | 刪除行事曆中指定日期的食譜（可指定 recipe_name 刪特定筆，或 entry_id 精確刪除） |
+| delete_saved_recipe | — | recipe_name, created_date(YYYY-MM-DD), recipe_id, confirmed(bool), recipe_ids(list[int]) | 刪除食譜。首次呼叫不帶 confirmed：預覽匹配食譜。確認後帶 confirmed=true + recipe_ids 實際刪除 |
+| search_food | food_name | — | 搜尋食物營養成分 |
+| browse_taiwan_food | — | search, category | 瀏覽台灣食品資料庫 |
+| analyze_recipe | recipe_text | — | 分析食譜營養成分 |
+| get_literature_papers | — | search | 瀏覽學術論文 |
+| get_user_profile | （無） | — | 讀取個人資料 |
+| update_user_profile | _(至少一欄)_ | age, gender, height_cm, weight_kg, activity_level, goal | 更新個人資料 |
+
+⚠️ update_user_profile 寫入映射：gender 必須是 "male" 或 "female"（使用者說 男/男性→male、女/女性→female）
+
+### 輸出格式（嚴格 JSON，不要用 ``` 包裹）
+{{
+  "tool_calls": [
+    {{"tool": "tool_name", "args": {{"param": "value"}}}}
+  ],
+  "params_from_store": {{"age": 25, "gender": "male"}},
+  "still_missing": ["param_name"],
+  "ask_user": "若有缺失參數，寫一句自然的追問語句",
+  "reasoning": "一句話說明如何利用已知資訊"
+}}
+
+### 規則
+- **優先從 structured_store 取值**：如果 user_facts 已有 age/gender/activity_level 等，直接使用，不要列為 still_missing
+- 如果 symptom_history、food_context、recent_actions 能推斷使用者當前關注方向，善用
+- still_missing 只列真正無法從任何已知資訊推斷的參數
+- 如果完全不需要工具（general_chat），tool_calls=[], still_missing=[]
+- 若 needs_profile 為 true → tool_calls=[{{"tool":"get_user_profile","args":{{}}}}]
+- 追問語句要自然，要解釋為什麼需要這個資訊
+- symptom 直接用中文（如「疲勞」「手肘肌肉酸痛」），系統會自動處理翻譯和語義搜尋
+- query（GraphRAG 用）必須是英文
+- 行事曆日期用 YYYY-MM-DD（如使用者說「這週」，推算實際日期範圍）
+
+JSON："""
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Step 4: Analysis Prompt（前台渲染 — 分析回覆）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROMPT_ANALYSIS = """請你根據工具查詢結果，用繁體中文提供專業營養分析回覆。
+
+## 核心規則
+- 所有數據必須來自下方的「工具執行結果」，禁止從訓練資料引用任何營養數字
+- 沒有查到相關數據就明確說「目前沒有查到相關數據」
+- 禁止使用「根據一般營養學原理」「通常建議」「一般而言」等包裝語句
+- 前端已自動渲染工具結果的表格和卡片，你不需要列出原始數據清單
+- 你的角色是「分析師」：解讀數據的意義，不是複述數據
+
+## 回覆結構
+
+### search_graphrag（學術文獻搜尋）— 最高優先規則
+結果中有 `answer`（GraphRAG 系統生成的完整學術分析）和 `evidence`（方法學佐證）。
+**你必須將 answer 和 evidence 的完整內容直接呈現給使用者，禁止摘要、禁止縮減、禁止改寫。**
+前端卡片會另外顯示來源文獻列表。
+
+### 其他搜尋類工具（search_symptom / search_food / nutrient_ranking / browse_taiwan_food / get_literature_papers）
+前端已渲染完整互動式卡片，使用者可以直接展開查看詳情。你的回覆應：
+- 一句說找到什麼（例：「找到 8 篇相關文獻」）
+- 一句指出最重要的洞見或結論（例：「研究共識是 3-6 mg/kg 咖啡因可提升耐力表現」）
+- 可選一句建議下一步
+避免逐條重複卡片已展示的原始數據。
+
+## 特殊情境指引
+- 刪除食譜預覽（confirmed=false）：告訴使用者找到幾筆符合的食譜，已在卡片列出，**問他要全部刪除還是指定特定幾筆**。例：「找到 23 筆 5/13 的食譜，要全部刪除嗎？你也可以說『刪除沙嗲雞肉串』或『刪除第 1、3 個』來指定。」
+- 刪除食譜完成（confirmed=true）：一句話說成功刪了幾筆
+- 症狀搜尋後：一句話指出重點化合物，詳細內容由前端卡片展示，不要逐條列出
+- 食物搜尋後：一句話說找到幾筆食物，前端會顯示營養卡片
+- 台灣食品資料庫瀏覽後：一句話說找到什麼分類或數量，前端會展示完整列表
+- 食譜分析後：簡述總熱量和主要營養素，指出是否均衡
+- 學術論文瀏覽後：一句話說論文數量和主題分布，前端會顯示完整論文卡片
+- 營養素排名後：一句話說排名結果重點，前端會顯示完整表格
+- 行事曆查詢後：工具結果已包含完整 DRI 缺口分析和推薦食物，前端會渲染表格。你的回覆應總結營養狀況：幾項充足、幾項不足、最嚴重缺乏的前 3-5 項，以及簡要建議
+- 綜合營養建議（synthesize_advice）：工具結果包含已分析食譜的營養數據與 DRI 缺口。你必須：
+  (1) 指出最嚴重的 3-5 項營養素缺口（名稱、缺額、達標率）
+  (2) 針對每項缺口，推薦 2-3 種富含該營養素的食物（用具體食物名，不要模糊類別）
+  (3) 給出一個簡單的「今天剩餘餐次該怎麼吃」的具體建議
+  所有數據必須來自工具結果，禁止編造數字
+
+---
+
+使用者原始問題：{message}
+
+{memory_block}
+
+工具執行結果：
+{tool_results}
+
+請用繁體中文輸出分析回覆："""
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Dual Memory Prompts（雙記憶系統）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROMPT_NARRATIVE_SUMMARY = """你是對話摘要器。根據舊摘要和這輪對話，輸出更新後的對話脈絡摘要。
+
+規則：
+- 只記對話流程（誰問了什麼、AI 怎麼回的、話題轉折、使用者的情緒和態度）
+- 不記具體數據（年齡、營養素數值等已由系統另存）
+- 不記工具查到的具體數字（已由系統另存）
+- 記錄使用者的關注點（例如「使用者特別在意蛋白質攝取」）
+- 記錄對話的邏輯鏈（例如「使用者先問了疲勞 → AI 建議補鐵 → 使用者接著問哪些食物鐵最多」）
+- 新資訊覆蓋舊資訊
+- 保持前後連貫
+- 用分號分段
+
+舊摘要：{old_narrative}
+
+本輪使用者說：{user_msg}
+
+本輪 AI 回覆：{ai_reply}
+
+本輪使用的工具：{tools_used}
+
+本輪工具結果摘要：{tool_summary}
+
+更新後的摘要："""
+
+PROMPT_STRUCTURED_EXTRACT = """從這輪對話和工具結果中，提取以下固定欄位的值。
+輸出一個 JSON 物件，只包含這一輪有新值的欄位。找不到的欄位不要包含。
+⚠️ 必須輸出 JSON 物件（用 {{ }} 包裹），禁止輸出 JSON 陣列（禁止用 [ ] 包裹），禁止使用 JSON Patch RFC 6902 格式。
+
+## 可提取的欄位
+
+### user_facts（使用者基本資訊）
+- age（整數）
+- gender（"male" 或 "female"）
+- height_cm（公分，數字）
+- weight_kg（公斤，數字）
+- activity_level（"high" / "moderate" / "low" / "sedentary" / "very_active"）
+- goal（自由文字，如「增肌」「減脂」「維持體重」）
+- health_conditions（陣列，如 ["乳糖不耐", "高血壓"]）
+- dietary_restrictions（陣列，如 ["素食", "無麩質"]）
+- allergies（陣列，如 ["花生", "蝦"]）
+
+### food_context（食物相關）
+- foods_searched（本輪搜尋的食物，格式：[{{"name":"食物名","source":"taiwan/foodb","category":"分類","key_nutrients":{{...}}}}]）
+- foods_mentioned_today（本輪對話中提到的食物，格式：[{{"name":"食物名"}}]）
+- categories_browsed（本輪瀏覽的食物分類，字串陣列）
+
+### recipe_entry（若本輪有分析食譜，整筆食譜物件）
+total_nutrition 是動態欄位：工具回傳什麼營養素就全部記下來，不要省略任何欄位。
+台灣食品資料庫每筆有 110+ 個營養素欄位（基本營養素、糖類、礦物質、維生素A/B群/C/D/E/K、SFA、MUFA、PUFA、胺基酸等），DRI 涵蓋 33 項。有多少記多少，寧可多記不可少記。
+格式：{{"name":"食譜名","recipe_text":"原文","ingredients":[{{"name":"..","amount_g":0}}],"total_nutrition":{{...所有營養素...}},"item_count":0}}
+
+### symptom_entry（若本輪查了症狀）
+格式：{{"symptom_zh":"疲勞","parsed_symptoms":["疲勞"],"effects_found":[],"key_compounds":[],"recommended_foods":[],"effect_count":0,"recommendation_count":0,"vector_match_count":0}}
+
+### ranking_entry（若本輪查了營養素排名）
+格式：{{"nutrient_field":"calcium_per_100g","nutrient_zh":"鈣","top3_foods":["食物1 含量","食物2 含量","食物3 含量"]}}
+
+### calendar_update（若本輪查了行事曆）
+格式：{{"start_date":"YYYY-MM-DD","end_date":"YYYY-MM-DD","entry_count":0}}
+
+### academic_entry（若本輪查了學術文獻/GraphRAG）
+格式：{{"query_en":"...","query_zh_summary":"...","sources_count":0,"key_finding":"..."}}
+
+### papers_referenced（若有新論文出現）
+格式：[{{"title":"...","doc_id":"..."}}]
+
+### dri_awareness（若對話中提及營養缺乏或過量）
+格式：{{"deficient_nutrients_mentioned":["鈣","維生素D"],"excess_nutrients_mentioned":[]}}
+
+### action_entry（本輪動作記錄）
+格式：{{"intent":"search_symptom","tool_used":"search_symptom","params":{{"symptom":"疲勞"}},"key_result_summary":"找到 8 個效果、10 個語義匹配"}}
+
+### saved_recipes_summary（若查了食譜列表）
+格式：{{"total_count":0,"recipe_names":[]}}
+
+---
+
+本輪使用者說：{user_msg}
+本輪工具結果：{tool_results_json}
+本輪 AI 回覆摘要：{reply_summary}
+
+JSON 物件："""
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Request Model & Helpers
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+class AdvisorRequest(BaseModel):
+    message: str
+    history: list[dict] = []
+    user_profile: dict = {}
+    memory: str = ""
+    workflow_state: dict = {}
+    narrative_memory: str = ""
+    structured_store: dict = {}
+    session_id: str = ""
+    resume_checkpoint: bool = False
+
+
+class WorkflowState(BaseModel):
+    phase: str = "idle"
+    active_intent: str = ""
+    collected: dict[str, Any] = {}
+    missing: list[str] = []
+    pending_intents: list[str] = []
+    auto_fetch_done: list[str] = []
+    turn_count: int = 0
+    interrupted_from: str = ""
+    interrupted_state: dict[str, Any] = {}
+    proactive_suggestion: dict[str, Any] = {}
+
+
+@dataclass
+class TaskNode:
+    task_id: str
+    intent: str
+    tool: str
+    args: dict[str, Any]
+    depends_on: list[str] = dc_field(default_factory=list)
+    status: str = "pending"
+    result: Any = None
+
+
+@dataclass
+class ParamSpec:
+    name: str
+    type: type
+    required: bool = True
+    default: Any = None
+    profile_key: str | None = None
+    ask_zh: str = ""
+
+
+WORKFLOW_DEFS: dict[str, list[ParamSpec]] = {
+    "search_symptom": [
+        ParamSpec("symptom", str, required=True,
+                  ask_zh="請問你有什麼症狀？（例如：疲勞、失眠、頭痛）"),
+    ],
+    "search_graphrag": [
+        ParamSpec("query", str, required=True,
+                  ask_zh="請問你想查詢什麼營養學主題？"),
+    ],
+    "nutrient_ranking": [
+        ParamSpec("nutrient_field", str, required=True,
+                  ask_zh="請問你想查詢哪種營養素的排名？（例如：鈣、鐵、蛋白質）"),
+    ],
+    "get_recipes": [],
+    "get_calendar": [
+        ParamSpec("start_date", str, required=True,
+                  ask_zh="請問你要查看哪段時間的行事曆？（例如：這週、上個月）"),
+        ParamSpec("end_date", str, required=True),
+    ],
+    "add_to_calendar": [
+        ParamSpec("entry_date", str, required=True,
+                  ask_zh="請問你要加到哪一天的行事曆？（例如：今天、明天、2026-05-13）"),
+    ],
+    "delete_calendar": [
+        ParamSpec("entry_date", str, required=True,
+                  ask_zh="請問你要刪除哪一天的行事曆紀錄？（例如：今天、昨天、2026-05-13）"),
+    ],
+    "delete_recipe": [
+        ParamSpec("recipe_name", str, required=False, default=""),
+        ParamSpec("created_date", str, required=False, default=""),
+        ParamSpec("recipe_id", int, required=False, default=None),
+    ],
+    "get_profile": [],
+    "update_profile": [],
+    "search_food": [
+        ParamSpec("food_name", str, required=True,
+                  ask_zh="請問你想查詢哪種食物的營養成分？"),
+    ],
+    "browse_food_database": [
+        ParamSpec("search", str, required=False, default=""),
+        ParamSpec("category", str, required=False, default=""),
+    ],
+    "analyze_recipe": [
+        ParamSpec("recipe_text", str, required=True,
+                  ask_zh="請提供你想分析的食譜內容（包含食材和份量）。"),
+    ],
+    "browse_literature": [
+        ParamSpec("search", str, required=False, default=""),
+    ],
+    "synthesize_advice": [],
+}
+
+_INTENT_TO_TOOL: dict[str, str] = {
+    "search_food": "search_food",
+    "browse_food_database": "browse_taiwan_food",
+    "analyze_recipe": "analyze_recipe",
+    "browse_literature": "get_literature_papers",
+    "search_symptom": "search_symptom",
+    "search_graphrag": "search_graphrag",
+    "synthesize_advice": "synthesize_advice",
+    "nutrient_ranking": "get_nutrient_ranking",
+    "get_recipes": "get_saved_recipes",
+    "get_calendar": "get_calendar_entries",
+    "add_to_calendar": "add_to_calendar",
+    "delete_calendar": "delete_calendar_entry",
+    "delete_recipe": "delete_saved_recipe",
+    "get_profile": "get_user_profile",
+    "update_profile": "update_user_profile",
+}
+
+
+def _sse_event(event_type: str, data: dict) -> str:
+    return f"event: {event_type}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+def _strip_thinking(text: str) -> str:
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    return text.strip()
+
+
+async def _call_gemma(messages: list[dict], temperature: float = 0.3,
+                      max_tokens: int = 16384,
+                      response_format: dict | None = None) -> str:
+    payload = {
+        "model": settings.gemma_model_name,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }
+    if response_format:
+        payload["response_format"] = response_format
+    async with httpx.AsyncClient(timeout=_GEMMA_TIMEOUT) as client:
+        resp = await client.post(settings.gemma_url, json=payload)
+        if resp.status_code >= 400:
+            logger.error("_call_gemma: HTTP {} from Gemma, body={}", resp.status_code, resp.text[:200])
+            return ""
+    data = resp.json()
+    msg = data.get("choices", [{}])[0].get("message", {})
+    content = msg.get("content", "")
+    if not content.strip():
+        reasoning = msg.get("reasoning_content", "")
+        if reasoning:
+            for start_c, end_c in [("{", "}"), ("[", "]")]:
+                s = reasoning.rfind(start_c)
+                e = reasoning.rfind(end_c)
+                if s != -1 and e > s:
+                    candidate = reasoning[s:e + 1]
+                    try:
+                        json.loads(candidate)
+                        logger.info("_call_gemma: recovered JSON from reasoning_content ({}chars)", len(candidate))
+                        return candidate
+                    except json.JSONDecodeError:
+                        pass
+            logger.warning("_call_gemma: content empty, reasoning={}chars but no extractable JSON", len(reasoning))
+    return _strip_thinking(content)
+
+
+async def _call_gemma_stream(messages: list[dict], temperature: float = 0.3,
+                             max_tokens: int = 16384):
+    """Async generator: yields content chunks from Gemma streaming response."""
+    payload = {
+        "model": settings.gemma_model_name,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": True,
+    }
+    async with httpx.AsyncClient(timeout=_GEMMA_TIMEOUT) as client:
+        async with client.stream("POST", settings.gemma_url, json=payload) as resp:
+            resp.raise_for_status()
+            async for line in resp.aiter_lines():
+                if not line.startswith("data: "):
+                    continue
+                data_str = line[6:].strip()
+                if data_str == "[DONE]":
+                    break
+                try:
+                    chunk = json.loads(data_str)
+                    content = chunk.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                    if content:
+                        yield content
+                except json.JSONDecodeError:
+                    continue
+
+
+def _parse_llm_json(text: str):
+    text = text.strip()
+    if text.startswith("```"):
+        lines = text.split("\n")
+        end = len(lines) - 1 if lines[-1].strip().startswith("```") else len(lines)
+        text = "\n".join(lines[1:end]).strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    for start_c, end_c in [("{", "}"), ("[", "]")]:
+        start = text.find(start_c)
+        end = text.rfind(end_c)
+        if start != -1 and end > start:
+            try:
+                return json.loads(text[start:end + 1])
+            except json.JSONDecodeError:
+                continue
+    return None
+
+
+def _headers(token: str) -> dict:
+    return {"Authorization": f"Bearer {token}"} if token else {}
+
+
+def _format_history(history: list[dict]) -> str:
+    lines = []
+    for msg in history:
+        role = "使用者" if msg.get("role") == "user" else "AI"
+        content = msg.get("content") or ""
+        lines.append(f"{role}：{content}")
+    return "\n".join(lines) if lines else "（無歷史對話）"
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# System Validation — Pure Validator Functions
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def _build_guidance_reply(message: str, structured_store: dict) -> str:
+    hints: list[str] = []
+    store = structured_store or {}
+    if store.get("recipe_store"):
+        hints.append("你最近有分析過食譜，是想繼續看營養數據嗎？")
+    if store.get("symptom_history"):
+        last = store["symptom_history"][-1]
+        sym = last.get("symptom_zh", "")
+        if sym:
+            hints.append(f"你之前查過「{sym}」相關的營養，想繼續了解嗎？")
+    if store.get("food_context", {}).get("foods_searched"):
+        hints.append("你最近有搜尋過食物，想查更多營養成分嗎？")
+
+    guess = hints[0] if hints else ""
+    prefix = f"{guess}\n\n" if guess else ""
+
+    return (
+        f"抱歉，我沒有完全理解你的需求。{prefix}"
+        "以下是我能幫你做的事，你可以直接告訴我：\n"
+        "• 分析食譜營養 →「幫我分析：雞胸肉 200g、花椰菜 100g」\n"
+        "• 查營養素排名 →「鈣含量最高的食物」\n"
+        "• 查症狀相關營養 →「疲勞要吃什麼」\n"
+        "• 搜尋食物成分 →「雞蛋的營養」\n"
+        "• 學術文獻問答 →「protein and muscle recovery」\n"
+        "• 查看行事曆 →「這週吃了什麼」\n\n"
+        "請再詳細描述你的問題，我很樂意幫忙！"
+    )
+
+
+_FOOD_EXTRACT_BLACKLIST = frozenset({
+    "喜歡", "味道", "感覺", "苦悶", "味覺", "開心", "漂亮", "好吃",
+    "可以", "好的", "一天", "醫生", "遠離", "覺得", "今天", "知道",
+    "因為", "所以", "然後", "這個", "那個", "什麼", "怎麼", "雖然",
+    "really", "like", "because", "keep", "away", "name", "day",
+})
+
+
+def _extract_chat_entities(message: str) -> dict:
+    """Rule-based extraction of food names / person names from general_chat."""
+    import jieba
+    from app.services.food_synonym_store import food_synonym_store
+
+    text = message.strip()
+    result: dict = {"foods": [], "person_name": None}
+
+    m = re.search(
+        r"(?:my\s+name\s+is|i'?m|i\s+am)\s+([A-Za-z]\w{0,15})",
+        text, re.IGNORECASE,
+    )
+    if not m:
+        m = re.search(r"(?:我叫|我的名字是|叫我)\s*([^\s，。,\.！!？?]{1,8})", text)
+    if m:
+        result["person_name"] = m.group(1).strip()
+
+    candidates: set[str] = set()
+    for seg in jieba.cut(text):
+        seg = seg.strip()
+        if len(seg) >= 2:
+            candidates.add(seg)
+    for word in re.findall(r"[a-zA-Z]{3,}", text):
+        candidates.add(word.lower())
+
+    seen: set[str] = set()
+    foods: list[str] = []
+    for c in candidates:
+        if c.lower() in _FOOD_EXTRACT_BLACKLIST:
+            continue
+        entry = food_synonym_store.lookup_synonym(c)
+        if entry:
+            if c not in seen:
+                seen.add(c)
+                foods.append(c)
+            continue
+        hits = food_synonym_store.search(c, limit=15)
+        for h in hits:
+            if c in h["canonical"]:
+                if c not in seen:
+                    seen.add(c)
+                    foods.append(c)
+                break
+    result["foods"] = foods[:3]
+    return result
+
+
+_PROACTIVE_CONFIRM_RE = re.compile(
+    r"^(?:好|好啊|好的|可以|對|嗯|嗯嗯|是|ok|查一下|查|幫我查|看一下|要|想|好呀)$",
+    re.IGNORECASE,
+)
+
+
+def _has_cjk(text: str) -> bool:
+    return any("一" <= c <= "鿿" for c in text)
+
+
+def _coerce_type(value, expected_type, arg_name: str, corrections: list[str]):
+    if isinstance(expected_type, tuple):
+        if isinstance(value, expected_type):
+            return value
+        target = expected_type[0]
+    else:
+        if isinstance(value, expected_type):
+            return value
+        target = expected_type
+    try:
+        if target == int:
+            coerced = int(float(value))
+        elif target == float:
+            coerced = float(value)
+        elif target == str:
+            coerced = str(value)
+        else:
+            return value
+        corrections.append(f"coerced {arg_name}: {type(value).__name__}->{target.__name__}")
+        return coerced
+    except (ValueError, TypeError):
+        return value
+
+
+def _try_fill_missing_args(tool_name: str, args: dict, missing: list[str],
+                           intent: dict, profile: dict) -> list[str]:
+    entities = intent.get("entities", {})
+    filled: list[str] = []
+    _entity_sources = {
+        "food_name": ["food_name"], "symptom": ["symptom_en"],
+        "query": ["query_en"], "nutrient_field": ["nutrient_field"],
+        "log_id": ["log_id"], "age": ["age"], "gender": ["gender"],
+        "start_date": ["start_date"], "end_date": ["end_date"],
+    }
+    for arg in missing:
+        for src in _entity_sources.get(arg, [arg]):
+            val = entities.get(src)
+            if val:
+                args[arg] = val
+                filled.append(arg)
+                break
+        if arg not in args or not args[arg]:
+            if arg in profile and profile[arg]:
+                args[arg] = profile[arg]
+                filled.append(arg)
+    return filled
+
+
+_INTENT_ALIASES: dict[str, str] = {
+    "update_user_profile": "update_profile",
+    "get_user_profile": "get_profile",
+    "get_saved_recipes": "get_recipes",
+    "get_calendar_entries": "get_calendar",
+    "add_calendar_entry": "add_to_calendar",
+    "delete_calendar_entry": "delete_calendar",
+    "remove_calendar": "delete_calendar",
+    "remove_calendar_entry": "delete_calendar",
+    "delete_saved_recipe": "delete_recipe",
+    "remove_recipe": "delete_recipe",
+    "delete_saved_recipes": "delete_recipe",
+    "get_literature_papers": "browse_literature",
+    "browse_taiwan_food": "browse_food_database",
+    "get_nutrient_ranking": "nutrient_ranking",
+    "analyze_recipe": "analyze_recipe",
+    "nutritional_advice": "synthesize_advice",
+    "dietary_advice": "synthesize_advice",
+    "nutrition_suggestion": "synthesize_advice",
+    "get_nutritional_advice": "synthesize_advice",
+}
+
+
+def _validate_intent_result(result: dict) -> tuple[dict, list[str]]:
+    corrections: list[str] = []
+
+    if "intents" not in result:
+        result["intents"] = ["general_chat"]
+        corrections.append("missing intents -> general_chat")
+    if "entities" not in result:
+        result["entities"] = {}
+        corrections.append("missing entities -> {}")
+
+    raw = result["intents"]
+    normalized = []
+    for i in raw:
+        mapped = _INTENT_ALIASES.get(i, i)
+        if mapped != i:
+            corrections.append(f"intent alias '{i}'->'{mapped}'")
+        normalized.append(mapped)
+    raw = normalized
+    valid = [i for i in raw if i in _VALID_INTENTS]
+    removed = set(raw) - set(valid)
+    if removed:
+        corrections.append(f"removed invalid intents: {removed}")
+    if not valid:
+        valid = ["general_chat"]
+        corrections.append("no valid intents -> general_chat")
+
+    action = [i for i in valid if i != "general_chat"]
+    if action and "general_chat" in valid:
+        valid = action
+        corrections.append("dropped general_chat (conflicts with action)")
+
+    result["intents"] = valid
+    ent = result["entities"]
+
+    if "search_food" in valid:
+        fn = ent.get("food_name") or ent.get("food_item") or ent.get("food", "")
+        if fn:
+            had_alias = "food_item" in ent or ("food" in ent and "food_name" not in ent)
+            ent["food_name"] = fn
+            ent.pop("food_item", None)
+            ent.pop("food", None)
+            if had_alias:
+                corrections.append(f"food entity alias -> food_name")
+
+    if "search_symptom" in valid:
+        sym = ent.get("symptom") or ent.get("symptom_en", "")
+        if sym:
+            ent["symptom"] = sym
+            ent.pop("symptom_en", None)
+
+    if "nutrient_ranking" in valid:
+        nf = ent.get("nutrient_field", "")
+        if nf:
+            resolved = _NUTRIENT_ZH_TO_FIELD.get(nf) or _NUTRIENT_FIELD_ALIASES.get(nf)
+            if resolved:
+                corrections.append(f"nutrient '{nf}'->'{resolved}'")
+                ent["nutrient_field"] = resolved
+
+    if "needs_profile" not in result:
+        result["needs_profile"] = False
+
+    return result, corrections
+
+
+def _validate_toolcalls(tool_calls: list[dict], intent: dict,
+                        profile: dict) -> tuple[list[dict], list[str]]:
+    corrections: list[str] = []
+    validated: list[dict] = []
+    seen: set[str] = set()
+
+    for tc in tool_calls:
+        name = tc.get("tool", "")
+        args = dict(tc.get("args", {}))
+
+        if name not in _TOOL_DISPATCH:
+            corrections.append(f"unknown tool '{name}'")
+            continue
+
+        required = _TOOL_REQUIRED_ARGS.get(name, [])
+        missing = [r for r in required if not args.get(r)]
+        if missing:
+            _try_fill_missing_args(name, args, missing, intent, profile)
+            still = [r for r in required if not args.get(r)]
+            if still:
+                corrections.append(f"dropped '{name}': missing {still}")
+                continue
+            corrections.append(f"filled args for '{name}': {missing}")
+
+        if name == "update_user_profile" and not args:
+            corrections.append("dropped update_user_profile: no fields")
+            continue
+
+        for arg_name, exp_type in _TOOL_ARG_TYPES.get(name, {}).items():
+            if arg_name in args:
+                args[arg_name] = _coerce_type(args[arg_name], exp_type, arg_name, corrections)
+
+        if name == "get_nutrient_ranking":
+            nf = args.get("nutrient_field", "")
+            resolved = _NUTRIENT_ZH_TO_FIELD.get(nf) or _NUTRIENT_FIELD_ALIASES.get(nf)
+            if resolved:
+                corrections.append(f"nutrient '{nf}'->'{resolved}'")
+                args["nutrient_field"] = resolved
+
+        if name == "search_symptom":
+            sym = args.get("symptom", "")
+            if not sym:
+                sym_en = args.pop("symptom_en", "")
+                if sym_en:
+                    args["symptom"] = sym_en
+
+        sig = json.dumps({"tool": name, "args": args}, sort_keys=True)
+        if sig in seen:
+            corrections.append(f"dedup '{name}'")
+            continue
+        seen.add(sig)
+
+        validated.append({"tool": name, "args": args})
+
+    return validated, corrections
+
+
+_MIN_ANALYSIS_LEN = 50
+
+def _validate_analysis(text: str) -> tuple[str, bool, list[str]]:
+    corrections: list[str] = []
+    needs_retry = False
+    stripped = text.strip()
+    if len(stripped) < _MIN_ANALYSIS_LEN:
+        needs_retry = True
+        corrections.append(f"too short ({len(stripped)} chars)")
+    return text, needs_retry, corrections
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# System Validation — Deterministic ToolCall Generator
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def _system_generate_toolcalls(intent: dict, profile: dict) -> list[dict] | None:
+    intents = intent.get("intents", [])
+    ent = intent.get("entities", {})
+
+    if intents == ["general_chat"]:
+        return []
+
+    if "analyze_recipe" in intents and "add_to_calendar" in intents:
+        intents = sorted(intents, key=lambda x: 0 if x == "analyze_recipe" else 1)
+
+    calls: list[dict] = []
+    for it in intents:
+        if it == "get_profile":
+            calls.append({"tool": "get_user_profile", "args": {}})
+        elif it == "get_recipes":
+            calls.append({"tool": "get_saved_recipes", "args": {}})
+        elif it == "search_symptom" and (ent.get("symptom") or ent.get("symptom_en")):
+            calls.append({"tool": "search_symptom", "args": {"symptom": ent.get("symptom") or ent["symptom_en"]}})
+        elif it == "search_graphrag" and ent.get("query_en"):
+            calls.append({"tool": "search_graphrag", "args": {"query": ent["query_en"]}})
+        elif it == "nutrient_ranking" and ent.get("nutrient_field"):
+            calls.append({"tool": "get_nutrient_ranking",
+                          "args": {"nutrient_field": ent["nutrient_field"], "top_n": 10}})
+        elif it == "get_calendar" and ent.get("start_date") and ent.get("end_date"):
+            calls.append({"tool": "get_calendar_entries",
+                          "args": {"start_date": ent["start_date"], "end_date": ent["end_date"]}})
+        elif it == "add_to_calendar":
+            a = {"entry_date": ent.get("entry_date") or date.today().isoformat()}
+            if ent.get("recipe_id"):
+                a["recipe_id"] = ent["recipe_id"]
+            if ent.get("recipe_name"):
+                a["recipe_name"] = ent["recipe_name"]
+            calls.append({"tool": "add_to_calendar", "args": a})
+        elif it == "delete_calendar":
+            a = {"entry_date": ent.get("entry_date") or date.today().isoformat()}
+            if ent.get("recipe_name"):
+                a["recipe_name"] = ent["recipe_name"]
+            if ent.get("entry_id"):
+                a["entry_id"] = ent["entry_id"]
+            calls.append({"tool": "delete_calendar_entry", "args": a})
+        elif it == "delete_recipe":
+            a: dict[str, Any] = {}
+            if ent.get("recipe_name"):
+                a["recipe_name"] = ent["recipe_name"]
+            if ent.get("created_date"):
+                a["created_date"] = ent["created_date"]
+            if ent.get("recipe_id"):
+                a["recipe_id"] = ent["recipe_id"]
+            if ent.get("confirmed"):
+                a["confirmed"] = True
+            if ent.get("recipe_ids"):
+                a["recipe_ids"] = ent["recipe_ids"]
+            calls.append({"tool": "delete_saved_recipe", "args": a})
+        elif it == "search_food" and ent.get("food_name"):
+            calls.append({"tool": "search_food", "args": {"food_name": ent["food_name"]}})
+        elif it == "browse_food_database":
+            a = {}
+            if ent.get("search"):
+                a["search"] = ent["search"]
+            if ent.get("category"):
+                a["category"] = ent["category"]
+            calls.append({"tool": "browse_taiwan_food", "args": a})
+        elif it == "analyze_recipe":
+            calls.append({"tool": "analyze_recipe", "args": {"recipe_text": ent.get("recipe_text", "")}})
+        elif it == "browse_literature":
+            a = {}
+            if ent.get("search"):
+                a["search"] = ent["search"]
+            calls.append({"tool": "get_literature_papers", "args": a})
+        elif it == "update_profile":
+            pf = ent.get("profile_fields", {})
+            if pf:
+                calls.append({"tool": "update_user_profile", "args": pf})
+        elif it == "synthesize_advice":
+            calls.append({"tool": "synthesize_advice", "args": {}})
+
+    if not calls and intent.get("needs_profile"):
+        return [{"tool": "get_user_profile", "args": {}}]
+
+    return calls if calls else None
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Task Orchestrator — DAG Planner & Executor
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+_ADVICE_PATTERN = re.compile(
+    r"還缺|缺什麼|缺乏|不足|營養.*建議|怎麼吃|該吃|補充什麼|建議.*吃|飲食建議"
+    r"|怎麼補|怎麼.*改善|營養夠|營養足|營養.*達標|差什麼|怎樣.*補|缺了",
+)
+
+
+def _build_dag_args(intent: str, entities: dict, profile: dict,
+                    structured_store: dict) -> dict[str, Any] | None:
+    ent = entities
+    if intent == "search_symptom":
+        sym = ent.get("symptom") or ent.get("symptom_en")
+        return {"symptom": sym} if sym else None
+    if intent == "search_graphrag":
+        q = ent.get("query_en")
+        return {"query": q} if q else None
+    if intent == "nutrient_ranking":
+        nf = ent.get("nutrient_field")
+        return {"nutrient_field": nf, "top_n": 10} if nf else None
+    if intent in ("get_recipes", "get_profile", "synthesize_advice"):
+        return {}
+    if intent == "get_calendar":
+        sd, ed = ent.get("start_date"), ent.get("end_date")
+        return {"start_date": sd, "end_date": ed} if sd and ed else None
+    if intent == "add_to_calendar":
+        a: dict[str, Any] = {"entry_date": ent.get("entry_date") or date.today().isoformat()}
+        if ent.get("recipe_id"):
+            a["recipe_id"] = ent["recipe_id"]
+        if ent.get("recipe_name"):
+            a["recipe_name"] = ent["recipe_name"]
+        return a
+    if intent == "delete_calendar":
+        a = {"entry_date": ent.get("entry_date") or date.today().isoformat()}
+        if ent.get("recipe_name"):
+            a["recipe_name"] = ent["recipe_name"]
+        if ent.get("entry_id"):
+            a["entry_id"] = ent["entry_id"]
+        return a
+    if intent == "delete_recipe":
+        a = {}
+        for k in ("recipe_name", "created_date", "recipe_id", "confirmed", "recipe_ids"):
+            if ent.get(k):
+                a[k] = ent[k]
+        return a
+    if intent == "search_food":
+        fn = ent.get("food_name")
+        return {"food_name": fn} if fn else None
+    if intent == "browse_food_database":
+        a = {}
+        if ent.get("search"):
+            a["search"] = ent["search"]
+        if ent.get("category"):
+            a["category"] = ent["category"]
+        return a
+    if intent == "analyze_recipe":
+        rt = ent.get("recipe_text", "")
+        return {"recipe_text": rt} if rt else None
+    if intent == "browse_literature":
+        a = {}
+        if ent.get("search"):
+            a["search"] = ent["search"]
+        return a
+    if intent == "update_profile":
+        pf = ent.get("profile_fields", {})
+        return pf if pf else None
+    return None
+
+
+def _plan_task_dag(
+    phase1: dict, structured_store: dict, profile: dict, message: str,
+) -> list[TaskNode] | None:
+    """
+    Build a task DAG from Phase1 intents + context.
+    Returns None to fall through to existing Phase2 logic.
+    """
+    intents = phase1.get("intents", [])
+    entities = phase1.get("entities", {})
+
+    if not intents or intents == ["general_chat"]:
+        return None
+
+    tasks: list[TaskNode] = []
+    for i, intent in enumerate(intents):
+        if intent == "general_chat":
+            continue
+        tool_name = _INTENT_TO_TOOL.get(intent)
+        if not tool_name:
+            continue
+        args = _build_dag_args(intent, entities, profile, structured_store)
+        if args is None:
+            return None
+        tasks.append(TaskNode(
+            task_id=f"t{i}_{intent}", intent=intent, tool=tool_name, args=args,
+        ))
+
+    has_advice_signal = bool(_ADVICE_PATTERN.search(message))
+    has_explicit_advice = any(t.intent == "synthesize_advice" for t in tasks)
+    has_explicit_analyze = any(t.intent == "analyze_recipe" for t in tasks)
+    has_recipe_data = bool(structured_store.get("recipe_store"))
+
+    if has_advice_signal and not has_explicit_advice:
+        if has_recipe_data or has_explicit_analyze:
+            advice_task = TaskNode(
+                task_id="t_advice", intent="synthesize_advice",
+                tool="synthesize_advice", args={},
+            )
+            analyze_id = next(
+                (t.task_id for t in tasks if t.intent == "analyze_recipe"), None,
+            )
+            if analyze_id:
+                advice_task.depends_on.append(analyze_id)
+            tasks.append(advice_task)
+
+    analyze_id = next(
+        (t.task_id for t in tasks if t.intent == "analyze_recipe"), None,
+    )
+    if analyze_id:
+        for task in tasks:
+            if task.intent == "add_to_calendar" and analyze_id not in task.depends_on:
+                task.depends_on.append(analyze_id)
+
+    return tasks if tasks else None
+
+
+async def _execute_task_dag(
+    tasks: list[TaskNode], auth_token: str, user_message: str,
+    structured_store: dict, profile_data: dict,
+    progress_queue: asyncio.Queue | None = None,
+) -> AsyncGenerator[tuple[str, dict], None]:
+    """
+    Execute DAG with parallel scheduling per dependency level.
+    Yields (event_type, event_data) tuples.
+    """
+    completed: dict[str, Any] = {}
+
+    def _apply_side_effects(task: TaskNode):
+        r = task.result
+        if not isinstance(r, dict) or "error" in r:
+            return
+        if task.tool == "get_user_profile":
+            profile_data.update(r)
+        elif task.tool == "analyze_recipe":
+            if r.get("phase") == "confirm_ingredients":
+                import time as _time
+                structured_store["recipe_pending"] = {
+                    "ingredients": r.get("extracted_ingredients", []),
+                    "corrections": r.get("corrections", []),
+                    "confidence": r.get("confidence", 0),
+                    "recipe_text": r.get("recipe_text", ""),
+                    "gemma_available": r.get("gemma_available", False),
+                    "created_at": _time.time(),
+                }
+            else:
+                structured_store.setdefault("recipe_store", []).append({
+                    "name": (r.get("recipe_text") or "")[:50],
+                    "recipe_text": r.get("recipe_text", ""),
+                    "ingredients": r.get("ingredients", []),
+                    "total_nutrition": r.get("total", {}),
+                    "dri_analysis": r.get("dri_analysis"),
+                    "item_count": r.get("item_count", 0),
+                    "source": "advisor_analyze",
+                })
+
+    max_iterations = len(tasks) + 1
+    iteration = 0
+    while iteration < max_iterations:
+        iteration += 1
+        runnable = [
+            t for t in tasks
+            if t.status == "pending"
+            and all(d in completed for d in t.depends_on)
+        ]
+        if not runnable:
+            break
+
+        for t in runnable:
+            yield ("tool_start", {"name": t.tool, "args": t.args})
+
+        if len(runnable) == 1:
+            task = runnable[0]
+            task.status = "running"
+            _pq_dag = progress_queue or asyncio.Queue()
+            _dag_coro = asyncio.create_task(
+                _execute_tool_with_recovery(
+                    task.tool, task.args, auth_token, user_message, structured_store, progress_queue=_pq_dag,
+                )
+            )
+            while not _dag_coro.done():
+                try:
+                    _devt = await asyncio.wait_for(_pq_dag.get(), timeout=0.3)
+                    yield ("tool_progress", _devt)
+                except asyncio.TimeoutError:
+                    pass
+            result, recovery_info = _dag_coro.result()
+            while not _pq_dag.empty():
+                yield ("tool_progress", _pq_dag.get_nowait())
+            task.status = "done"
+            task.result = result
+            completed[task.task_id] = result
+            if recovery_info:
+                yield ("recovery_attempt", {
+                    "tool": recovery_info["tool"],
+                    "strategy": recovery_info["strategy"],
+                    "explanation": recovery_info["explanation"],
+                })
+                yield ("recovery_result", {
+                    "tool": recovery_info["tool"],
+                    "success": recovery_info["success"],
+                })
+            summary = _summarize_result(task.tool, result)
+            yield ("tool_result", {"name": task.tool, "data": result})
+            yield ("tool_done", {"name": task.tool, "summary": summary})
+            _apply_side_effects(task)
+        else:
+            _pq_par = progress_queue or asyncio.Queue()
+            async def _run(t):
+                return await _execute_tool_with_recovery(
+                    t.tool, t.args, auth_token, user_message, structured_store, progress_queue=_pq_par,
+                )
+            _gather_task = asyncio.create_task(
+                asyncio.gather(*[_run(t) for t in runnable], return_exceptions=True)
+            )
+            while not _gather_task.done():
+                try:
+                    _pevt = await asyncio.wait_for(_pq_par.get(), timeout=0.3)
+                    yield ("tool_progress", _pevt)
+                except asyncio.TimeoutError:
+                    pass
+            gathered = _gather_task.result()
+            while not _pq_par.empty():
+                yield ("tool_progress", _pq_par.get_nowait())
+            for task, res in zip(runnable, gathered):
+                if isinstance(res, BaseException):
+                    task.status = "failed"
+                    task.result = {"error": str(res)}
+                    recovery_info = None
+                else:
+                    result, recovery_info = res
+                    task.status = "done"
+                    task.result = result
+                completed[task.task_id] = task.result
+                if recovery_info:
+                    yield ("recovery_attempt", {
+                        "tool": recovery_info["tool"],
+                        "strategy": recovery_info["strategy"],
+                        "explanation": recovery_info["explanation"],
+                    })
+                    yield ("recovery_result", {
+                        "tool": recovery_info["tool"],
+                        "success": recovery_info["success"],
+                    })
+                summary = _summarize_result(task.tool, task.result)
+                yield ("tool_result", {"name": task.tool, "data": task.result})
+                yield ("tool_done", {"name": task.tool, "summary": summary})
+                _apply_side_effects(task)
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LLM Pipeline Steps
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+async def _step_echo(message: str, history: list[dict], narrative_memory: str,
+                     long_term_context: str = "") -> str:
+    memory_block = f"對話脈絡摘要：{narrative_memory}" if narrative_memory else "對話脈絡摘要：（新對話，尚無摘要）"
+    if long_term_context:
+        memory_block += f"\n\n長期記憶：\n{long_term_context}"
+    prompt = PROMPT_ECHO.format(
+        message=message,
+        history=_format_history(history),
+        memory_block=memory_block,
+    )
+    try:
+        result = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.5,
+        )
+        return result or "收到，正在處理你的問題..."
+    except Exception as e:
+        logger.warning("Echo step failed: {}", str(e))
+        return "收到，正在處理你的問題..."
+
+
+_PROMPT_PHASE1_RETRY = """上次回應格式不正確。請只輸出嚴格 JSON，不要加任何其他文字。
+
+使用者訊息：{message}
+
+只允許以下 intent（禁止使用其他名稱）:
+search_food, browse_food_database, analyze_recipe, browse_literature, search_symptom, search_graphrag, nutrient_ranking, get_recipes, get_calendar, add_to_calendar, delete_calendar, delete_recipe, get_profile, update_profile, general_chat
+
+輸出格式：
+{{"intents":["intent"],"entities":{{}},"needs_profile":false,"reasoning":"..."}}
+
+JSON："""
+
+
+async def _step_phase1(message: str, history: list[dict],
+                       narrative_memory: str,
+                       previous_results: list[dict] | None = None,
+                       long_term_context: str = "",
+                       skeleton: dict | None = None) -> dict | None:
+    prev_block = ""
+    if previous_results:
+        prev_text = json.dumps(previous_results, ensure_ascii=False)
+        prev_block = f"上一輪工具結果（供參考）：\n{prev_text}"
+
+    msg_for_intent = message
+    if skeleton and skeleton["features"]["total_length"] > 80:
+        feat = skeleton["features"]
+        parts = [f"[訊息開頭] {skeleton['intent_signal']}"]
+        if skeleton["tail_signal"]:
+            parts.append(f"[訊息結尾] {skeleton['tail_signal']}")
+        parts.append(
+            f"[結構特徵] 全長{feat['total_length']}字, {feat['line_count']}行"
+            f", 含數量={'是' if feat['has_quantities'] else '否'}"
+            f", 含清單={'是' if feat['has_list'] else '否'}"
+            f", 含問句={'是' if feat['has_question'] else '否'}"
+        )
+        msg_for_intent = "\n".join(parts)
+        logger.info("Phase1 skeleton signal: {}→{} chars", feat["total_length"], len(msg_for_intent))
+
+    rag_context = ""
+    if _manual_rag.is_ready():
+        hits = await _manual_rag.retrieve(message, top_k=3)
+        if hits:
+            rag_parts = []
+            for h in hits:
+                rag_parts.append(f"### {h['title']}（相關度 {h['score']}）\n{h['text']}")
+            rag_context = "\n\n---\n\n".join(rag_parts)
+            logger.info("Phase1 RAG: {} hits ({})", len(hits),
+                        ", ".join(f"{h['title'][:15]}={h['score']}" for h in hits))
+    if not rag_context:
+        rag_context = SYSTEM_MANUAL
+
+    full_prompt = PROMPT_PHASE1.format(
+        message=msg_for_intent,
+        history=_format_history(history),
+        narrative_memory=narrative_memory or "（無）",
+        long_term_context=long_term_context or "（無）",
+        previous_results_block=prev_block,
+        relevant_manual_context=rag_context,
+        current_date=date.today().isoformat(),
+    )
+
+    for attempt in range(2):
+        prompt = full_prompt if attempt == 0 else _PROMPT_PHASE1_RETRY.format(message=msg_for_intent)
+        try:
+            text = await _call_gemma(
+                [{"role": "user", "content": prompt}],
+                temperature=0.1,
+            )
+            result = _parse_llm_json(text)
+            if not isinstance(result, dict):
+                logger.warning("Phase1 attempt {}: not dict, raw={}", attempt + 1, text[:200])
+                continue
+
+            result, corrections = _validate_intent_result(result)
+            if corrections:
+                logger.info("Phase1 corrections({}): {}", attempt + 1, corrections)
+
+            if any("general_chat" in c for c in corrections):
+                result["_forced_general"] = True
+
+            if result.get("intents"):
+                logger.info("Phase1 parsed({}): {}", attempt + 1,
+                            json.dumps(result, ensure_ascii=False)[:200])
+                return result
+        except Exception as e:
+            logger.error("Phase1 attempt {} failed: {}", attempt + 1, str(e))
+    return None
+
+
+async def _step_phase2(phase1_result: dict, structured_store: dict,
+                       narrative_memory: str, message: str,
+                       profile: dict,
+                       long_term_context: str = "") -> tuple[list[dict], list[str]]:
+    all_corrections: list[str] = []
+
+    # ── 0. 確定性優先：若系統能直接生成，跳過 LLM ──
+    sys_calls = _system_generate_toolcalls(phase1_result, profile)
+    if sys_calls is not None and sys_calls:
+        logger.info("Phase2 sys_calls_raw: {}", [tc["tool"] for tc in sys_calls])
+        validated, v_corr = _validate_toolcalls(sys_calls, phase1_result, profile)
+        if v_corr:
+            logger.info("Phase2 validate_corrections: {}", v_corr)
+        if validated:
+            all_corrections.extend(v_corr)
+            all_corrections.append("system-deterministic")
+            logger.info("Phase2 system-first: {}", [tc["tool"] for tc in validated])
+            return validated, all_corrections
+
+    # ── 1. LLM 備援：系統無法確定時呼叫 LLM ──
+    store_summary = json.dumps(structured_store, ensure_ascii=False, default=str) if structured_store else "{}"
+    prompt = PROMPT_PHASE2.format(
+        phase1_json=json.dumps(phase1_result, ensure_ascii=False),
+        structured_store_json=store_summary,
+        narrative_memory=narrative_memory or "（無）",
+        long_term_context=long_term_context or "（無）",
+        message=message,
+    )
+
+    llm_succeeded = False
+    for attempt in range(2):
+        try:
+            text = await _call_gemma(
+                [{"role": "user", "content": prompt}],
+                temperature=0.1,
+            )
+            result = _parse_llm_json(text)
+            if not isinstance(result, dict):
+                logger.warning("Phase2 attempt {}: not dict, raw={}", attempt + 1, text[:200])
+                continue
+
+            tool_calls_raw = result.get("tool_calls", [])
+            if not isinstance(tool_calls_raw, list):
+                tool_calls_raw = []
+            raw = [{"tool": tc["tool"], "args": tc.get("args", {})}
+                   for tc in tool_calls_raw if isinstance(tc, dict) and "tool" in tc]
+
+            # ── 2. 系統驗證：LLM 結果過 _validate_toolcalls 修正 ──
+            validated, v_corr = _validate_toolcalls(raw, phase1_result, profile)
+            all_corrections.extend(v_corr)
+
+            still_missing = result.get("still_missing", [])
+            ask_user = result.get("ask_user", "")
+
+            if validated or not still_missing:
+                all_corrections.append("LLM-generated, system-validated")
+                logger.info("Phase2 LLM({}): tools={} missing={}", attempt + 1,
+                            [tc["tool"] for tc in validated], still_missing)
+                return validated, all_corrections
+
+            if still_missing and ask_user:
+                all_corrections.append(f"still_missing={still_missing}")
+                all_corrections.append(f"ask_user={ask_user}")
+                return [], all_corrections
+
+            llm_succeeded = True
+            break
+        except Exception as e:
+            logger.error("Phase2 attempt {} failed: {}", attempt + 1, str(e))
+
+    # ── 3. 備援：LLM 完全失敗時，用確定性系統生成 ──
+    logger.warning("Phase2 LLM failed, falling back to system generation")
+    sys_calls = _system_generate_toolcalls(phase1_result, profile)
+    if sys_calls is not None:
+        validated, v_corr = _validate_toolcalls(sys_calls, phase1_result, profile)
+        all_corrections.extend(v_corr)
+        all_corrections.append("LLM-failed, system-fallback")
+        logger.info("Phase2 system-fallback: {}", [tc["tool"] for tc in validated])
+        return validated, all_corrections
+
+    all_corrections.append("all phase2 attempts failed")
+    return [], all_corrections
+
+
+def _trim_tool_results_for_analysis(tool_results: list[dict]) -> list[dict]:
+    trimmed = []
+    for tr in tool_results:
+        name = tr.get("tool", "")
+        data = tr.get("data", tr.get("result", {}))
+        if name == "search_symptom" and isinstance(data, dict):
+            recs = data.get("recommendations", [])
+            short_recs = []
+            for rec in recs[:10]:
+                short_recs.append({
+                    "compound": rec.get("compound", {}).get("name", ""),
+                    "health_effect": rec.get("health_effect", ""),
+                    "top_foods": [f.get("name", "") for f in rec.get("top_foods", [])[:3]],
+                })
+            vm = data.get("vector_matches", [])
+            short_vm = [{"name_zh": v.get("name_zh", ""), "name": v.get("name", ""), "score": v.get("score", 0)} for v in vm[:5]]
+            trimmed.append({"tool": name, "data": {
+                "symptom": data.get("symptom", ""),
+                "parsed_symptoms": data.get("parsed_symptoms", []),
+                "vector_matches_summary": short_vm,
+                "effects": [{"name_zh": e.get("name_zh", ""), "name": e.get("name", "")} for e in data.get("effects", [])[:10]],
+                "recommendations_summary": short_recs,
+                "total_effects": len(data.get("effects", [])),
+                "total_recommendations": len(recs),
+                "total_vector_matches": len(vm),
+            }})
+        else:
+            trimmed.append(tr)
+    return trimmed
+
+
+async def _step_analysis(message: str, narrative_memory: str,
+                         tool_results: list[dict]) -> tuple[str, list[str]]:
+    all_corrections: list[str] = []
+
+    for tr in tool_results:
+        if tr.get("tool") == "search_graphrag":
+            r = tr.get("result", {})
+            answer = r.get("answer", "")
+            evidence = r.get("evidence", "")
+            if answer and not answer.startswith("[ERROR]"):
+                parts = [answer]
+                if evidence and not evidence.startswith("[ERROR]"):
+                    parts.append("\n\n---\n\n## 研究方法與證據佐證\n\n" + evidence)
+                return "\n".join(parts), []
+
+    memory_block = f"對話脈絡摘要：{narrative_memory}" if narrative_memory else ""
+    trimmed = _trim_tool_results_for_analysis(tool_results)
+    results_text = json.dumps(trimmed, ensure_ascii=False)
+    base_prompt = PROMPT_ANALYSIS.format(
+        message=message,
+        memory_block=memory_block,
+        tool_results=results_text,
+    )
+
+    for attempt in range(2):
+        prompt = base_prompt
+        if attempt == 1:
+            prompt += "\n\n（請用更詳細的方式分析，至少包含數據摘要、分析觀點和下一步建議。）"
+        try:
+            result = await _call_gemma(
+                [{"role": "user", "content": prompt}],
+                temperature=0.3,
+            )
+            if not result:
+                all_corrections.append(f"empty reply (attempt {attempt + 1})")
+                continue
+
+            text, needs_retry, v_corr = _validate_analysis(result)
+            all_corrections.extend(v_corr)
+
+            if not needs_retry or attempt == 1:
+                return text, all_corrections
+            logger.info("Analysis too short ({}), retrying", len(text.strip()))
+        except Exception as e:
+            logger.error("Analysis attempt {} failed: {}", attempt + 1, str(e))
+            all_corrections.append(f"exception: {str(e)}")
+
+    return "工具已執行完成，請查看上方的結果卡片。", all_corrections
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Tool Implementations
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+_TOOLS_NEEDING_STORE = {"add_to_calendar", "synthesize_advice"}
+_TOOLS_WITH_PROGRESS = {"analyze_recipe", "search_symptom", "search_graphrag"}
+
+async def _execute_tool(name: str, arguments: dict, auth_token: str = "",
+                        user_message: str = "",
+                        structured_store: dict | None = None,
+                        progress_queue: asyncio.Queue | None = None) -> dict:
+    try:
+        fn = _TOOL_DISPATCH.get(name)
+        if not fn:
+            return {"error": f"Unknown tool: {name}"}
+        if name in _TOOLS_NEEDING_STORE:
+            if name in _TOOLS_WITH_PROGRESS and progress_queue is not None:
+                return await fn(arguments, auth_token, user_message, structured_store or {}, progress_queue=progress_queue)
+            return await fn(arguments, auth_token, user_message, structured_store or {})
+        if name in _TOOLS_WITH_PROGRESS and progress_queue is not None:
+            return await fn(arguments, auth_token, user_message, progress_queue=progress_queue)
+        return await fn(arguments, auth_token, user_message)
+    except Exception as e:
+        logger.error("Tool {} failed: {}", name, str(e))
+        return {"error": f"工具執行失敗: {str(e)}"}
+
+
+_RECOVERY_MAX_RETRIES = 1
+
+async def _execute_tool_with_recovery(name, args, auth_token, user_msg, structured_store,
+                                      _retry_count: int = 0,
+                                      progress_queue: asyncio.Queue | None = None):
+    """執行工具，失敗時自動診斷並恢復。最多重試一次，防止遞迴。"""
+    result = await _execute_tool(name, args, auth_token, user_msg, structured_store, progress_queue=progress_queue)
+    if _retry_count >= _RECOVERY_MAX_RETRIES:
+        return result, None
+    diag = _recovery_diagnose(name, args, result, user_msg)
+    if not diag or diag.confidence < 0.5:
+        return result, None
+    from app.services.food_synonym_store import food_synonym_store
+    plan = _recovery_plan(diag, {"zh_to_field": _NUTRIENT_ZH_TO_FIELD}, synonym_store=food_synonym_store)
+    if not plan:
+        return result, None
+    logger.info("recovery: tool={} strategy={} retry={}/{} explanation={}",
+                name, plan.strategy, _retry_count + 1, _RECOVERY_MAX_RETRIES, plan.explanation_zh)
+
+    async def _exec_fn(tn, ta, tok, msg, store):
+        return await _execute_tool(tn, ta, tok, msg, store)
+
+    recovered = await _recovery_execute(plan, _exec_fn, name, auth_token, user_msg, structured_store)
+    if recovered.get("skipped"):
+        return result, None
+    recovery_info = {"tool": name, "strategy": plan.strategy, "explanation": plan.explanation_zh,
+                     "success": "error" not in recovered, "retry_count": _retry_count + 1}
+    return recovered, recovery_info
+
+
+
+_NUTRIENT_FIELD_ALIASES = {
+    "magnesium_mg": "magnesium_per_100g", "iron_mg": "iron_per_100g",
+    "calcium_mg": "calcium_per_100g", "zinc_mg": "zinc_per_100g",
+    "potassium_mg": "potassium_per_100g", "sodium_mg": "sodium_per_100g",
+    "protein_g": "protein_per_100g", "fiber_g": "dietary_fiber_per_100g",
+    "magnesium": "magnesium_per_100g", "iron": "iron_per_100g",
+    "calcium": "calcium_per_100g", "zinc": "zinc_per_100g",
+}
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# System Validation — Lookup Tables
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+_VALID_INTENTS: set[str] = {
+    "search_food", "browse_food_database", "analyze_recipe",
+    "browse_literature", "search_symptom", "search_graphrag", "nutrient_ranking",
+    "get_recipes", "get_calendar", "add_to_calendar", "delete_calendar",
+    "delete_recipe", "get_profile", "update_profile", "general_chat",
+    "synthesize_advice",
+}
+
+
+def _build_symptom_map() -> dict[str, str]:
+    import pathlib
+    path = pathlib.Path(__file__).resolve().parent.parent.parent / "resources" / "symptom_mapping.json"
+    mapping: dict[str, str] = {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for zh_key, info in data.items():
+            en_primary = info["en"][0] if info.get("en") else zh_key
+            mapping[zh_key] = en_primary
+            for syn in info.get("synonyms", []):
+                mapping[syn] = en_primary
+    except Exception:
+        mapping = {
+            "疲勞": "fatigue", "失眠": "insomnia", "頭痛": "headache",
+            "掉髮": "hair loss", "便秘": "constipation", "抽筋": "muscle cramp",
+            "皮膚差": "poor skin health", "貧血": "anemia",
+            "骨質疏鬆": "osteoporosis", "免疫力差": "weak immunity",
+            "眼睛乾": "dry eyes", "口角炎": "angular cheilitis", "水腫": "edema",
+        }
+    return mapping
+
+
+_SYMPTOM_ZH_TO_EN: dict[str, str] = _build_symptom_map()
+
+
+def _build_nutrient_zh_map() -> dict[str, str]:
+    import pathlib
+    path = pathlib.Path(__file__).resolve().parent.parent.parent / "resources" / "hpa_dri_v8.json"
+    mapping: dict[str, str] = {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for field in data.get("fields", []):
+            mapping[field["label_zh"]] = field["key"]
+    except Exception:
+        pass
+    mapping.update({
+        "蛋白質": "protein_per_100g", "鈣": "calcium_per_100g",
+        "鐵": "iron_per_100g", "鋅": "zinc_per_100g",
+        "鎂": "magnesium_per_100g", "維生素C": "vitamin_c_mg",
+        "膳食纖維": "dietary_fiber_per_100g", "維生素A": "retinol_equivalent_ug",
+        "維生素D": "vitamin_d_total_ug", "維生素E": "alpha_vitamin_e_te_mg",
+        "鉀": "potassium_per_100g", "鈉": "sodium_per_100g",
+        "熱量": "cal_per_100g", "碳水化合物": "carbon_per_100g",
+        "脂肪": "fats_per_100g",
+    })
+    return mapping
+
+
+_NUTRIENT_ZH_TO_FIELD: dict[str, str] = _build_nutrient_zh_map()
+
+
+_ZH_DIGIT = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
+              "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12,
+              "１": 1, "２": 2, "３": 3, "４": 4, "５": 5, "６": 6,
+              "７": 7, "８": 8, "９": 9}
+
+def _zh_to_int(s: str) -> int | None:
+    if s.isdigit():
+        return int(s)
+    if s in _ZH_DIGIT:
+        return _ZH_DIGIT[s]
+    if s.startswith("十") and len(s) > 1:
+        rest = _ZH_DIGIT.get(s[1])
+        return 10 + rest if rest else None
+    if s.endswith("十") and len(s) > 1:
+        head = _ZH_DIGIT.get(s[0])
+        return head * 10 if head else None
+    if len(s) == 3 and s[1] == "十":
+        h = _ZH_DIGIT.get(s[0])
+        t = _ZH_DIGIT.get(s[2])
+        return h * 10 + t if h and t else None
+    return None
+
+def _parse_date_from_text(text: str) -> tuple[str, str] | None:
+    """從文字中解析具體日期，回傳 (start_date, end_date) ISO 格式或 None。"""
+    today = date.today()
+
+    # "2026/5/30", "2026-5-30", "2026年5月30日"
+    m = re.search(r"(\d{4})[/\-年](\d{1,2})[/\-月](\d{1,2})[日號]?", text)
+    if m:
+        try:
+            d = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+            return d.isoformat(), d.isoformat()
+        except ValueError:
+            pass
+
+    # "5/30", "05/30", "5-30", "5月30日", "5月30號", "五月三十號"
+    m = re.search(r"(\d{1,2})[/\-月](\d{1,2})[日號]?", text)
+    if m:
+        try:
+            month, day = int(m.group(1)), int(m.group(2))
+            if 1 <= month <= 12 and 1 <= day <= 31:
+                year = today.year
+                d = date(year, month, day)
+                return d.isoformat(), d.isoformat()
+        except ValueError:
+            pass
+
+    # "30號", "30日"（假設當月）
+    m = re.search(r"(\d{1,2})[號日]", text)
+    if m:
+        try:
+            day = int(m.group(1))
+            if 1 <= day <= 31:
+                d = date(today.year, today.month, day)
+                return d.isoformat(), d.isoformat()
+        except ValueError:
+            pass
+
+    # 中文月日: "五月三十號"
+    m = re.search(r"([一二三四五六七八九十]+)月([一二三四五六七八九十]+)[號日]?", text)
+    if m:
+        month = _zh_to_int(m.group(1))
+        day = _zh_to_int(m.group(2))
+        if month and day and 1 <= month <= 12 and 1 <= day <= 31:
+            try:
+                d = date(today.year, month, day)
+                return d.isoformat(), d.isoformat()
+            except ValueError:
+                pass
+
+    # "明天"
+    if "明天" in text:
+        d = today + timedelta(days=1)
+        return d.isoformat(), d.isoformat()
+
+    # "昨天"
+    if "昨天" in text:
+        d = today - timedelta(days=1)
+        return d.isoformat(), d.isoformat()
+
+    # "前天"
+    if "前天" in text:
+        d = today - timedelta(days=2)
+        return d.isoformat(), d.isoformat()
+
+    # "後天"
+    if "後天" in text:
+        d = today + timedelta(days=2)
+        return d.isoformat(), d.isoformat()
+
+    return None
+
+
+def _skeletonize(message: str) -> dict:
+    """抽出訊息的骨架：意圖訊號 + 結構特徵，不看具體內容。"""
+    text = message.strip()
+    return {
+        "intent_signal": text[:100],
+        "tail_signal": text[-50:] if len(text) > 150 else "",
+        "full_message": text,
+        "features": {
+            "total_length": len(text),
+            "has_list": bool(re.search(r"\d+[.)、]|[-•·]\s|食材|材料|配料|備料", text)),
+            "has_quantities": bool(re.search(
+                r"\d+\s*(?:杯|大匙|小匙|匙|克|公克|g|ml|碗|顆|片|朵|包|條|塊|根|把|份|瓣|適量|少許)", text)),
+            "has_question": bool(re.search(
+                r"[？?]|是否|夠[不嗎]|嗎$|呢$|怎[麼樣]|什麼|哪[些個裡]|多少|能不能|好不好", text)),
+            "line_count": text.count("\n") + 1,
+        },
+    }
+
+
+def _route_by_structure(skeleton: dict) -> dict | None:
+    """根據結構特徵直接分流，不需要 LLM。回傳 Phase1 格式 dict 或 None。"""
+    f = skeleton["features"]
+    if f["total_length"] > 80 and f["has_quantities"]:
+        return {
+            "intents": ["analyze_recipe"],
+            "entities": {"recipe_text": skeleton["full_message"]},
+            "needs_profile": True,
+            "reasoning": f"structure-route: recipe (len={f['total_length']}, quantities=True)",
+        }
+    return None
+
+
+def _has_intent_contradiction(phase1: dict, skeleton: dict) -> bool:
+    """結構特徵與意圖判定是否矛盾。"""
+    intents = phase1.get("intents", [])
+    f = skeleton["features"]
+    if "analyze_recipe" in intents and f["has_question"] and not f["has_quantities"]:
+        return True
+    return False
+
+
+def _try_fast_path(message: str) -> dict | None:
+    """關鍵詞直接觸發意圖，跳過 Phase1 LLM。回傳 Phase1 格式 dict 或 None。"""
+    text = message.strip()
+    if not text or len(text) > 100:
+        return None
+
+    for zh, field_val in _NUTRIENT_ZH_TO_FIELD.items():
+        if zh in text and re.search(r"最高|排名|最多|含量|top|前\d+|排行", text):
+            return {
+                "intents": ["nutrient_ranking"],
+                "entities": {"nutrient_field": field_val},
+                "needs_profile": False,
+                "reasoning": f"fast-path: nutrient_ranking({zh})",
+            }
+
+    if re.search(r"(查看|列出|看|顯示|我的)\s*(食譜|菜單)|(食譜|菜單)\s*(列表|清單|有哪些)", text):
+        return {
+            "intents": ["get_recipes"],
+            "entities": {},
+            "needs_profile": False,
+            "reasoning": "fast-path: get_recipes",
+        }
+
+    _del_recipe = re.search(r"(刪除|移除|刪掉|拿掉|清除|去掉).*(食譜|菜單)", text)
+    if not _del_recipe:
+        _del_recipe = re.search(r"(食譜|菜單).*(刪除|移除|刪掉|拿掉|清除|去掉)", text)
+    if _del_recipe and not re.search(r"行事曆", text):
+        entities_dr: dict[str, str] = {}
+        parsed_dr = _parse_date_from_text(text)
+        if parsed_dr:
+            entities_dr["created_date"] = parsed_dr[0]
+        m_rname = re.search(r"(?:刪除|移除|刪掉|拿掉|清除|去掉)\s*[「「]?(.+?)[」」]?\s*(?:食譜|菜單|的)", text)
+        if m_rname:
+            rn = m_rname.group(1).strip()
+            if rn and not re.search(r"\d{1,2}[/\-月]\d{1,2}|所有|全部|這[些個]|^我的?$", rn):
+                entities_dr["recipe_name"] = rn
+        return {
+            "intents": ["delete_recipe"],
+            "entities": entities_dr,
+            "needs_profile": False,
+            "reasoning": "fast-path: delete_recipe",
+        }
+
+    if re.search(r"(我的|個人)\s*(資料|檔案|profile)", text):
+        return {
+            "intents": ["get_profile"],
+            "entities": {},
+            "needs_profile": False,
+            "reasoning": "fast-path: get_profile",
+        }
+
+    _diet_rec = re.search(r"(?:早餐|午餐|晚餐|宵夜|早上|中午|下午|晚上)?.*(?:吃了|吃過|喝了|喝過)\s*(.{2,})", text)
+    if not _diet_rec:
+        _diet_rec = re.search(r"(?:早餐|午餐|晚餐|宵夜|早上|中午|下午|晚上)\s*(?:吃|喝|是)\s*(.+)", text)
+    _has_cal_action = re.search(r"加入|新增|放到|記錄到|加到|安排到|排到|放進|加進|寫入", text)
+    if _diet_rec:
+        after = _diet_rec.group(1).strip()
+        if not re.search(r"^(什麼|哪些|多少|幾|嗎|呢|吧)", after):
+            if _has_cal_action and re.search(r"行事曆|\d{1,2}[/\-月]\d{1,2}", text):
+                return None
+            return {
+                "intents": ["analyze_recipe"],
+                "entities": {"recipe_text": text},
+                "needs_profile": True,
+                "reasoning": "fast-path: analyze_recipe (diet record)",
+            }
+
+    _cal_add = _has_cal_action
+    _cal_del = re.search(r"刪除|移除|拿掉|取消|去掉", text)
+    _cal_get = re.search(r"行事曆|今天.*吃了|這週.*吃|本週.*吃|今天.*營養.*[夠足嗎？?]|營養.*[夠足].*嗎|今天.*吃得|吃得.*怎[麼樣]|\d{1,2}[/\-月]\d{1,2}.*吃|吃.*\d{1,2}[/\-月]\d{1,2}", text)
+
+    if _cal_add and (_cal_get or re.search(r"\d{1,2}[/\-月]\d{1,2}|明天|後天|今天", text)):
+        today = date.today()
+        parsed = _parse_date_from_text(text)
+        entry_date = parsed[0] if parsed else today.isoformat()
+        entities: dict[str, str] = {"entry_date": entry_date}
+        m_name = re.search(r"把(.+?)(?:加入|加到|放到|記錄到|安排到|排到|放進|加進|新增到|寫入)", text)
+        if not m_name:
+            m_name = re.search(r"(?:加入|新增|記錄|安排)\s*(.+?)(?:到|進).*(?:行事曆|\d+[/月])", text)
+        if m_name:
+            name = m_name.group(1).strip()
+            if name:
+                entities["recipe_name"] = name
+        _fp_intents = ["add_to_calendar"]
+        if _ADVICE_PATTERN.search(text):
+            _fp_intents.append("synthesize_advice")
+        return {
+            "intents": _fp_intents,
+            "entities": entities,
+            "needs_profile": False,
+            "reasoning": f"fast-path: {'+'.join(_fp_intents)}",
+        }
+
+    if _cal_del and _cal_get:
+        today = date.today()
+        parsed = _parse_date_from_text(text)
+        entry_date = parsed[0] if parsed else today.isoformat()
+        entities_del: dict[str, str] = {"entry_date": entry_date}
+        m_name_del = re.search(r"行事曆[的上中裡]\s*(.+?)$", text)
+        if not m_name_del:
+            m_name_del = re.search(r"(?:刪除|移除|拿掉|取消|去掉)\s*(.+?)$", text)
+        if m_name_del:
+            name_del = re.sub(r"\d{1,2}[/\-月]\d{1,2}[日號]?|行事曆", "", m_name_del.group(1)).strip().strip("的上中裡 ")
+            if name_del:
+                entities_del["recipe_name"] = name_del
+        return {
+            "intents": ["delete_calendar"],
+            "entities": entities_del,
+            "needs_profile": False,
+            "reasoning": "fast-path: delete_calendar",
+        }
+
+    if _cal_get:
+        today = date.today()
+        entities_get: dict[str, str] = {}
+        parsed = _parse_date_from_text(text)
+        if parsed:
+            entities_get["start_date"], entities_get["end_date"] = parsed
+        elif "今天" in text:
+            entities_get["start_date"] = today.isoformat()
+            entities_get["end_date"] = today.isoformat()
+        elif "這週" in text or "本週" in text:
+            start = today - timedelta(days=today.weekday())
+            entities_get["start_date"] = start.isoformat()
+            entities_get["end_date"] = today.isoformat()
+        elif "上週" in text:
+            start = today - timedelta(days=today.weekday() + 7)
+            end = today - timedelta(days=today.weekday() + 1)
+            entities_get["start_date"] = start.isoformat()
+            entities_get["end_date"] = end.isoformat()
+        elif "這個月" in text or "本月" in text:
+            entities_get["start_date"] = today.replace(day=1).isoformat()
+            entities_get["end_date"] = today.isoformat()
+        if not entities_get.get("start_date"):
+            entities_get["start_date"] = today.isoformat()
+            entities_get["end_date"] = today.isoformat()
+        return {
+            "intents": ["get_calendar"],
+            "entities": entities_get,
+            "needs_profile": False,
+            "reasoning": "fast-path: get_calendar",
+        }
+
+    if len(text) < 20:
+        for zh_symptom in _SYMPTOM_ZH_TO_EN:
+            if zh_symptom in text:
+                return {
+                    "intents": ["search_symptom"],
+                    "entities": {"symptom": text},
+                    "needs_profile": False,
+                    "reasoning": f"fast-path: search_symptom({zh_symptom})",
+                }
+
+    _SYMPTOM_PATTERN = re.compile(
+        r"酸痛|疼痛|痛|痠|腫|癢|麻|暈|噁心|嘔吐|拉肚子|腹瀉|發炎|過敏|流鼻水"
+        r"|不舒服|沒力|無力|長痘|冒痘|脹氣|水腫|乾燥|脫皮|抽筋|心悸|胸悶"
+    )
+    if len(text) < 40 and _SYMPTOM_PATTERN.search(text):
+        symptom = re.sub(r"我(今天|最近|常常?|一直)?|怎麼辦|該怎麼辦|要怎麼|怎麼.*$|[，,？?。！!]", "", text).strip()
+        if symptom:
+            return {
+                "intents": ["search_symptom"],
+                "entities": {"symptom": symptom},
+                "needs_profile": False,
+                "reasoning": f"fast-path: search_symptom(pattern match)",
+            }
+
+    if re.search(r"^(論文|學術文獻|文獻|papers?)\s*$", text, re.IGNORECASE):
+        return {
+            "intents": ["browse_literature"],
+            "entities": {},
+            "needs_profile": False,
+            "reasoning": "fast-path: browse_literature",
+        }
+
+    return None
+
+
+_TOOL_REQUIRED_ARGS: dict[str, list[str]] = {
+    "search_food": ["food_name"],
+    "browse_taiwan_food": [],
+    "analyze_recipe": ["recipe_text"],
+    "get_literature_papers": [],
+    "search_symptom": ["symptom"],
+    "search_graphrag": ["query"],
+    "get_nutrient_ranking": ["nutrient_field"],
+    "get_user_profile": [],
+    "get_saved_recipes": [],
+    "get_calendar_entries": ["start_date", "end_date"],
+    "add_to_calendar": ["entry_date"],
+    "delete_calendar_entry": ["entry_date"],
+    "update_user_profile": [],
+    "synthesize_advice": [],
+}
+
+_TOOL_ARG_TYPES: dict[str, dict[str, type]] = {
+    "get_nutrient_ranking": {"top_n": int},
+}
+
+
+async def _tool_get_nutrient_ranking(args, token, user_msg):
+    field = _NUTRIENT_FIELD_ALIASES.get(args.get("nutrient_field", ""), args.get("nutrient_field", ""))
+    top_n = args.get("top_n", 20)
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/health/nutrients/{field}/top-foods",
+                           params={"limit": top_n})
+        if resp.status_code == 200:
+            return {"nutrient": field, "top_foods": resp.json()[:top_n]}
+        return {"error": f"Nutrient ranking failed: {resp.status_code} for '{field}'"}
+
+
+async def _tool_search_symptom(args, token, user_msg, progress_queue=None):
+    def _progress(sub_step, label, detail="", progress=None):
+        if progress_queue:
+            progress_queue.put_nowait({"name": "search_symptom", "sub_step": sub_step, "label": label, "detail": detail, "progress": progress})
+    keyword = args.get("symptom", "") or user_msg or ""
+    _progress("parse", "解析症狀關鍵字...", keyword, 0.1)
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.post(f"{_CONTROL_URL}/health/symptom-search",
+                            json={"keyword": keyword})
+        if resp.status_code != 200:
+            return {"symptom": keyword, "effects": [], "recommendations": []}
+        data = resp.json()
+        _progress("done", "症狀搜尋完成", "", 1.0)
+        return {
+            "symptom": data.get("matched_symptom", "") or keyword,
+            "parsed_symptoms": data.get("parsed_symptoms", []),
+            "vector_matches": data.get("vector_matches", []),
+            "effects": data.get("effects", []),
+            "recommendations": data.get("recommendations", []),
+        }
+
+
+async def _tool_search_graphrag(args, token, user_msg, progress_queue=None):
+    def _progress(sub_step, label, detail="", progress=None):
+        if progress_queue:
+            progress_queue.put_nowait({"name": "search_graphrag", "sub_step": sub_step, "label": label, "detail": detail, "progress": progress})
+    try:
+        _progress("query", "查詢學術知識圖譜...", (args.get("query", "") or "")[:50], 0.1)
+        async with httpx.AsyncClient(timeout=httpx.Timeout(360.0)) as c:
+            resp = await c.post(f"{_GRAPHRAG_URL}/query-sync",
+                                json={"query": args.get("query", ""), "methods": ["B"]})
+            if resp.status_code != 200:
+                body_text = resp.text[:200] if resp.text else ""
+                logger.warning("GraphRAG query-sync failed: {} {}", resp.status_code, body_text)
+                return {"error": f"GraphRAG failed: {resp.status_code}"}
+            raw = resp.json()
+            _progress("done", "學術文獻查詢完成", "", 1.0)
+            return {
+                "query": args.get("query", ""),
+                "answer": raw.get("answer", ""),
+                "evidence": raw.get("evidence", ""),
+                "sources": raw.get("sources", []),
+            }
+    except (httpx.ConnectError, httpx.ConnectTimeout):
+        return {"error": "GraphRAG 服務未啟動（port 8002）。請確認 graph/src/api_server.py 和 llama-server 都在運行。"}
+    except Exception as e:
+        logger.error("_tool_search_graphrag unexpected: {}", str(e))
+        return {"error": f"GraphRAG 查詢異常: {str(e)[:100]}"}
+
+
+# --- 食譜、行事曆、個人資料 ---
+
+async def _tool_get_saved_recipes(args, token, user_msg):
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/recipe/list", headers=_headers(token))
+        if resp.status_code != 200:
+            return {"error": f"Failed: {resp.status_code}"}
+        recipes = resp.json()
+        trimmed = []
+        for r in recipes:
+            nd = r.get("nutrition_detail") or r.get("nutrition") or {}
+            trimmed.append({
+                "id": r.get("id"),
+                "name": r.get("name"),
+                "servings": r.get("servings"),
+                "created_at": r.get("created_at"),
+                "ingredients": [
+                    ing.get("ingredient_name", "") for ing in (r.get("ingredients") or [])
+                ],
+                "nutrition": {
+                    "calories": nd.get("calories") or nd.get("cal_per_100g"),
+                    "protein": nd.get("protein") or nd.get("protein_per_100g"),
+                    "carbs": nd.get("carbs") or nd.get("carbon_per_100g"),
+                    "fat": nd.get("fat") or nd.get("fats_per_100g"),
+                    "fiber": nd.get("fiber") or nd.get("dietary_fiber_per_100g"),
+                },
+            })
+        return {"recipes": trimmed, "total": len(recipes)}
+
+
+async def _tool_delete_saved_recipe(args, token, user_msg):
+    target_name = (args.get("recipe_name") or "").strip()
+    target_date = (args.get("created_date") or "").strip()
+    target_id = args.get("recipe_id")
+    confirmed = args.get("confirmed", False)
+    recipe_ids = args.get("recipe_ids") or []
+
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/recipe/list", headers=_headers(token))
+        if resp.status_code != 200:
+            return {"error": f"無法讀取食譜列表: {resp.status_code}"}
+        recipes = resp.json()
+
+    if not recipes:
+        return {"error": "你目前沒有任何已儲存的食譜"}
+
+    def _filter_recipes(pool):
+        out = pool
+        if target_date:
+            out = [r for r in out if (r.get("created_at") or "")[:10] == target_date]
+        if target_name:
+            out = [r for r in out if target_name.lower() in (r.get("recipe_name") or "").lower()]
+        return out
+
+    if confirmed and recipe_ids:
+        id_set = {int(x) for x in recipe_ids}
+        to_delete = [r for r in recipes if r.get("id") in id_set]
+        if not to_delete:
+            to_delete = _filter_recipes(recipes)
+    elif target_id:
+        to_delete = [r for r in recipes if r.get("id") == int(target_id)]
+        confirmed = True
+    else:
+        to_delete = _filter_recipes(recipes)
+
+    if not to_delete:
+        filters = []
+        if target_date:
+            filters.append(f"日期={target_date}")
+        if target_name:
+            filters.append(f"名稱含「{target_name}」")
+        if target_id:
+            filters.append(f"ID={target_id}")
+        existing = [
+            f"{r.get('id')}: {(r.get('recipe_name') or '未命名')[:20]} ({(r.get('created_at') or '')[:10]})"
+            for r in recipes[:10]
+        ]
+        return {"error": f"找不到符合條件的食譜（{', '.join(filters)}）",
+                "existing_recipes": existing}
+
+    def _brief(r):
+        return {"id": r.get("id"),
+                "name": (r.get("recipe_name") or "未命名").split("\n")[0][:40],
+                "created_at": (r.get("created_at") or "")[:10]}
+
+    if len(to_delete) == 1:
+        confirmed = True
+
+    if not confirmed:
+        return {
+            "confirmed": False,
+            "matched_count": len(to_delete),
+            "matched_recipes": [_brief(r) for r in to_delete],
+            "pending_ids": [r.get("id") for r in to_delete],
+            "created_date": target_date or None,
+            "recipe_name": target_name or None,
+        }
+
+    deleted = []
+    failed = []
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        for r in to_delete:
+            rid = r.get("id")
+            resp = await c.delete(f"{_CONTROL_URL}/recipe/{rid}",
+                                  headers=_headers(token))
+            if resp.status_code in (200, 204):
+                deleted.append(_brief(r))
+            else:
+                failed.append({**_brief(r), "reason": f"HTTP {resp.status_code}"})
+
+    result = {
+        "confirmed": True,
+        "success": len(deleted) > 0,
+        "deleted_count": len(deleted),
+        "deleted_recipes": deleted,
+    }
+    if target_date:
+        result["created_date"] = target_date
+    if target_name:
+        result["recipe_name"] = target_name
+    if failed:
+        result["failed_count"] = len(failed)
+        result["failed_recipes"] = failed
+    return result
+
+
+async def _tool_get_calendar_entries(args, token, user_msg):
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/calendar/entries",
+                           params={"start_date": args.get("start_date", ""),
+                                   "end_date": args.get("end_date", "")},
+                           headers=_headers(token))
+        if resp.status_code != 200:
+            return {"error": f"Failed: {resp.status_code}"}
+
+        entries = resp.json()
+        result = {"entries": entries}
+
+        if not entries:
+            return result
+
+        # 聚合所有 entries 的 nutrition_detail
+        total: dict[str, float] = {}
+        for entry in entries:
+            nd = entry.get("nutrition_detail") or {}
+            if isinstance(nd, str):
+                try:
+                    nd = json.loads(nd)
+                except (json.JSONDecodeError, TypeError):
+                    nd = {}
+            for key, val in nd.items():
+                if isinstance(val, (int, float)) and val:
+                    total[key] = total.get(key, 0) + val
+
+        if total:
+            result["totals"] = {k: round(v, 2) for k, v in total.items()}
+
+        # DRI 缺口分析
+        try:
+            profile_resp = await c.get(f"{_CONTROL_URL}/profile",
+                                       headers=_headers(token))
+            if profile_resp.status_code == 200:
+                profile = profile_resp.json() or {}
+                age = profile.get("age")
+                sex = profile.get("gender") or profile.get("sex") or ""
+                if sex in ("男", "男性", "M", "m"):
+                    sex = "male"
+                elif sex in ("女", "女性", "F", "f"):
+                    sex = "female"
+                if not age or not sex:
+                    result["dri_analysis"] = {"missing_profile": True}
+                else:
+                    from app.services.dri_gap_service import (
+                        _get_dri_targets, _get_dri_upper_limits, FIELD_META,
+                    )
+                    dri_info = _get_dri_targets(age, sex)
+                    if dri_info:
+                        ul = _get_dri_upper_limits(age, sex) or {}
+                        rows = []
+                        for key, tgt in dri_info["targets"].items():
+                            meta = FIELD_META.get(key, {})
+                            actual = float(total.get(key) or 0)
+                            ratio_pct = round(actual / tgt * 100, 1) if tgt else 0
+                            deficit = round(tgt - actual, 2) if tgt else 0
+                            ul_val = ul.get(key)
+                            supported = meta.get("supported", True)
+                            if not supported and actual == 0:
+                                status = "no_data"
+                            elif ul_val and actual > ul_val:
+                                status = "excess"
+                            elif ul_val and actual >= ul_val * 0.85:
+                                status = "near_limit"
+                            elif ratio_pct >= 100:
+                                status = "sufficient"
+                            elif ratio_pct >= 80:
+                                status = "slightly_low"
+                            else:
+                                status = "deficient"
+                            rows.append({
+                                "nutrient_zh": meta.get("label_zh", key),
+                                "unit": meta.get("unit", ""),
+                                "target": tgt,
+                                "actual": round(actual, 2),
+                                "deficit": deficit,
+                                "ratio_pct": ratio_pct,
+                                "upper_limit": ul_val,
+                                "status": status,
+                            })
+                        result["dri_analysis"] = {
+                            "age_group": dri_info["label"],
+                            "sex": "男性" if sex.lower() == "male" else "女性",
+                            "rows": rows,
+                            "deficient_count": sum(1 for r in rows if r["status"] == "deficient"),
+                            "slightly_low_count": sum(1 for r in rows if r["status"] == "slightly_low"),
+                        }
+
+                        # 缺口推薦食物
+                        deficient_rows = [
+                            r for r in rows
+                            if r["status"] in ("deficient", "slightly_low") and r["deficit"] > 0
+                        ]
+                        food_recs: dict[str, dict] = {}
+                        for row in deficient_rows:
+                            nutrient_key = next(
+                                (k for k, v in dri_info["targets"].items()
+                                 if FIELD_META.get(k, {}).get("label_zh") == row["nutrient_zh"]),
+                                None,
+                            )
+                            if not nutrient_key:
+                                continue
+                            try:
+                                rr = await c.get(
+                                    f"{_CONTROL_URL}/health/nutrients/{nutrient_key}/top-foods",
+                                    params={"limit": 5},
+                                )
+                                if rr.status_code == 200:
+                                    foods = rr.json()[:5]
+                                else:
+                                    foods = []
+                            except Exception:
+                                foods = []
+                            food_recs[nutrient_key] = {
+                                "nutrient_zh": row["nutrient_zh"],
+                                "deficit": row["deficit"],
+                                "unit": row["unit"],
+                                "foods": foods,
+                            }
+                        if food_recs:
+                            result["food_recommendations"] = food_recs
+        except Exception as e:
+            logger.warning("DRI analysis in get_calendar failed: {}", e)
+
+        return result
+
+
+async def _tool_add_to_calendar(args, token, user_msg, structured_store=None):
+    entry_date = args.get("entry_date") or date.today().isoformat()
+    recipe_id = args.get("recipe_id")
+
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        if recipe_id:
+            resp = await c.post(f"{_CONTROL_URL}/calendar/entries",
+                                json={"entry_date": entry_date, "recipe_id": int(recipe_id)},
+                                headers=_headers(token))
+            if resp.status_code in (200, 201):
+                return {"success": True, "recipe_id": recipe_id,
+                        "entry_date": entry_date, "entry": resp.json()}
+            return {"error": f"加入行事曆失敗: {resp.status_code}"}
+
+        store = structured_store or {}
+        recipe_list = store.get("recipe_store", [])
+        recipe_entry = recipe_list[-1] if recipe_list else None
+
+        if not recipe_entry and args.get("recipe_name"):
+            food_name = args["recipe_name"]
+            search_resp = await c.get(f"{_CONTROL_URL}/food/search",
+                                       params={"q": food_name, "lang": "auto"},
+                                       headers=_headers(token))
+            if search_resp.status_code != 200:
+                return {"error": f"搜尋食物「{food_name}」失敗: {search_resp.status_code}"}
+            search_data = search_resp.json()
+            candidates = search_data.get("candidates", search_data) if isinstance(search_data, dict) else search_data
+            best = None
+            for item in candidates:
+                matches = item.get("candidates") or item.get("matches") or [item]
+                for m in matches:
+                    if m.get("id"):
+                        best = m
+                        break
+                if best:
+                    break
+            if not best:
+                return {"error": f"找不到「{food_name}」對應的食物資料，請確認名稱是否正確。"}
+
+            food_id = best["id"]
+            source = best.get("source", "taiwan_foods")
+            matched_name = best.get("name") or best.get("food_name", food_name)
+
+            calc_resp = await c.post(f"{_CONTROL_URL}/recipe/calculate-nutrition",
+                                      json={"ingredients": [{
+                                          "food_id": food_id,
+                                          "source": source,
+                                          "food_name": matched_name,
+                                          "amount": "",
+                                          "grams": 100,
+                                      }]},
+                                      headers=_headers(token))
+            total_nutrition = {}
+            if calc_resp.status_code == 200:
+                calc_data = calc_resp.json()
+                total_nutrition = calc_data.get("total", {})
+
+            save_payload = {
+                "recipe_name": food_name,
+                "recipe_content": f"{food_name} 100g",
+                "servings": 1,
+                "nutrition": total_nutrition,
+                "nutrition_detail": total_nutrition,
+                "ingredients": [{"name": matched_name, "amount": "100g"}],
+            }
+            save_resp = await c.post(f"{_CONTROL_URL}/recipe/save",
+                                      json=save_payload, headers=_headers(token))
+            if save_resp.status_code not in (200, 201):
+                return {"error": f"儲存食譜失敗: {save_resp.status_code}"}
+            saved = save_resp.json()
+            new_recipe_id = saved.get("id")
+            if not new_recipe_id:
+                return {"error": "儲存食譜成功但未返回 ID"}
+
+            cal_resp = await c.post(f"{_CONTROL_URL}/calendar/entries",
+                                     json={"entry_date": entry_date, "recipe_id": new_recipe_id},
+                                     headers=_headers(token))
+            if cal_resp.status_code not in (200, 201):
+                return {"error": f"食譜已儲存（ID:{new_recipe_id}），但加入行事曆失敗: {cal_resp.status_code}"}
+
+            return {
+                "success": True,
+                "recipe_saved": True,
+                "recipe_id": new_recipe_id,
+                "recipe_name": food_name,
+                "matched_food": matched_name,
+                "entry_date": entry_date,
+                "entry": cal_resp.json(),
+                "nutrition_preview": {
+                    "calories": total_nutrition.get("cal_per_100g"),
+                    "protein": total_nutrition.get("protein_per_100g"),
+                    "carbs": total_nutrition.get("carbon_per_100g"),
+                    "fat": total_nutrition.get("fats_per_100g"),
+                },
+            }
+
+        if not recipe_entry:
+            return {"error": "找不到最近分析的食譜。請先用「分析食譜」功能分析一份食譜，或告訴我要加什麼食物（例如「把蘋果加到明天的行事曆」）。"}
+
+        recipe_name = args.get("recipe_name") or recipe_entry.get("name") or "AI 顧問分析食譜"
+        recipe_text = recipe_entry.get("recipe_text", "")
+        total_nutrition = recipe_entry.get("total_nutrition", {})
+        ingredients = recipe_entry.get("ingredients", [])
+
+        save_payload = {
+            "recipe_name": recipe_name,
+            "recipe_content": recipe_text,
+            "servings": 1,
+            "nutrition": total_nutrition,
+            "nutrition_detail": total_nutrition,
+            "ingredients": [
+                {"name": i.get("name", ""), "amount": str(i.get("amount_g", i.get("amount", "")))}
+                for i in ingredients
+            ],
+        }
+        save_resp = await c.post(f"{_CONTROL_URL}/recipe/save",
+                                 json=save_payload, headers=_headers(token))
+        if save_resp.status_code not in (200, 201):
+            return {"error": f"儲存食譜失敗: {save_resp.status_code}"}
+        saved = save_resp.json()
+        new_recipe_id = saved.get("id")
+        if not new_recipe_id:
+            return {"error": "儲存食譜成功但未返回 ID"}
+
+        cal_resp = await c.post(f"{_CONTROL_URL}/calendar/entries",
+                                json={"entry_date": entry_date, "recipe_id": new_recipe_id},
+                                headers=_headers(token))
+        if cal_resp.status_code not in (200, 201):
+            return {"error": f"食譜已儲存（ID:{new_recipe_id}），但加入行事曆失敗: {cal_resp.status_code}"}
+
+        return {
+            "success": True,
+            "recipe_saved": True,
+            "recipe_id": new_recipe_id,
+            "recipe_name": recipe_name,
+            "entry_date": entry_date,
+            "entry": cal_resp.json(),
+        }
+
+
+async def _tool_delete_calendar_entry(args, token, user_msg):
+    entry_date = args.get("entry_date") or date.today().isoformat()
+    target_id = args.get("entry_id")
+    target_name = args.get("recipe_name", "").strip()
+
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        if target_id:
+            resp = await c.delete(f"{_CONTROL_URL}/calendar/entries/{target_id}",
+                                  headers=_headers(token))
+            if resp.status_code in (200, 204):
+                return {"success": True, "deleted_count": 1, "entry_date": entry_date,
+                        "detail": f"已刪除行事曆紀錄（ID: {target_id}）"}
+            return {"error": f"刪除失敗: {resp.status_code}"}
+
+        list_resp = await c.get(f"{_CONTROL_URL}/calendar/entries",
+                                params={"start_date": entry_date, "end_date": entry_date},
+                                headers=_headers(token))
+        if list_resp.status_code != 200:
+            return {"error": f"查詢行事曆失敗: {list_resp.status_code}"}
+
+        entries = list_resp.json()
+        if not entries:
+            return {"error": f"{entry_date} 沒有任何行事曆紀錄"}
+
+        if target_name:
+            matched = [e for e in entries
+                       if target_name.lower() in (e.get("recipe_name") or "").lower()]
+            if not matched:
+                names = [e.get("recipe_name", "（無名）") for e in entries]
+                return {"error": f"{entry_date} 找不到「{target_name}」，現有紀錄：{', '.join(names)}"}
+            to_delete = matched
+        else:
+            to_delete = entries
+
+        deleted = 0
+        failed = 0
+        for e in to_delete:
+            eid = e.get("id")
+            if not eid:
+                failed += 1
+                continue
+            del_resp = await c.delete(f"{_CONTROL_URL}/calendar/entries/{eid}",
+                                      headers=_headers(token))
+            if del_resp.status_code in (200, 204):
+                deleted += 1
+            else:
+                failed += 1
+
+        result = {
+            "success": deleted > 0,
+            "deleted_count": deleted,
+            "entry_date": entry_date,
+        }
+        if target_name:
+            result["recipe_name"] = target_name
+        if failed:
+            result["failed_count"] = failed
+        return result
+
+
+async def _tool_get_user_profile(args, token, user_msg):
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/profile", headers=_headers(token))
+        if resp.status_code == 200:
+            return resp.json()
+        return {"error": f"Failed: {resp.status_code}"}
+
+
+async def _tool_update_user_profile(args, token, user_msg):
+    payload = {k: v for k, v in args.items() if v is not None}
+    g = payload.get("gender", "")
+    if g in ("男", "男性", "M", "m"):
+        payload["gender"] = "male"
+    elif g in ("女", "女性", "F", "f"):
+        payload["gender"] = "female"
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.put(f"{_CONTROL_URL}/profile", json=payload, headers=_headers(token))
+        if resp.status_code == 200:
+            return {"success": True, "profile": resp.json()}
+        return {"error": f"Failed: {resp.status_code}"}
+
+
+async def _tool_search_food(args, token, user_msg):
+    food_name = args.get("food_name", "")
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/food/search",
+                           params={"q": food_name, "lang": "auto"})
+        if resp.status_code != 200:
+            return {"error": f"Food search failed: {resp.status_code}"}
+        data = resp.json()
+        candidates = data.get("candidates", data) if isinstance(data, dict) else data
+        results = []
+        for item in candidates:
+            matches = item.get("candidates") or item.get("matches") or [item]
+            for m in matches:
+                nut = m.get("nutrition") or {}
+                results.append({
+                    "id": m.get("id"),
+                    "name": m.get("name") or m.get("food_name", ""),
+                    "category": m.get("category", ""),
+                    "source": m.get("source", ""),
+                    "nutrition": {
+                        "calories": nut.get("calories") or m.get("cal_per_100g"),
+                        "protein": nut.get("protein") or m.get("protein_per_100g"),
+                        "carbs": nut.get("carbs") or m.get("carbon_per_100g"),
+                        "fat": nut.get("fat") or m.get("fats_per_100g"),
+                        "fiber": nut.get("fiber") or m.get("dietary_fiber_per_100g"),
+                    },
+                })
+        return {"food_name": food_name, "results": results}
+
+
+async def _tool_browse_taiwan_food(args, token, user_msg):
+    params = {}
+    if args.get("search"):
+        params["search"] = args["search"]
+    if args.get("category"):
+        params["category"] = args["category"]
+    async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+        resp = await c.get(f"{_CONTROL_URL}/food/taiwan/browse", params=params)
+        if resp.status_code != 200:
+            return {"error": f"Browse Taiwan foods failed: {resp.status_code}"}
+        data = resp.json()
+        foods = data.get("foods", [])
+        trimmed = []
+        for f in foods:
+            trimmed.append({
+                "id": f.get("id"),
+                "food_name": f.get("food_name", ""),
+                "category": f.get("category", ""),
+                "cal_per_100g": f.get("cal_per_100g"),
+                "protein_per_100g": f.get("protein_per_100g"),
+                "carbon_per_100g": f.get("carbon_per_100g"),
+                "fats_per_100g": f.get("fats_per_100g"),
+                "dietary_fiber_per_100g": f.get("dietary_fiber_per_100g"),
+            })
+        return {
+            "foods": trimmed,
+            "search": args.get("search", ""),
+            "category": args.get("category", ""),
+            "pagination": data.get("pagination", {}),
+        }
+
+
+_COOKING_STEP_RE = re.compile(
+    r'(分鐘|小時|大火|中火|小火|煎至|炒至|煮至|蒸至|燉至|烤至|燜至|'
+    r'備料|步驟|做法|乾煎|爆香|翻炒|收汁|入鍋|出鍋|開蓋|加蓋|預熱|冷卻|'
+    r'切成|切片|切塊|切碎|攪拌均勻|鋪在|倒入|沿鍋邊|翻面|靜置|撥到|煸炒)')
+
+
+def _extraction_confidence(extracted: list, original_text: str) -> float:
+    score = 1.0
+    if len(original_text) > 500:
+        score -= 0.2
+    if len(original_text) > 1500:
+        score -= 0.15
+    if _COOKING_STEP_RE.search(original_text):
+        score -= 0.15
+    if len(extracted) < 3:
+        score -= 0.3
+    if original_text.count("\n") > 15:
+        score -= 0.1
+    if "#" in original_text:
+        score -= 0.05
+    return max(score, 0.0)
+
+
+async def _run_full_recipe_analysis(ingredients, recipe_text, token, _progress=None):
+    """Phase 2：從已確認的食材清單開始，完成 lookup → LLM match → 營養計算 → DRI。"""
+    if _progress is None:
+        _progress = lambda *a, **kw: None
+    ingredient_names = [
+        (ing.get("name") or ing.get("ingredient", "")) for ing in ingredients
+    ]
+    try:
+        _progress("lookup", "搜尋食材資料庫...", f"比對 {len(ingredient_names)} 種食材", 0.3)
+        async with httpx.AsyncClient(timeout=httpx.Timeout(60.0)) as c:
+            resp2 = await c.post(f"{_CONTROL_URL}/recipe/lookup",
+                                 json={"ingredients": ingredient_names, "top_n": 20},
+                                 headers=_headers(token))
+            if resp2.status_code != 200:
+                return {"error": f"食材匹配失敗: {resp2.status_code}"}
+            lookup_data = resp2.json()
+
+            candidate_map = {}
+            for result in lookup_data.get("results", []):
+                ing_name = result.get("ingredient", "")
+                candidates = []
+                for m in result.get("matches", []):
+                    if m.get("tw"):
+                        tw = m["tw"]
+                        tw.setdefault("source", "taiwan_foods")
+                        candidates.append(tw)
+                    if m.get("en"):
+                        en = m["en"]
+                        en.setdefault("source", "foodb")
+                        candidates.append(en)
+                candidate_map[ing_name] = candidates
+
+            _progress("llm_match", "AI 智慧匹配食材...", f"{len(ingredient_names)} 種食材候選比對", 0.5)
+            from app.services import llm_match_service as _llm_ms
+            llm_items = []
+            for i, ing_name in enumerate(ingredient_names):
+                cands = candidate_map.get(ing_name, [])
+                orig = ingredients[i] if i < len(ingredients) else {}
+                llm_items.append({
+                    "ingredient": ing_name,
+                    "amount": str(orig.get("amount", "")) if orig.get("amount") else "",
+                    "candidates": [
+                        {"id": c.get("id"), "name": c.get("name") or c.get("food_name", ""),
+                         "source": c.get("source", ""), "category": c.get("category", ""),
+                         "score": c.get("score")}
+                        for c in cands
+                    ],
+                })
+            llm_selections = await _llm_ms.select_matches(llm_items, recipe_text[:500])
+
+            calc_items = []
+            match_reasons = {}
+            for i, sel in enumerate(llm_selections):
+                ing_name = sel["ingredient"]
+                best = sel.get("selected")
+                match_reasons[ing_name] = sel.get("reasoning", "")
+                if not best or not best.get("id"):
+                    continue
+                orig = ingredients[i] if i < len(ingredients) else {}
+                calc_items.append({
+                    "food_id": best.get("id", 0),
+                    "source": best.get("source", "taiwan_foods"),
+                    "food_name": best.get("name") or best.get("food_name", ""),
+                    "amount": str(orig.get("amount", "")) if orig.get("amount") else "",
+                    "grams": orig.get("grams"),
+                })
+            if not calc_items:
+                return {
+                    "ingredients": [{"name": n, "matched": False} for n in ingredient_names],
+                    "total": {}, "item_count": 0,
+                }
+
+            _progress("calculate", "計算營養成分...", f"計算 {len(calc_items)} 項食材", 0.7)
+            resp3 = await c.post(f"{_CONTROL_URL}/recipe/calculate-nutrition",
+                                 json={"ingredients": calc_items}, headers=_headers(token))
+            if resp3.status_code != 200:
+                return {"error": f"營養計算失敗: {resp3.status_code}"}
+            nutrition_data = resp3.json()
+            items = nutrition_data.get("items", [])
+            total = nutrition_data.get("total", {})
+
+            ingredient_summary = []
+            for idx, item in enumerate(items):
+                entry = {
+                    "name": item.get("food_name") or item.get("input_food_name", ""),
+                    "amount": item.get("input_amount") or item.get("amount", ""),
+                    "grams": item.get("grams"),
+                    "nutrition": item.get("nutrition", {}),
+                }
+                if idx < len(calc_items):
+                    entry["food_id"] = calc_items[idx].get("food_id")
+                    entry["source"] = calc_items[idx].get("source", "taiwan_foods")
+                ingredient_summary.append(entry)
+
+            _progress("dri", "DRI 缺口分析...", "", 0.85)
+            dri_analysis = None
+            try:
+                profile_resp = await c.get(f"{_CONTROL_URL}/profile", headers=_headers(token))
+                if profile_resp.status_code == 200:
+                    profile = profile_resp.json() or {}
+                    age = profile.get("age")
+                    sex = profile.get("gender") or profile.get("sex") or ""
+                    if sex in ("男", "男性", "M", "m"):
+                        sex = "male"
+                    elif sex in ("女", "女性", "F", "f"):
+                        sex = "female"
+                    if not age or not sex:
+                        dri_analysis = {"missing_profile": True}
+                    elif age and sex:
+                        from app.services.dri_gap_service import (
+                            _get_dri_targets, _get_dri_upper_limits, FIELD_META,
+                        )
+                        dri_info = _get_dri_targets(age, sex)
+                        if dri_info:
+                            ul = _get_dri_upper_limits(age, sex) or {}
+                            rows = []
+                            for key, tgt in dri_info["targets"].items():
+                                meta = FIELD_META.get(key, {})
+                                actual = float(total.get(key) or 0)
+                                ratio_pct = round(actual / tgt * 100, 1) if tgt else 0
+                                deficit = round(tgt - actual, 2) if tgt else 0
+                                ul_val = ul.get(key)
+                                supported = meta.get("supported", True)
+                                if not supported and actual == 0:
+                                    status = "no_data"
+                                elif ul_val and actual > ul_val:
+                                    status = "excess"
+                                elif ul_val and actual >= ul_val * 0.85:
+                                    status = "near_limit"
+                                elif ratio_pct >= 100:
+                                    status = "sufficient"
+                                elif ratio_pct >= 80:
+                                    status = "slightly_low"
+                                else:
+                                    status = "deficient"
+                                rows.append({
+                                    "nutrient_zh": meta.get("label_zh", key),
+                                    "unit": meta.get("unit", ""),
+                                    "target": tgt,
+                                    "actual": round(actual, 2),
+                                    "deficit": deficit,
+                                    "ratio_pct": ratio_pct,
+                                    "upper_limit": ul_val,
+                                    "status": status,
+                                })
+                            dri_analysis = {
+                                "age_group": dri_info["label"],
+                                "sex": "男性" if sex.lower() == "male" else "女性",
+                                "rows": rows,
+                                "deficient_count": sum(1 for r in rows if r["status"] == "deficient"),
+                                "slightly_low_count": sum(1 for r in rows if r["status"] == "slightly_low"),
+                            }
+            except Exception as e:
+                logger.warning("DRI analysis in analyze_recipe failed: {}", e)
+
+            _progress("done", "食譜分析完成", f"共 {len(items)} 項食材", 1.0)
+            result = {
+                "recipe_text": recipe_text,
+                "ingredients": ingredient_summary,
+                "total": total,
+                "item_count": len(items),
+            }
+            if match_reasons:
+                result["match_reasons"] = match_reasons
+            if dri_analysis:
+                result["dri_analysis"] = dri_analysis
+            return result
+    except httpx.ConnectError:
+        return {"error": "後端服務未啟動"}
+    except Exception as e:
+        logger.error("_run_full_recipe_analysis failed: {}", str(e))
+        return {"error": f"食譜分析失敗: {str(e)}"}
+
+
+async def _tool_analyze_recipe(args, token, user_msg, progress_queue=None):
+    def _progress(sub_step, label, detail="", progress=None):
+        if progress_queue:
+            progress_queue.put_nowait({"name": "analyze_recipe", "sub_step": sub_step, "label": label, "detail": detail, "progress": progress})
+    confirmed = args.get("confirmed_ingredients")
+    recipe_text = args.get("recipe_text") or user_msg or ""
+    if not recipe_text.strip() and not confirmed:
+        return {"error": "未提供食譜內容"}
+
+    # Phase 2: 使用者已確認食材 → 直接分析
+    if confirmed:
+        logger.info("analyze_recipe phase2: {} confirmed ingredients", len(confirmed))
+        return await _run_full_recipe_analysis(confirmed, recipe_text, token, _progress)
+
+    # Phase 1: 提取食材 → 依信心分數決定是否需要確認
+    import re as _re
+    recipe_text = _re.sub(r"[、，,;；+＋]\s*", "\n", recipe_text)
+    recipe_text = _re.sub(r"(?<=[一-鿿])(?:跟|還有|以及)(?=[一-鿿])", "\n", recipe_text)
+    recipe_text = _re.sub(r"(?:早[上餐]|中[午餐]|晚[上餐]|下午|宵夜)(?:吃了?|吃的是?)\s*", "", recipe_text)
+    try:
+        _progress("extract", "提取食材中...", f"分析食譜文字（{len(recipe_text)} 字）", 0.1)
+        async with httpx.AsyncClient(timeout=httpx.Timeout(60.0)) as c:
+            resp1 = await c.post(f"{_CONTROL_URL}/recipe/extract-with-amounts",
+                                 json={"recipe_text": recipe_text}, headers=_headers(token))
+            if resp1.status_code != 200:
+                return {"error": f"食材提取失敗: {resp1.status_code}"}
+            extract_data = resp1.json()
+            ingredients = extract_data.get("ingredients", [])
+            if not ingredients:
+                return {"error": "未能從食譜中提取到任何食材"}
+
+        _progress("extract_done", "食材提取完成", f"提取到 {len(ingredients)} 種食材", 0.2)
+        confidence = _extraction_confidence(ingredients, recipe_text)
+        logger.info("analyze_recipe phase1: {} ingredients, confidence={:.2f}",
+                     len(ingredients), confidence)
+
+        # 高信心：直接分析（短文、結構清楚的食譜）
+        if confidence > 0.8:
+            return await _run_full_recipe_analysis(ingredients, recipe_text, token, _progress)
+
+        # 低信心：回傳確認清單，等使用者確認
+        corrections = extract_data.get("corrections", [])
+        return {
+            "phase": "confirm_ingredients",
+            "extracted_ingredients": ingredients,
+            "corrections": corrections,
+            "confidence": round(confidence, 2),
+            "recipe_text": recipe_text,
+            "gemma_available": extract_data.get("gemma_available", False),
+        }
+    except httpx.ConnectError:
+        return {"error": "後端服務未啟動"}
+    except Exception as e:
+        logger.error("analyze_recipe phase1 failed: {}", str(e))
+        return {"error": f"食譜分析失敗: {str(e)}"}
+
+
+async def _tool_get_literature_papers(args, token, user_msg):
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(30.0)) as c:
+            resp = await c.get(f"{_GRAPHRAG_URL}/papers/enriched")
+            if resp.status_code != 200:
+                return {"error": f"GraphRAG papers API failed: {resp.status_code}"}
+            all_papers = resp.json()
+            search = (args.get("search") or "").lower().strip()
+            papers = []
+            for doc_id, info in all_papers.items():
+                kc_raw = info.get("key_contributions", "")
+                kc_text = " ".join(kc_raw) if isinstance(kc_raw, list) else str(kc_raw or "")
+                if search:
+                    searchable = " ".join([
+                        info.get("title", ""), info.get("topic", ""),
+                        info.get("journal", ""), kc_text,
+                    ]).lower()
+                    if search not in searchable:
+                        continue
+                if isinstance(kc_raw, list):
+                    kc_out = kc_raw
+                else:
+                    kc_out = str(kc_raw or "")
+                papers.append({
+                    "doc_id": doc_id,
+                    "title": info.get("title", ""),
+                    "journal": info.get("journal", ""),
+                    "year": info.get("year"),
+                    "impact_factor": info.get("impact_factor"),
+                    "sjr_quartile": info.get("sjr_quartile", ""),
+                    "study_type": info.get("study_type", ""),
+                    "citation_count": info.get("citation_count"),
+                    "key_contributions": kc_out,
+                    "doi": info.get("doi", ""),
+                    "topic": info.get("topic", ""),
+                })
+            papers.sort(key=lambda p: (-(p.get("year") or 0), -(p.get("impact_factor") or 0)))
+            return {"papers": papers, "total": len(papers), "search": search}
+    except httpx.ConnectError:
+        return {"error": "GraphRAG 服務未啟動（port 8002）"}
+    except Exception as e:
+        logger.error("get_literature_papers failed: {}", str(e))
+        return {"error": f"論文查詢失敗: {str(e)}"}
+
+
+async def _tool_synthesize_advice(args, token, user_msg, structured_store=None):
+    store = structured_store or {}
+    recipe_list = store.get("recipe_store", [])
+    if not recipe_list:
+        return {"error": "目前沒有已分析的食譜資料。請先分析一份食譜再詢問營養建議。"}
+
+    latest = recipe_list[-1]
+    total_nutrition = latest.get("total_nutrition", {})
+    ingredients = latest.get("ingredients", [])
+    recipe_name = latest.get("name", "未命名食譜")
+    dri_analysis = latest.get("dri_analysis")
+
+    if not dri_analysis and total_nutrition:
+        try:
+            async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+                profile_resp = await c.get(f"{_CONTROL_URL}/profile",
+                                           headers=_headers(token))
+                if profile_resp.status_code == 200:
+                    profile = profile_resp.json() or {}
+                    age = profile.get("age")
+                    sex = profile.get("gender") or profile.get("sex") or ""
+                    if sex in ("男", "男性", "M", "m"):
+                        sex = "male"
+                    elif sex in ("女", "女性", "F", "f"):
+                        sex = "female"
+                    if age and sex:
+                        from app.services.dri_gap_service import (
+                            _get_dri_targets, _get_dri_upper_limits, FIELD_META,
+                        )
+                        dri_info = _get_dri_targets(age, sex)
+                        if dri_info:
+                            ul = _get_dri_upper_limits(age, sex) or {}
+                            rows = []
+                            for key, tgt in dri_info["targets"].items():
+                                meta = FIELD_META.get(key, {})
+                                actual = float(total_nutrition.get(key) or 0)
+                                ratio_pct = round(actual / tgt * 100, 1) if tgt else 0
+                                deficit = round(tgt - actual, 2) if tgt else 0
+                                ul_val = ul.get(key)
+                                supported = meta.get("supported", True)
+                                if not supported and actual == 0:
+                                    status = "no_data"
+                                elif ul_val and actual > ul_val:
+                                    status = "excess"
+                                elif ratio_pct >= 100:
+                                    status = "sufficient"
+                                elif ratio_pct >= 80:
+                                    status = "slightly_low"
+                                else:
+                                    status = "deficient"
+                                rows.append({
+                                    "nutrient_zh": meta.get("label_zh", key),
+                                    "unit": meta.get("unit", ""),
+                                    "target": tgt, "actual": round(actual, 2),
+                                    "deficit": deficit, "ratio_pct": ratio_pct,
+                                    "upper_limit": ul_val, "status": status,
+                                })
+                            dri_analysis = {
+                                "age_group": dri_info["label"],
+                                "sex": "男性" if sex.lower() == "male" else "女性",
+                                "rows": rows,
+                                "deficient_count": sum(1 for r in rows if r["status"] == "deficient"),
+                                "slightly_low_count": sum(1 for r in rows if r["status"] == "slightly_low"),
+                            }
+        except Exception as e:
+            logger.warning("synthesize_advice DRI computation failed: {}", e)
+
+    result: dict[str, Any] = {
+        "recipe_name": recipe_name,
+        "recipe_text": latest.get("recipe_text", ""),
+        "total_nutrition": total_nutrition,
+        "ingredients": ingredients,
+        "item_count": latest.get("item_count", 0),
+        "source": "structured_store",
+        "advice_type": "nutritional_gap_advice",
+    }
+    if dri_analysis:
+        result["dri_analysis"] = dri_analysis
+        deficient = [r for r in dri_analysis.get("rows", []) if r["status"] == "deficient"]
+        result["top_deficiencies"] = sorted(deficient, key=lambda r: r["ratio_pct"])[:10]
+        result["slightly_low"] = [r for r in dri_analysis.get("rows", []) if r["status"] == "slightly_low"]
+    else:
+        result["dri_analysis"] = None
+        result["warning"] = "無法計算 DRI 缺口（可能缺少個人資料中的年齡或性別）"
+    return result
+
+
+TOOL_LABELS: dict[str, str] = {
+    "search_symptom": "搜尋症狀相關營養素",
+    "search_graphrag": "查詢學術文獻",
+    "get_nutrient_ranking": "查詢營養素排名",
+    "search_food": "搜尋食物資訊",
+    "browse_taiwan_food": "瀏覽台灣食品資料庫",
+    "analyze_recipe": "分析食譜",
+    "get_literature_papers": "查詢學術論文",
+    "get_saved_recipes": "查詢已儲存食譜",
+    "get_calendar_entries": "查詢行事曆",
+    "add_to_calendar": "加入行事曆",
+    "delete_calendar_entry": "刪除行事曆紀錄",
+    "get_user_profile": "讀取個人資料",
+    "update_user_profile": "更新個人資料",
+    "synthesize_advice": "綜合營養建議",
+}
+
+_TOOL_DISPATCH = {
+    "get_nutrient_ranking": _tool_get_nutrient_ranking,
+    "search_food": _tool_search_food,
+    "browse_taiwan_food": _tool_browse_taiwan_food,
+    "analyze_recipe": _tool_analyze_recipe,
+    "get_literature_papers": _tool_get_literature_papers,
+    "search_symptom": _tool_search_symptom,
+    "search_graphrag": _tool_search_graphrag,
+    "get_saved_recipes": _tool_get_saved_recipes,
+    "delete_saved_recipe": _tool_delete_saved_recipe,
+    "get_calendar_entries": _tool_get_calendar_entries,
+    "add_to_calendar": _tool_add_to_calendar,
+    "delete_calendar_entry": _tool_delete_calendar_entry,
+    "get_user_profile": _tool_get_user_profile,
+    "update_user_profile": _tool_update_user_profile,
+    "synthesize_advice": _tool_synthesize_advice,
+}
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Dual Memory — Narrative Summary + Structured Extraction
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+async def _summarize_narrative(old_narrative: str, user_msg: str,
+                                ai_reply: str, tools_used: list[str],
+                                tool_results: list[dict]) -> str:
+    tool_summary = "; ".join(
+        _summarize_result(tr["tool"], tr["result"]) for tr in tool_results
+    ) if tool_results else "（無工具呼叫）"
+    prompt = PROMPT_NARRATIVE_SUMMARY.format(
+        old_narrative=old_narrative or "（新對話，尚無摘要）",
+        user_msg=user_msg,
+        ai_reply=ai_reply[:500],
+        tools_used=", ".join(tools_used) if tools_used else "（無）",
+        tool_summary=tool_summary,
+    )
+    try:
+        content = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.2,
+        )
+        return content.strip()
+    except Exception as e:
+        logger.error("Narrative summary failed: {}", str(e))
+        return old_narrative
+
+
+async def _save_memory_leaf(user_id: int, session_id: str, summary: str,
+                            tools_used: list[str]) -> None:
+    """儲存單輪 leaf 節點到記憶樹，每 10 輪觸發 session 合併。"""
+    try:
+        token_count = len(summary) // 3
+        async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+            resp = await c.post(f"{settings.backend_url}/memory/nodes", json={
+                "user_id": user_id,
+                "session_id": session_id or None,
+                "level": 0,
+                "content": summary,
+                "metadata": {"tools": tools_used},
+                "token_count": token_count,
+            })
+            if resp.status_code != 201:
+                logger.error("memory_leaf save failed: {}", resp.text[:200])
+                return
+
+            node_id = resp.json().get("id")
+            if node_id:
+                embedding = await _embed_text(summary)
+                if embedding:
+                    await c.post(f"{settings.backend_url}/memory/embedding", json={
+                        "node_id": node_id, "embedding": embedding,
+                    })
+
+            if session_id:
+                count_resp = await c.get(
+                    f"{settings.backend_url}/memory/nodes",
+                    params={"user_id": user_id, "level": 0, "limit": 50},
+                )
+                if count_resp.status_code == 200:
+                    leaves = count_resp.json()
+                    session_leaves = [n for n in leaves if n.get("session_id") == session_id and n.get("parent_id") is None]
+                    if len(session_leaves) >= 10:
+                        asyncio.create_task(_consolidate_session_memory(user_id, session_id, session_leaves, c))
+    except Exception as e:
+        logger.error("memory_leaf error: {}", str(e))
+
+
+async def _consolidate_session_memory(user_id: int, session_id: str,
+                                       leaves: list[dict], client=None) -> None:
+    """合併 session 內未歸類的 leaf 節點為一個 session 摘要。"""
+    try:
+        combined = "\n".join(n["content"] for n in leaves)
+        prompt = f"以下是同一對話中多輪摘要，請合併為一段精簡的會話摘要（3-5句）：\n\n{combined}"
+        session_summary = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.2,
+        )
+        session_summary = session_summary.strip()
+        token_count = len(session_summary) // 3
+
+        async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+            parent_resp = await c.post(f"{settings.backend_url}/memory/nodes", json={
+                "user_id": user_id,
+                "session_id": session_id,
+                "level": 1,
+                "content": session_summary,
+                "token_count": token_count,
+            })
+            if parent_resp.status_code == 201:
+                parent_id = parent_resp.json()["id"]
+                child_ids = [n["id"] for n in leaves]
+                await c.post(f"{settings.backend_url}/memory/consolidate", json={
+                    "parent_id": parent_id,
+                    "summary": session_summary,
+                    "token_count": token_count,
+                    "child_ids": child_ids,
+                })
+                logger.info("session_memory_consolidated leaves={} parent={}", len(child_ids), parent_id)
+    except Exception as e:
+        logger.error("consolidate_session error: {}", str(e))
+
+
+async def _get_memory_tree_context(user_id: int, max_tokens: int = 500,
+                                    query: str = "") -> str:
+    """從記憶樹取得 token-budget-aware 上下文，可選語意搜尋增強。"""
+    try:
+        parts = []
+        async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+            resp = await c.get(f"{settings.backend_url}/memory/context",
+                               params={"user_id": user_id, "max_tokens": max_tokens})
+            if resp.status_code == 200:
+                ctx = resp.json().get("context", "")
+                if ctx:
+                    parts.append(ctx)
+
+            if query:
+                query_emb = await _embed_text(query)
+                if query_emb:
+                    search_resp = await c.post(f"{settings.backend_url}/memory/search", json={
+                        "user_id": user_id,
+                        "query_embedding": query_emb,
+                        "level_min": 0, "level_max": 3, "limit": 3,
+                    })
+                    if search_resp.status_code == 200:
+                        results = search_resp.json()
+                        for r in results:
+                            content = r.get("content", "")
+                            if content and content not in parts:
+                                parts.append(f"[相關記憶] {content}")
+
+        return "\n---\n".join(parts)
+    except Exception as e:
+        logger.error("memory_tree_context error: {}", str(e))
+    return ""
+
+
+def _convert_json_patch_to_dict(items: list) -> dict:
+    result: dict = {}
+    for item in items:
+        if not isinstance(item, dict) or "value" not in item:
+            continue
+        path = item.get("path", "").strip("/")
+        if not path:
+            continue
+        parts = path.split("/")
+        if len(parts) == 2:
+            result.setdefault(parts[0], {})[parts[1]] = item["value"]
+        elif len(parts) == 1:
+            result[parts[0]] = item["value"]
+    return result
+
+
+async def _extract_structured_data(user_msg: str, tool_results: list[dict],
+                                    reply_summary: str) -> dict:
+    trimmed = _trim_tool_results_for_analysis(tool_results) if tool_results else []
+    tool_json = json.dumps(trimmed, ensure_ascii=False, default=str) if trimmed else "[]"
+    prompt = PROMPT_STRUCTURED_EXTRACT.format(
+        user_msg=user_msg,
+        tool_results_json=tool_json,
+        reply_summary=reply_summary[:500],
+    )
+    try:
+        text = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.1,
+            response_format={"type": "json_object"},
+        )
+        parsed = _parse_llm_json(text)
+        if isinstance(parsed, dict):
+            return parsed
+        if isinstance(parsed, list):
+            converted = _convert_json_patch_to_dict(parsed)
+            if converted:
+                logger.info("Structured extract: converted array to dict")
+                return converted
+        logger.warning("Structured extract: unexpected format, raw={}", text[:200])
+        return {}
+    except Exception as e:
+        logger.error("Structured extraction failed: {}", str(e))
+        return {}
+
+
+def _merge_structured_store(store: dict, patch: dict) -> dict:
+    if not patch:
+        return store
+    now_iso = datetime.now().isoformat()
+
+    if "user_facts" in patch:
+        uf = store.setdefault("user_facts", {})
+        for k, v in patch["user_facts"].items():
+            if v is not None:
+                uf[k] = v
+
+    if "recipe_entry" in patch:
+        entry = patch["recipe_entry"]
+        entry.setdefault("timestamp", now_iso)
+        entry.setdefault("source", "advisor_analyze")
+        store.setdefault("recipe_store", []).append(entry)
+
+    if "food_context" in patch:
+        fc = store.setdefault("food_context", {})
+        fc_patch = patch["food_context"]
+        if "foods_searched" in fc_patch:
+            arr = fc.setdefault("foods_searched", [])
+            for item in fc_patch["foods_searched"]:
+                item.setdefault("timestamp", now_iso)
+                arr.append(item)
+            fc["foods_searched"] = arr[-30:]
+        if "foods_mentioned_today" in fc_patch:
+            arr = fc.setdefault("foods_mentioned_today", [])
+            for item in fc_patch["foods_mentioned_today"]:
+                item.setdefault("timestamp", now_iso)
+                arr.append(item)
+        if "categories_browsed" in fc_patch:
+            existing = set(fc.get("categories_browsed", []))
+            existing.update(fc_patch["categories_browsed"])
+            fc["categories_browsed"] = list(existing)
+
+    if "symptom_entry" in patch:
+        entry = patch["symptom_entry"]
+        entry.setdefault("timestamp", now_iso)
+        arr = store.setdefault("symptom_history", [])
+        arr.append(entry)
+        store["symptom_history"] = arr[-20:]
+
+    if "ranking_entry" in patch:
+        entry = patch["ranking_entry"]
+        entry.setdefault("timestamp", now_iso)
+        arr = store.setdefault("nutrient_ranking_history", [])
+        arr.append(entry)
+        store["nutrient_ranking_history"] = arr[-20:]
+
+    if "calendar_update" in patch:
+        cc = store.setdefault("calendar_context", {})
+        arr = cc.setdefault("recent_date_queries", [])
+        arr.append(patch["calendar_update"])
+        cc["recent_date_queries"] = arr[-10:]
+
+    if "academic_entry" in patch:
+        entry = patch["academic_entry"]
+        entry.setdefault("timestamp", now_iso)
+        ac = store.setdefault("academic_context", {})
+        arr = ac.setdefault("queries", [])
+        arr.append(entry)
+        ac["queries"] = arr[-20:]
+
+    if "papers_referenced" in patch:
+        ac = store.setdefault("academic_context", {})
+        existing = ac.setdefault("papers_referenced", [])
+        seen_ids = {p.get("doc_id") for p in existing}
+        for p in patch["papers_referenced"]:
+            if p.get("doc_id") not in seen_ids:
+                existing.append(p)
+                seen_ids.add(p.get("doc_id"))
+
+    if "dri_awareness" in patch:
+        store["dri_awareness"] = {**store.get("dri_awareness", {}), **patch["dri_awareness"]}
+
+    if "action_entry" in patch:
+        entry = patch["action_entry"]
+        entry.setdefault("timestamp", now_iso)
+        arr = store.setdefault("recent_actions", [])
+        arr.append(entry)
+        store["recent_actions"] = arr[-30:]
+
+    if "saved_recipes_summary" in patch:
+        store["saved_recipes_summary"] = patch["saved_recipes_summary"]
+
+    return store
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Workflow State Machine — Flow Controller
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# -- LLM-based intent classification (replaces regex heuristics) --
+
+PROMPT_CLASSIFY_REPLY = """AI 正在執行「{intent_zh}」，等使用者提供「{missing_desc}」。
+
+使用者說：「{message}」
+
+這句話是在回答上述問題嗎？
+A = 是（提供了所需的資訊）
+B = 否（在說別的事、問新問題、放棄、或換話題）
+
+只輸出 A 或 B："""
+
+PROMPT_CLASSIFY_RESUME = """使用者之前有未完成的任務：「{intent_zh}」（還需要：{missing_desc}）。
+
+使用者現在說：「{message}」
+
+這句話是想回到那個未完成的任務嗎？（包含：明確提及、提供了之前缺少的資訊、或用「回到剛才」「繼續」等表達）
+A = 是
+B = 否（在說新的事情）
+
+只輸出 A 或 B："""
+
+_INTENT_ZH_NAMES: dict[str, str] = {
+    "search_symptom": "搜尋症狀相關營養素",
+    "search_food": "查詢食物營養成分",
+    "nutrient_ranking": "營養素含量排名",
+    "get_calendar": "查看行事曆",
+    "add_to_calendar": "加入行事曆",
+    "delete_calendar": "刪除行事曆紀錄",
+    "delete_recipe": "刪除已存食譜",
+    "analyze_recipe": "分析食譜營養",
+    "update_profile": "更新個人資料",
+    "search_graphrag": "搜尋學術文獻",
+    "browse_food_database": "瀏覽食品資料庫",
+    "browse_literature": "瀏覽論文",
+    "get_profile": "查看個人資料",
+    "get_recipes": "查看已存食譜",
+    "synthesize_advice": "綜合營養建議",
+    "general_chat": "一般對話",
+}
+
+_PARAM_ZH_NAMES: dict[str, str] = {
+    "symptom": "症狀描述", "food_name": "食物名稱",
+    "nutrient_field": "營養素名稱", "recipe_text": "食譜內容",
+    "start_date": "開始日期", "end_date": "結束日期",
+    "entry_date": "日期", "query": "查詢主題",
+    "search": "搜尋關鍵字", "category": "食物分類",
+    "age": "年齡", "gender": "性別",
+    "activity_level": "活動量", "height_cm": "身高",
+    "weight_kg": "體重",
+}
+
+
+def _describe_missing_params(intent: str, missing: list[str]) -> str:
+    return "、".join(_PARAM_ZH_NAMES.get(p, p) for p in missing) or "（無）"
+
+
+# -- Legacy regex (kept as fallback for LLM failure) --
+
+_QUESTION_RE = re.compile(
+    r"[？?]$|多少|是什麼|有什麼|怎麼|如何|能不能|可以嗎|含量|成分|好不好"
+    r"|什麼|哪些|哪個|哪種|嗎[？?]?$|呢[？?]?$"
+)
+_RETURN_RE = re.compile(
+    r"回到剛才|繼續剛才|接著剛才|回到之前|繼續之前|剛才的|上次的|回去"
+    r"|那個食譜|那食譜|那份食譜|剛剛那個|剛剛說的|剛才說的"
+    r"|對了.*還沒|那個.*還沒|繼續.*分析|接著.*分析|先不管.*繼續"
+    r"|那.*行事曆|那個查詢|剛才要"
+)
+_NEW_INTENT_RE = re.compile(
+    r"幫我記錄|吃了|幫我查|幫我看|幫我搜|幫我刪|幫我改|幫我加"
+    r"|(?:早餐|午餐|晚餐|宵夜|今天|昨天).*(?:吃了|吃過|吃\s)"
+    r"|加到.*行事曆|加入.*行事曆|刪除.*行事曆|查.*行事曆"
+    r"|幫我分析|幫我排|幫我找|幫我算"
+)
+
+
+def _detect_interruption_regex(message: str, ws: WorkflowState) -> bool:
+    text = message.strip()
+    if text in ("好", "好啊", "可以", "對", "嗯", "是", "ok", "OK", "好的"):
+        return False
+    if _RETURN_RE.search(text):
+        return False
+    for param_name in ws.missing:
+        if param_name == "age" and re.search(r"\d{1,3}\s*歲?", text):
+            return False
+        if param_name == "gender" and re.search(r"男|女|male|female", text, re.IGNORECASE):
+            return False
+        if param_name == "activity_level" and re.search(r"高|中|低|運動|久坐", text):
+            return False
+        if param_name in ("food_name", "symptom", "query", "nutrient_field"):
+            if len(text) < 30 and not _QUESTION_RE.search(text) and not _NEW_INTENT_RE.search(text):
+                return False
+        if param_name in ("start_date", "end_date") and re.search(r"這週|上週|本週|本月|今天|\d{4}", text):
+            return False
+        if param_name == "recipe_text":
+            if _QUESTION_RE.search(text):
+                return True
+            if re.search(r"\d+\s*(g|ml|克|毫升|顆|杯|匙)", text):
+                return False
+            if len(text) > 10 and not _QUESTION_RE.search(text):
+                return False
+        if param_name in ("search", "category") and len(text) < 30:
+            if not _QUESTION_RE.search(text) and not _NEW_INTENT_RE.search(text):
+                return False
+    abandon = re.search(r"算了|跳過|不要了|沒關係|忘了|取消", text)
+    if abandon:
+        return True
+    if _NEW_INTENT_RE.search(text):
+        return True
+    if _QUESTION_RE.search(text):
+        return True
+    return False
+
+
+async def _detect_interruption_smart(message: str, ws: WorkflowState) -> str:
+    """Tri-state interruption detection. Returns 'answer' | 'interrupt' | 'ambiguous'."""
+    text = message.strip()
+    if text in ("好", "好啊", "可以", "對", "嗯", "是", "ok", "OK", "好的"):
+        return "answer"
+
+    intent_zh = _INTENT_ZH_NAMES.get(ws.active_intent, ws.active_intent)
+    missing_desc = _describe_missing_params(ws.active_intent, ws.missing)
+    prompt = PROMPT_CLASSIFY_REPLY.format(
+        intent_zh=intent_zh, missing_desc=missing_desc, message=text,
+    )
+    try:
+        result = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.0,
+        )
+        letter = result.strip().upper()[:1]
+        if letter in ("A", "B"):
+            llm_interrupt = letter == "B"
+            regex_interrupt = _detect_interruption_regex(message, ws)
+            if llm_interrupt != regex_interrupt:
+                logger.info("interruption_divergence LLM={} regex={} msg='{}' → ambiguous",
+                            "interrupt" if llm_interrupt else "answer",
+                            "interrupt" if regex_interrupt else "answer",
+                            text[:50])
+                return "ambiguous"
+            return "interrupt" if llm_interrupt else "answer"
+    except Exception as e:
+        logger.warning("classify_reply LLM failed, regex fallback: {}", str(e))
+    return "interrupt" if _detect_interruption_regex(message, ws) else "answer"
+
+
+async def _detect_resume_smart(
+    message: str, ws: WorkflowState,
+) -> tuple[bool, bool]:
+    """LLM-based resume detection. Returns (should_resume, is_explicit).
+    Tries deterministic param extraction first (implicit), then LLM (explicit)."""
+    saved = ws.interrupted_state
+    if not saved:
+        return False, False
+    intent = saved.get("intent", "")
+    missing = saved.get("missing", [])
+
+    if missing:
+        probe = _extract_params_deterministic(message, missing, intent)
+        if probe:
+            logger.info("Implicit resume: msg provides {} for interrupted {}",
+                        list(probe.keys()), intent)
+            return True, False
+
+    intent_zh = _INTENT_ZH_NAMES.get(intent, intent)
+    missing_desc = _describe_missing_params(intent, missing)
+    prompt = PROMPT_CLASSIFY_RESUME.format(
+        intent_zh=intent_zh, missing_desc=missing_desc, message=message,
+    )
+    try:
+        result = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.0,
+        )
+        letter = result.strip().upper()[:1]
+        if letter == "A":
+            logger.info("LLM resume_detect: msg='{}' interrupted={} → resume",
+                        message[:40], intent)
+            return True, True
+        return False, False
+    except Exception as e:
+        logger.warning("LLM resume_detect failed, regex fallback: {}", str(e))
+
+    if _RETURN_RE.search(message):
+        return True, True
+    return False, False
+
+
+_SOFT_REJECTION_RE = re.compile(
+    r"我?不太?確定|不知道|不清楚|不曉得|隨便|都可以|都行|沒有想法|你決定|你幫我決定"
+    r"|沒有特別|沒什麼特別|沒特別|沒有偏好|無所謂"
+    r"|一定要[給說嗎]|這很重要嗎|為什麼要問|為什麼需要"
+    r"|我沒有(?:什麼|啥)|沒想到|想不到|不太想[查說回答]"
+    r"|就.*那種吧|就.*那樣吧|大概.*吧|好像.*吧"
+)
+_SOFT_REJECTION_EXACT = frozenset({
+    "不知道", "隨便", "都行", "都可以", "沒想法", "再說", "先不要",
+    "不用了", "沒有", "嗯...", "呃...", "...", "算了吧",
+})
+
+
+def _classify_collecting_response(message: str) -> str:
+    """Classify user's reply during collecting phase.
+    Returns: 'answer' | 'soft_rejection' | 'hard_abandon'
+    """
+    text = message.strip()
+    clean = re.sub(r"[，,。！!～~…\s]+$", "", text)
+    if clean in _SOFT_REJECTION_EXACT or (len(clean) <= 3 and clean in ("嗯", "呃", "啊", "哦")):
+        return "soft_rejection"
+    if re.search(r"算了|不要了|取消|不用了$|不必了$|不查了$", text):
+        return "hard_abandon"
+    if _SOFT_REJECTION_RE.search(text):
+        return "soft_rejection"
+    return "answer"
+
+
+def _extract_params_deterministic(message: str, missing: list[str],
+                                  intent: str) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    text = message.strip()
+
+    if "age" in missing:
+        m = re.search(r"(\d{1,3})\s*歲", text)
+        if m:
+            result["age"] = int(m.group(1))
+        else:
+            m2 = re.search(r"(\d{1,3})", text)
+            if m2:
+                num = int(m2.group(1))
+                if 1 <= num <= 120:
+                    result["age"] = num
+
+    if "gender" in missing:
+        if re.search(r"女性|女生|女", text):
+            result["gender"] = "female"
+        elif re.search(r"男性|男生|男", text):
+            result["gender"] = "male"
+
+    if "activity_level" in missing:
+        if re.search(r"高|常運動|健身|重訓", text):
+            result["activity_level"] = "high"
+        elif re.search(r"低|不運動|久坐|少動", text):
+            result["activity_level"] = "low"
+        elif re.search(r"中|偶爾運動|一般", text):
+            result["activity_level"] = "moderate"
+
+    if "food_name" in missing:
+        if len(text) < 30 and not re.search(r"[？?]", text):
+            result["food_name"] = text
+
+    if "symptom" in missing:
+        zh_parts = re.findall(r"[一-鿿]{2,}", text)
+        if zh_parts:
+            result["symptom"] = " ".join(zh_parts)
+        elif len(text) < 30:
+            result["symptom"] = text
+
+    if "nutrient_field" in missing:
+        for zh, field_name in _NUTRIENT_ZH_TO_FIELD.items():
+            if zh in text:
+                result["nutrient_field"] = field_name
+                break
+
+    if "recipe_text" in missing:
+        if not _QUESTION_RE.search(text):
+            if re.search(r"\d+\s*(g|ml|克|毫升|顆|杯|匙|碗|片|條)", text):
+                result["recipe_text"] = text
+            elif len(text) > 10 and not re.search(r"^(幫我|請|查|什麼|為什麼)", text):
+                result["recipe_text"] = text
+
+    if "category" in missing:
+        _CAT_MAP = {
+            "水果": "水果類", "蔬菜": "蔬菜類", "乳品": "乳品類", "穀物": "穀物類",
+            "肉": "肉類", "魚": "魚貝類", "蛋": "蛋類", "豆": "豆類",
+            "油脂": "油脂類", "堅果": "堅果種子類", "飲料": "飲料類", "調味": "調味料類",
+        }
+        for zh, cat_name in _CAT_MAP.items():
+            if zh in text:
+                result["category"] = cat_name
+                break
+
+    if "search" in missing:
+        if len(text) < 20 and not re.search(r"[？?]|有什麼|列出|瀏覽|查看", text):
+            result["search"] = text
+
+    if "entry_date" in missing:
+        today = date.today()
+        parsed = _parse_date_from_text(text)
+        if parsed:
+            result["entry_date"] = parsed[0]
+        elif "今天" in text:
+            result["entry_date"] = today.isoformat()
+        elif "明天" in text:
+            result["entry_date"] = (today + timedelta(days=1)).isoformat()
+        elif "後天" in text:
+            result["entry_date"] = (today + timedelta(days=2)).isoformat()
+
+    if "start_date" in missing or "end_date" in missing:
+        today = date.today()
+        parsed = _parse_date_from_text(text)
+        if parsed:
+            result["start_date"], result["end_date"] = parsed
+        elif "今天" in text:
+            result["start_date"] = today.isoformat()
+            result["end_date"] = today.isoformat()
+        elif "這週" in text or "本週" in text:
+            start = today - timedelta(days=today.weekday())
+            result["start_date"] = start.isoformat()
+            result["end_date"] = today.isoformat()
+        elif "上週" in text:
+            start = today - timedelta(days=today.weekday() + 7)
+            end = today - timedelta(days=today.weekday() + 1)
+            result["start_date"] = start.isoformat()
+            result["end_date"] = end.isoformat()
+        elif "這個月" in text or "本月" in text:
+            result["start_date"] = today.replace(day=1).isoformat()
+            result["end_date"] = today.isoformat()
+
+    return result
+
+
+PROMPT_EXTRACT_PARAMS = """從使用者訊息中提取以下欄位的值。
+只輸出嚴格 JSON，不要加其他文字。找不到的欄位填 null。
+
+需要提取的欄位：
+{fields_desc}
+
+使用者訊息：{message}
+
+JSON："""
+
+_PARAM_DESCRIPTIONS: dict[str, str] = {
+    "age": "年齡（整數）",
+    "gender": "性別（輸出 male 或 female）",
+    "activity_level": "活動量（high / moderate / low）",
+    "food_name": "食物名稱（中文或英文）",
+    "recipe_text": "食譜文字（包含食材和份量）",
+    "search": "搜尋關鍵字",
+    "category": "食物分類名稱（如「水果類」「乳品類」）",
+    "symptom": "症狀（中文，如 疲勞、失眠、頭痛、手肘肌肉酸痛）",
+    "query": "學術查詢（英文）",
+    "nutrient_field": "營養素欄位名（如 protein_per_100g, calcium_per_100g）",
+    "start_date": "開始日期（YYYY-MM-DD 格式）",
+    "end_date": "結束日期（YYYY-MM-DD 格式）",
+}
+
+
+async def _extract_params_llm(message: str, missing: list[str],
+                               intent: str) -> dict[str, Any]:
+    fields_desc = "\n".join(
+        f"- {p}: {_PARAM_DESCRIPTIONS.get(p, p)}" for p in missing
+    )
+    prompt = PROMPT_EXTRACT_PARAMS.format(fields_desc=fields_desc, message=message)
+    try:
+        text = await _call_gemma(
+            [{"role": "user", "content": prompt}],
+            temperature=0.1,
+        )
+        parsed = _parse_llm_json(text)
+        if isinstance(parsed, dict):
+            return {k: v for k, v in parsed.items() if v is not None and k in missing}
+    except Exception as e:
+        logger.warning("Focused extraction LLM failed: {}", str(e))
+    return {}
+
+
+def _calc_missing(intent: str, collected: dict) -> list[str]:
+    specs = WORKFLOW_DEFS.get(intent, [])
+    return [s.name for s in specs if s.required and not collected.get(s.name)]
+
+
+def _prefill_from_entities(ws: WorkflowState, entities: dict, intent: str):
+    _entity_map = {
+        "age": "age", "gender": "gender", "activity_level": "activity_level",
+        "food_name": "food_name", "recipe_text": "recipe_text",
+        "search": "search", "category": "category",
+        "symptom_en": "symptom", "query_en": "query",
+        "nutrient_field": "nutrient_field",
+        "start_date": "start_date", "end_date": "end_date",
+    }
+    for entity_key, param_name in _entity_map.items():
+        val = entities.get(entity_key)
+        if val and param_name not in ws.collected:
+            ws.collected[param_name] = val
+    pf = entities.get("profile_fields", {})
+    if isinstance(pf, dict):
+        for k, v in pf.items():
+            if v and k not in ws.collected:
+                ws.collected[k] = v
+
+
+def _prefill_from_profile(ws: WorkflowState, profile: dict, intent: str):
+    specs = WORKFLOW_DEFS.get(intent, [])
+    for spec in specs:
+        if spec.profile_key and spec.name not in ws.collected:
+            val = profile.get(spec.profile_key)
+            if val:
+                ws.collected[spec.name] = val
+
+
+async def _auto_fetch_profile_if_needed(
+    intent: str, remaining: list[str], ws: WorkflowState, auth_token: str
+) -> dict | None:
+    specs = WORKFLOW_DEFS.get(intent, [])
+    needs_profile = any(s.profile_key and s.name in remaining for s in specs)
+    if needs_profile and "profile" not in ws.auto_fetch_done:
+        ws.auto_fetch_done.append("profile")
+        result = await _execute_tool("get_user_profile", {}, auth_token, "")
+        if "error" not in result:
+            return result
+    return None
+
+
+def _build_ask_message(intent: str, missing: list[str]) -> str:
+    specs = WORKFLOW_DEFS.get(intent, [])
+    spec_map = {s.name: s for s in specs}
+    questions = [spec_map[p].ask_zh for p in missing
+                 if p in spec_map and spec_map[p].ask_zh]
+    if not questions:
+        return "請提供更多資訊，讓我完成這項查詢。"
+    if len(questions) == 1:
+        return questions[0]
+    return "為了完成查詢，我需要以下資訊：\n" + "\n".join(f"• {q}" for q in questions)
+
+
+def _fill_from_structured_store(ws: WorkflowState, store: dict) -> dict[str, str]:
+    """Auto-fill from structured_store. Returns {param: display_value} for filled params."""
+    auto_filled: dict[str, str] = {}
+    user_facts = store.get("user_facts", {})
+    for param in list(ws.missing):
+        if param not in ws.collected and user_facts.get(param):
+            ws.collected[param] = user_facts[param]
+            auto_filled[param] = str(user_facts[param])
+            logger.info("Filled '{}' from structured_store.user_facts", param)
+    if "symptom" in ws.missing and "symptom" not in ws.collected:
+        hist = store.get("symptom_history", [])
+        if hist:
+            last = hist[-1]
+            en = last.get("symptom_en", "")
+            zh = last.get("symptom_zh", en)
+            if en:
+                ws.collected["symptom"] = en
+                auto_filled["symptom"] = zh or en
+                logger.info("Filled 'symptom' from structured_store.symptom_history: {}", en)
+    if "food_name" in ws.missing and "food_name" not in ws.collected:
+        fc = store.get("food_context", {})
+        mentioned = fc.get("foods_mentioned_today", [])
+        if mentioned:
+            name = mentioned[-1].get("name", "")
+            ws.collected["food_name"] = name
+            auto_filled["food_name"] = name
+            logger.info("Filled 'food_name' from structured_store.food_context")
+    return auto_filled
+
+
+def _build_ask_message_with_context(intent: str, missing: list[str],
+                                     narrative_memory: str) -> str:
+    base = _build_ask_message(intent, missing)
+    _INTENT_REASONS = {
+        "search_symptom": "為了搜尋與你的症狀相關的營養素和推薦食物",
+        "search_food": "為了查詢這種食物的詳細營養成分",
+        "nutrient_ranking": "為了幫你找到含量最高的食物",
+        "get_calendar": "為了查看你在這段時間的飲食紀錄",
+        "add_to_calendar": "為了把食譜加到你的行事曆",
+        "delete_calendar": "為了刪除行事曆中的紀錄",
+        "analyze_recipe": "為了分析這份食譜的完整營養成分",
+        "update_profile": "為了更新你的個人資料，讓營養建議更精準",
+    }
+    reason = _INTENT_REASONS.get(intent, "")
+    if reason:
+        return f"{reason}，{base}"
+    return base
+
+
+_QUICK_REPLIES: dict[str, list[str]] = {
+    "search_symptom": ["疲勞", "失眠", "頭痛", "肌肉痠痛"],
+    "search_food": ["雞胸肉", "菠菜", "鮭魚", "蘋果"],
+    "nutrient_ranking": ["鈣", "鐵", "蛋白質", "維生素C"],
+    "analyze_recipe": [],
+    "get_calendar": ["今天", "這週", "上週"],
+    "add_to_calendar": ["今天", "明天"],
+    "delete_calendar": ["今天", "昨天"],
+}
+
+_PLACEHOLDER_HINTS: dict[str, str] = {
+    "food_name": "輸入食物名稱，如「雞胸肉」…",
+    "symptom": "輸入你的症狀，如「疲勞」「失眠」…",
+    "nutrient_field": "輸入營養素名稱，如「鈣」「鐵」…",
+    "recipe_text": "貼上食譜內容（含食材和份量）…",
+    "entry_date": "輸入日期，如「今天」「5/20」…",
+    "start_date": "輸入時間範圍，如「這週」「上個月」…",
+    "query": "輸入英文學術關鍵字…",
+}
+
+
+def _build_collecting_state(intent: str, missing: list[str],
+                             turn_count: int) -> dict:
+    """Build enriched data for collecting_state SSE event."""
+    intent_zh = _INTENT_ZH_NAMES.get(intent, intent)
+    missing_zh = _describe_missing_params(intent, missing)
+    first_missing = missing[0] if missing else ""
+    return {
+        "phase": "collecting",
+        "active_intent": intent,
+        "intent_label": intent_zh,
+        "missing_params": missing,
+        "missing_label": missing_zh,
+        "turn_count": turn_count,
+        "max_turns": 3,
+        "placeholder": _PLACEHOLDER_HINTS.get(first_missing, "輸入你的回答…"),
+        "quick_replies": _QUICK_REPLIES.get(intent, []),
+    }
+
+
+def _build_tool_calls_from_state(intent: str, collected: dict,
+                                 entities: dict) -> list[dict]:
+    if intent == "update_profile":
+        pf = collected.get("profile_fields") or entities.get("profile_fields", {})
+        if pf:
+            return [{"tool": "update_user_profile", "args": pf}]
+        return []
+
+    tool_name = _INTENT_TO_TOOL.get(intent)
+    if not tool_name:
+        return []
+
+    specs = WORKFLOW_DEFS.get(intent, [])
+    args: dict[str, Any] = {}
+    for spec in specs:
+        if spec.name in collected:
+            args[spec.name] = collected[spec.name]
+        elif spec.default is not None:
+            args[spec.name] = spec.default
+    if intent == "nutrient_ranking":
+        args.setdefault("top_n", 10)
+
+    return [{"tool": tool_name, "args": args}]
+
+
+async def _flow_controller(
+    message: str, history: list[dict], narrative_memory: str,
+    structured_store: dict, ws: WorkflowState, profile_data: dict,
+    auth_token: str,
+    long_term_context: str = "",
+    session_id: str = "",
+    user_id: int = 0,
+) -> AsyncGenerator[str, None]:
+    """
+    Yields SSE events. Updates ws in-place.
+    Sets ws._flow_result with tool_results and tools_used when execution completes.
+    """
+    # ── Branch R: [RECIPE_CONFIRM] fast-path ──
+    if message.startswith("[RECIPE_CONFIRM]"):
+        try:
+            payload = json.loads(message[len("[RECIPE_CONFIRM]"):])
+        except (json.JSONDecodeError, ValueError):
+            yield _sse_event("reply", {"content": "確認指令格式錯誤，請重新操作。"})
+            return
+        action = payload.get("action", "")
+        pending = structured_store.get("recipe_pending")
+
+        if not pending and action != "abort":
+            yield _sse_event("reply", {"content": "沒有待確認的食譜，請重新貼上食譜內容。"})
+            return
+
+        if action == "abort":
+            structured_store.pop("recipe_pending", None)
+            yield _sse_event("reply", {"content": "好的，已取消食譜分析。有需要隨時再貼食譜給我！"})
+            yield _sse_event("structured_store", {"store": structured_store})
+            return
+
+        if action in ("add", "remove"):
+            ingredients = list(pending.get("ingredients", []))
+            if action == "add":
+                for item in payload.get("items", []):
+                    if isinstance(item, str):
+                        item = {"name": item, "amount": ""}
+                    ingredients.append(item)
+            elif action == "remove":
+                remove_names = {n.strip() for n in payload.get("names", [])}
+                ingredients = [i for i in ingredients if
+                               (i.get("name") or i.get("ingredient", "")) not in remove_names]
+            pending["ingredients"] = ingredients
+            structured_store["recipe_pending"] = pending
+
+            names_str = "、".join(
+                (i.get("name") or i.get("ingredient", "")) for i in ingredients
+            )
+            yield _sse_event("tool_result", {
+                "name": "analyze_recipe",
+                "data": {
+                    "phase": "confirm_ingredients",
+                    "extracted_ingredients": ingredients,
+                    "corrections": pending.get("corrections", []),
+                    "confidence": pending.get("confidence", 0),
+                    "recipe_text": pending.get("recipe_text", ""),
+                    "gemma_available": pending.get("gemma_available", False),
+                },
+            })
+            count = len(ingredients)
+            yield _sse_event("reply", {
+                "content": f"已更新食材清單（共 {count} 項）：{names_str}\n\n確認無誤就按「確認分析」，或繼續新增/移除。"
+            })
+            yield _sse_event("structured_store", {"store": structured_store})
+            return
+
+        if action == "confirm":
+            confirmed = payload.get("ingredients") or pending.get("ingredients", [])
+            recipe_text = pending.get("recipe_text", "")
+            structured_store.pop("recipe_pending", None)
+
+            ws.active_intent = "analyze_recipe"
+            ws.phase = "ready"
+            ws._phase2_tool_calls = [{  # type: ignore[attr-defined]
+                "tool": "analyze_recipe",
+                "args": {
+                    "recipe_text": recipe_text,
+                    "confirmed_ingredients": confirmed,
+                },
+            }]
+            logger.info("[RECIPE_CONFIRM] confirm: {} ingredients → phase=ready",
+                        len(confirmed))
+            # fall through to Branch C for execution
+
+        else:
+            yield _sse_event("reply", {"content": f"不支援的確認動作：{action}"})
+            return
+
+    # ── Branch A: Active collection ──
+    if ws.phase == "collecting":
+        interruption_verdict = await _detect_interruption_smart(message, ws)
+
+        if interruption_verdict == "ambiguous":
+            intent_zh = _INTENT_ZH_NAMES.get(ws.active_intent, ws.active_intent)
+            missing_desc = _describe_missing_params(ws.active_intent, ws.missing)
+            yield _sse_event("reply", {
+                "content": f"我不太確定你的意思——你是想回答「{missing_desc}」，還是想做其他查詢？\n"
+                           f"如果是回答，請直接告訴我{missing_desc}；如果想做別的，請說「算了」或直接告訴我新的需求。"
+            })
+            logger.info("Interruption ambiguous, asking clarification: msg='{}'", message[:50])
+            return
+
+        if interruption_verdict == "interrupt":
+            logger.info("Workflow interrupted: {} -> new intent", ws.active_intent)
+            missing_zh = ", ".join(ws.missing) if ws.missing else ""
+            ws.interrupted_from = f"{ws.active_intent}（缺 {missing_zh}）" if missing_zh else ws.active_intent
+            ws.interrupted_state = {
+                "intent": ws.active_intent,
+                "collected": dict(ws.collected),
+                "missing": list(ws.missing),
+                "turn_count": ws.turn_count,
+                "pending_intents": list(ws.pending_intents),
+            }
+            ws.phase = "idle"
+            ws.active_intent = ""
+            ws.collected = {}
+            ws.missing = []
+            ws.turn_count = 0
+        else:
+            response_class = _classify_collecting_response(message)
+            logger.info("Collecting response_class={} msg='{}'", response_class, message[:50])
+
+            if response_class == "hard_abandon":
+                intent_zh = _INTENT_ZH_NAMES.get(ws.active_intent, ws.active_intent)
+                yield _sse_event("reply", {
+                    "content": f"好的，已取消「{intent_zh}」。有需要隨時再告訴我！"
+                })
+                ws.phase = "idle"
+                ws.active_intent = ""
+                ws.collected = {}
+                ws.missing = []
+                ws.turn_count = 0
+                return
+
+            if response_class == "soft_rejection":
+                ws.turn_count += 1
+                if ws.turn_count >= 2:
+                    intent_zh = _INTENT_ZH_NAMES.get(ws.active_intent, ws.active_intent)
+                    yield _sse_event("reply", {
+                        "content": f"沒關係，如果你暫時不想查這個，我們可以先聊點別的。隨時可以回來繼續「{intent_zh}」喔！"
+                    })
+                    ws.phase = "idle"
+                    ws.active_intent = ""
+                    ws.collected = {}
+                    ws.missing = []
+                    ws.turn_count = 0
+                    return
+                missing_zh = _describe_missing_params(ws.active_intent, ws.missing)
+                specs = WORKFLOW_DEFS.get(ws.active_intent, [])
+                examples = []
+                for s in specs:
+                    if s.name in ws.missing and s.ask_zh:
+                        ex = re.search(r"[（(]例如[：:](.+?)[）)]", s.ask_zh)
+                        if ex:
+                            examples.append(ex.group(1))
+                example_hint = f"例如：{examples[0]}" if examples else ""
+                yield _sse_event("collecting_state", _build_collecting_state(
+                    ws.active_intent, ws.missing, ws.turn_count))
+                yield _sse_event("reply", {
+                    "content": f"沒問題，不急！我需要知道「{missing_zh}」才能幫你查。{example_hint}\n如果不想查了，也可以直接問我其他問題。"
+                })
+                return
+
+            ws.turn_count += 1
+            extracted = _extract_params_deterministic(message, ws.missing, ws.active_intent)
+            if not extracted and ws.missing:
+                extracted = await _extract_params_llm(message, ws.missing, ws.active_intent)
+            for k, v in extracted.items():
+                if v is not None:
+                    ws.collected[k] = v
+
+            auto_filled = _fill_from_structured_store(ws, structured_store)
+
+            ws.missing = _calc_missing(ws.active_intent, ws.collected)
+            logger.info("Workflow collect turn={} extracted={} auto_filled={} missing={}",
+                        ws.turn_count, list(extracted.keys()), list(auto_filled.keys()), ws.missing)
+            if not ws.missing and auto_filled and not extracted:
+                filled_desc = "、".join(
+                    f"{_PARAM_ZH_NAMES.get(k, k)}：{v}" for k, v in auto_filled.items()
+                )
+                yield _sse_event("reply", {
+                    "content": f"我根據之前的對話記錄自動帶入了 {filled_desc}，直接為你查詢。"
+                })
+                ws.phase = "ready"
+            elif not ws.missing:
+                ws.phase = "ready"
+            elif ws.turn_count >= 3:
+                yield _sse_event("reply", {
+                    "content": "抱歉，我無法取得所需資訊。請提供完整資料後再試一次。"
+                })
+                ws.phase = "idle"
+                ws.active_intent = ""
+                ws.collected = {}
+                ws.missing = []
+                return
+            else:
+                ask_text = _build_ask_message_with_context(
+                    ws.active_intent, ws.missing, narrative_memory,
+                )
+                yield _sse_event("collecting_state", _build_collecting_state(
+                    ws.active_intent, ws.missing, ws.turn_count))
+                yield _sse_event("reply", {"content": ask_text})
+                return
+
+    # ── Branch A2: Resume from interrupted state (LLM + deterministic) ──
+    if ws.phase in ("idle", "done") and ws.interrupted_state:
+        saved = ws.interrupted_state
+        saved_missing = list(saved.get("missing", []))
+        should_resume, is_explicit = await _detect_resume_smart(message, ws)
+        if should_resume:
+            ws.active_intent = saved["intent"]
+            ws.collected = dict(saved.get("collected", {}))
+            ws.missing = saved_missing
+            ws.turn_count = saved.get("turn_count", 0)
+            ws.pending_intents = list(saved.get("pending_intents", []))
+            ws.phase = "collecting"
+            ws.interrupted_state = {}
+            ws.interrupted_from = ""
+            logger.info("Resumed interrupted intent: {} collected={} missing={} explicit={}",
+                        ws.active_intent, list(ws.collected.keys()), ws.missing, is_explicit)
+            extracted = _extract_params_deterministic(message, ws.missing, ws.active_intent)
+            for k, v in extracted.items():
+                if v is not None:
+                    ws.collected[k] = v
+            ws.missing = _calc_missing(ws.active_intent, ws.collected)
+            if not ws.missing:
+                ws.phase = "ready"
+            else:
+                prefix = "好的，回到之前的任務。" if is_explicit else ""
+                ask_text = _build_ask_message_with_context(
+                    ws.active_intent, ws.missing, narrative_memory,
+                )
+                yield _sse_event("collecting_state", _build_collecting_state(
+                    ws.active_intent, ws.missing, ws.turn_count))
+                yield _sse_event("reply", {"content": f"{prefix}{ask_text}"})
+                return
+
+    # ── Branch B: Idle — Fast-path + Phase1 + Phase2 intent resolution ──
+    if ws.phase in ("idle", "done"):
+        yield _yield_phase(ws, "intent", "理解需求中...")
+
+        # ── B-0: Proactive suggestion confirmation ──
+        phase1 = None
+        if ws.proactive_suggestion and _PROACTIVE_CONFIRM_RE.match(message.strip()):
+            _sugg = ws.proactive_suggestion
+            ws.proactive_suggestion = {}
+            phase1 = {
+                "intents": [_sugg["intent"]],
+                "entities": dict(_sugg.get("entities", {})),
+                "reasoning": "proactive suggestion confirmed",
+                "needs_profile": False,
+            }
+            logger.info("Proactive confirmed: {} entities={}",
+                        _sugg["intent"], _sugg.get("entities"))
+        else:
+            ws.proactive_suggestion = {}
+
+        # ── B-1: Skeleton → Fast-path → Structure routing → Phase1 LLM ──
+        if phase1 is None:
+            skeleton = _skeletonize(message)
+            phase1 = _try_fast_path(message)
+            if phase1:
+                if _has_intent_contradiction(phase1, skeleton):
+                    logger.info("FlowCtrl: fast-path {} overridden by structure", phase1.get("intents"))
+                    phase1 = None
+                else:
+                    logger.info("FlowCtrl fast-path: {}", phase1.get("intents"))
+            if not phase1:
+                phase1 = _route_by_structure(skeleton)
+                if phase1:
+                    logger.info("FlowCtrl structure-route: {} ({})",
+                                phase1.get("intents"), phase1.get("reasoning", ""))
+            _p1_used_llm = False
+            if not phase1:
+                yield _sse_event("thinking_start", {"step": "intent", "label": "分析意圖"})
+                yield _sse_event("thinking_delta", {"step": "intent", "content": "正在分析您的意圖..."})
+                _p1_used_llm = True
+                previous_results = getattr(ws, "_prev_results", None)
+                phase1 = await _step_phase1(message, history, narrative_memory, previous_results, long_term_context, skeleton=skeleton)
+                logger.info("FlowCtrl phase1: {}",
+                            json.dumps(phase1, ensure_ascii=False)[:200] if phase1 else "None")
+
+                if not phase1 or phase1.get("intents") == ["general_chat"]:
+                    if phase1 and _NEW_INTENT_RE.search(message):
+                        logger.info("Phase1 returned general_chat but msg has new-intent signal, retrying")
+                        yield _sse_event("thinking_delta", {"step": "intent", "content": "\n偵測到意圖信號，重新分析..."})
+                        phase1 = await _step_phase1(message, history, narrative_memory, previous_results, long_term_context, skeleton=skeleton)
+                        logger.info("Phase1 retry: {}",
+                                    json.dumps(phase1, ensure_ascii=False)[:200] if phase1 else "None")
+                    if not phase1 or phase1.get("intents") == ["general_chat"]:
+                        is_forced = (not phase1) or phase1.get("_forced_general")
+                        if is_forced:
+                            yield _sse_event("thinking_delta", {"step": "intent", "content": "\n→ 一般對話"})
+                            yield _sse_event("thinking_end", {"step": "intent"})
+                            guidance = _build_guidance_reply(message, structured_store)
+                            yield _sse_event("reply", {"content": guidance})
+                            ws.phase = "idle"
+                            return
+                        chat_ent = _extract_chat_entities(message)
+                        detected_foods = chat_ent.get("foods", [])
+                        yield _sse_event("thinking_delta", {"step": "intent", "content": "\n→ 一般對話"})
+                        yield _sse_event("thinking_end", {"step": "intent"})
+                        if detected_foods:
+                            ws.proactive_suggestion = {
+                                "intent": "search_food",
+                                "entities": {"food_name": detected_foods[0]},
+                            }
+                            food_str = "、".join(f"「{f}」" for f in detected_foods[:2])
+                            yield _sse_event("reply", {
+                                "content": f"我注意到你提到了{food_str}，需要我幫你查一下詳細的營養數據嗎？"
+                            })
+                        else:
+                            guidance = _build_guidance_reply(message, structured_store)
+                            yield _sse_event("reply", {"content": guidance})
+                        ws.phase = "idle"
+                        return
+        intents = phase1.get("intents", [])
+        if not intents:
+            if _p1_used_llm:
+                yield _sse_event("thinking_delta", {"step": "intent", "content": "\n→ 無明確意圖"})
+                yield _sse_event("thinking_end", {"step": "intent"})
+            guidance = _build_guidance_reply(message, structured_store)
+            yield _sse_event("reply", {"content": guidance})
+            ws.phase = "idle"
+            return
+
+        # ── Thinking: Phase1 reasoning ──
+        _p1_reasoning = phase1.get("reasoning", "")
+        _p1_intents_str = ", ".join(intents)
+        _p1_think = f"意圖：{_p1_intents_str}"
+        if _p1_reasoning:
+            _p1_think += f"\n{_p1_reasoning}"
+        ent_summary = {k: v for k, v in phase1.get("entities", {}).items()
+                       if v and v != "" and v != {} and v != []}
+        if ent_summary:
+            _p1_think += f"\n提取實體：{json.dumps(ent_summary, ensure_ascii=False)}"
+        if _p1_used_llm:
+            yield _sse_event("thinking_delta", {"step": "intent", "content": f"\n{_p1_think}"})
+            yield _sse_event("thinking_end", {"step": "intent"})
+        else:
+            yield _sse_event("thinking_start", {"step": "intent", "label": "分析意圖"})
+            yield _sse_event("thinking_delta", {"step": "intent", "content": _p1_think})
+            yield _sse_event("thinking_end", {"step": "intent"})
+
+        # ── B-2: Try DAG planning first ──
+        _use_dag = False
+        _dag_tasks = _plan_task_dag(phase1, structured_store, profile_data, message)
+        if _dag_tasks is not None:
+            _use_dag = True
+            yield _yield_phase(ws, "toolcall", "規劃工具")
+            _dag_tools_str = ", ".join(TOOL_LABELS.get(t.tool, t.tool) for t in _dag_tasks)
+            _dag_think = f"[DAG 排程] → {_dag_tools_str}"
+            _dep_count = sum(1 for t in _dag_tasks if t.depends_on)
+            if _dep_count:
+                _dag_think += f"\n含依賴鏈（{_dep_count} 個任務需等前置完成）"
+            _parallel = sum(1 for t in _dag_tasks if not t.depends_on)
+            if _parallel > 1:
+                _dag_think += f"\n{_parallel} 個任務可並行執行"
+            yield _sse_event("thinking_start", {"step": "toolcall", "label": "規劃工具"})
+            yield _sse_event("thinking_delta", {"step": "toolcall", "content": _dag_think})
+            yield _sse_event("thinking_end", {"step": "toolcall"})
+            ws.active_intent = intents[0]
+            ws.pending_intents = []
+            ws.collected = {}
+            ws.turn_count = 0
+            ws.auto_fetch_done = []
+            ws.phase = "ready"
+            ws._dag_tasks = _dag_tasks  # type: ignore[attr-defined]
+            logger.info("FlowCtrl DAG: {} tasks [{}]", len(_dag_tasks),
+                        ", ".join(t.tool for t in _dag_tasks))
+
+        # ── B-3: Phase2 LLM fallback (when DAG planner returns None) ──
+        if not _use_dag:
+            yield _yield_phase(ws, "toolcall", "規劃工具中...")
+            yield _sse_event("thinking_start", {"step": "toolcall", "label": "規劃工具"})
+            yield _sse_event("thinking_delta", {"step": "toolcall", "content": "正在規劃所需工具..."})
+            tool_calls, p2_corrections = await _step_phase2(
+                phase1, structured_store, narrative_memory, message, profile_data,
+                long_term_context,
+            )
+            logger.info("FlowCtrl phase2: tools={} corrections={}",
+                        [tc["tool"] for tc in tool_calls], p2_corrections)
+
+            _p2_src = "系統確定性匹配" if "system-deterministic" in p2_corrections else "LLM 規劃"
+            if tool_calls:
+                _p2_tools = ", ".join(TOOL_LABELS.get(tc["tool"], tc["tool"]) for tc in tool_calls)
+                _p2_think = f"[{_p2_src}] → {_p2_tools}"
+            else:
+                _p2_think = "無需工具呼叫"
+            _p2_fixes = [c for c in p2_corrections
+                         if not c.startswith("ask_user=") and not c.startswith("still_missing=")
+                         and c not in ("system-deterministic", "LLM-generated, system-validated")]
+            if _p2_fixes:
+                _p2_think += f"\n修正：{' → '.join(_p2_fixes)}"
+            yield _sse_event("thinking_delta", {"step": "toolcall", "content": f"\n{_p2_think}"})
+            yield _sse_event("thinking_end", {"step": "toolcall"})
+
+            still_missing_msg = ""
+            for c in p2_corrections:
+                if c.startswith("ask_user="):
+                    still_missing_msg = c[len("ask_user="):]
+
+            if not tool_calls and still_missing_msg:
+                current_intent = intents[0]
+                ws.active_intent = current_intent
+                ws.collected = {}
+                ws.turn_count = 0
+                ws.auto_fetch_done = []
+                entities = phase1.get("entities", {})
+                _prefill_from_entities(ws, entities, current_intent)
+                ws.missing = _calc_missing(current_intent, ws.collected)
+                if not ws.missing:
+                    ws.phase = "ready"
+                    logger.info("Phase2 LLM said still_missing but _calc_missing=[] → ready")
+                else:
+                    ws.phase = "collecting"
+                    ask_text = _build_ask_message_with_context(
+                        current_intent, ws.missing, narrative_memory,
+                    )
+                    yield _sse_event("collecting_state", _build_collecting_state(
+                        current_intent, ws.missing, ws.turn_count))
+                    yield _sse_event("reply", {"content": ask_text})
+                    return
+
+            if not tool_calls:
+                current_intent = intents[0]
+                entities = phase1.get("entities", {})
+                ws.active_intent = current_intent
+                ws.collected = {}
+                ws.turn_count = 0
+                ws.auto_fetch_done = []
+                _prefill_from_entities(ws, entities, current_intent)
+                ws.missing = _calc_missing(current_intent, ws.collected)
+                if ws.missing:
+                    ws.phase = "collecting"
+                    ask_text = _build_ask_message_with_context(
+                        current_intent, ws.missing, narrative_memory,
+                    )
+                    yield _sse_event("collecting_state", _build_collecting_state(
+                        current_intent, ws.missing, ws.turn_count))
+                    yield _sse_event("reply", {"content": ask_text})
+                    return
+                ws.phase = "idle"
+                return
+
+            entities = phase1.get("entities", {})
+            current_intent = intents[0]
+            ws.pending_intents = intents[1:] if len(intents) > 1 else []
+            ws.active_intent = current_intent
+            ws.collected = {}
+            ws.turn_count = 0
+            ws.auto_fetch_done = []
+
+            _prefill_from_entities(ws, entities, current_intent)
+            ws.phase = "ready"
+            ws._phase2_tool_calls = tool_calls  # type: ignore[attr-defined]
+
+    # ── Branch C: Ready — execute tools ──
+    if ws.phase == "ready":
+        for _p in ("echo", "intent", "toolcall"):
+            if _p not in ws._emitted_phases:
+                yield _yield_phase(ws, _p, _PHASE_FILL_LABELS[_p])
+        ws.phase = "executing"
+        yield _yield_phase(ws, "execute", "工具調用中...")
+
+        # ── C-DAG: DAG parallel execution path ──
+        _dag_tasks = getattr(ws, "_dag_tasks", None)
+        if _dag_tasks is not None:
+            all_tool_results: list[dict] = []
+            tools_used: list[str] = []
+            async for evt_type, evt_data in _execute_task_dag(
+                _dag_tasks, auth_token, message, structured_store, profile_data,
+            ):
+                yield _sse_event(evt_type, evt_data)
+                if evt_type == "tool_done":
+                    tools_used.append(evt_data.get("name", ""))
+                elif evt_type == "tool_result":
+                    all_tool_results.append({
+                        "tool": evt_data.get("name", ""),
+                        "result": evt_data.get("data", {}),
+                    })
+            ws.phase = "done"
+            ws.collected = {}
+            ws.missing = []
+            ws.active_intent = ""
+            ws._dag_tasks = None  # type: ignore[attr-defined]
+            ws._tool_results = all_tool_results  # type: ignore[attr-defined]
+            ws._tools_used = tools_used  # type: ignore[attr-defined]
+            logger.info("DAG execution done: tools={}", tools_used)
+
+        else:
+            # ── C-SEQ: Original sequential execution path ──
+            all_tool_results: list[dict] = []
+            tools_used: list[str] = []
+            executed_keys: set[str] = set()
+
+            resumed_completed = getattr(ws, "_resume_completed", None)
+            if resumed_completed:
+                for rc in resumed_completed:
+                    tools_used.append(rc.get("tool", ""))
+                logger.info("Resumed with {} pre-completed tools", len(resumed_completed))
+
+            tool_calls = getattr(ws, "_resume_tool_calls", None) or getattr(ws, "_phase2_tool_calls", None)
+            if tool_calls is None:
+                tool_calls = _build_tool_calls_from_state(ws.active_intent, ws.collected, ws.collected)
+
+            turn_idx = len(history) + 1
+            for idx, tc in enumerate(tool_calls):
+                tool_name = tc["tool"]
+                tool_args = tc.get("args", {})
+                dedup_key = f"{tool_name}|{json.dumps(tool_args, sort_keys=True, ensure_ascii=False)}"
+                if dedup_key in executed_keys:
+                    logger.info("skip_duplicate_tool: {}", tool_name)
+                    continue
+                executed_keys.add(dedup_key)
+                yield _sse_event("tool_start", {"name": tool_name, "args": tool_args})
+                _pq = asyncio.Queue()
+                _task = asyncio.create_task(
+                    _execute_tool_with_recovery(tool_name, tool_args, auth_token, message, structured_store, progress_queue=_pq)
+                )
+                while not _task.done():
+                    try:
+                        _evt = await asyncio.wait_for(_pq.get(), timeout=0.3)
+                        yield _sse_event("tool_progress", _evt)
+                    except asyncio.TimeoutError:
+                        pass
+                result, recovery_info = _task.result()
+                while not _pq.empty():
+                    yield _sse_event("tool_progress", _pq.get_nowait())
+                if recovery_info:
+                    yield _sse_event("recovery_attempt", {"tool": recovery_info["tool"], "strategy": recovery_info["strategy"], "explanation": recovery_info["explanation"]})
+                    yield _sse_event("recovery_result", {"tool": recovery_info["tool"], "success": recovery_info["success"]})
+                summary = _summarize_result(tool_name, result)
+                yield _sse_event("tool_result", {"name": tool_name, "data": result})
+                yield _sse_event("tool_done", {"name": tool_name, "summary": summary})
+                tools_used.append(tool_name)
+                all_tool_results.append({"tool": tool_name, "result": result})
+                if tool_name == "get_user_profile" and "error" not in result:
+                    profile_data.update(result)
+                if tool_name == "analyze_recipe" and isinstance(result, dict) and "error" not in result:
+                    if result.get("phase") == "confirm_ingredients":
+                        import time as _time
+                        structured_store["recipe_pending"] = {
+                            "ingredients": result.get("extracted_ingredients", []),
+                            "corrections": result.get("corrections", []),
+                            "confidence": result.get("confidence", 0),
+                            "recipe_text": result.get("recipe_text", ""),
+                            "gemma_available": result.get("gemma_available", False),
+                            "created_at": _time.time(),
+                        }
+                        logger.info("recipe_pending stored: {} ingredients, confidence={}",
+                                    len(result.get("extracted_ingredients", [])),
+                                    result.get("confidence"))
+                    else:
+                        structured_store.setdefault("recipe_store", []).append({
+                            "name": (result.get("recipe_text") or "")[:50],
+                            "recipe_text": result.get("recipe_text", ""),
+                            "ingredients": result.get("ingredients", []),
+                            "total_nutrition": result.get("total", {}),
+                            "dri_analysis": result.get("dri_analysis"),
+                            "item_count": result.get("item_count", 0),
+                            "source": "advisor_analyze",
+                        })
+                if session_id:
+                    pending_remaining = tool_calls[idx + 1:]
+                    completed_so_far = [{"tool": tr["tool"], "summary": _summarize_result(tr["tool"], tr["result"])}
+                                        for tr in all_tool_results]
+                    asyncio.create_task(_save_checkpoint_incremental(
+                        session_id, user_id, turn_idx, "execute",
+                        narrative_memory, structured_store,
+                        history, message, completed_so_far, pending_remaining,
+                    ))
+
+            while ws.pending_intents:
+                next_intent = ws.pending_intents.pop(0)
+                ws.active_intent = next_intent
+                prev_collected = dict(ws.collected)
+                ws.collected = {}
+                for spec in WORKFLOW_DEFS.get(next_intent, []):
+                    if spec.name in prev_collected:
+                        ws.collected[spec.name] = prev_collected[spec.name]
+                _prefill_from_profile(ws, profile_data, next_intent)
+                if _calc_missing(next_intent, ws.collected):
+                    break
+                next_calls = _build_tool_calls_from_state(next_intent, ws.collected, ws.collected)
+                for tc in next_calls:
+                    tool_name = tc["tool"]
+                    tool_args = tc.get("args", {})
+                    dedup_key = f"{tool_name}|{json.dumps(tool_args, sort_keys=True, ensure_ascii=False)}"
+                    if dedup_key in executed_keys:
+                        logger.info("skip_duplicate_tool: {}", tool_name)
+                        continue
+                    executed_keys.add(dedup_key)
+                    yield _sse_event("tool_start", {"name": tool_name, "args": tool_args})
+                    _pq2 = asyncio.Queue()
+                    _task2 = asyncio.create_task(
+                        _execute_tool_with_recovery(tool_name, tool_args, auth_token, message, structured_store, progress_queue=_pq2)
+                    )
+                    while not _task2.done():
+                        try:
+                            _evt2 = await asyncio.wait_for(_pq2.get(), timeout=0.3)
+                            yield _sse_event("tool_progress", _evt2)
+                        except asyncio.TimeoutError:
+                            pass
+                    result, recovery_info = _task2.result()
+                    while not _pq2.empty():
+                        yield _sse_event("tool_progress", _pq2.get_nowait())
+                    if recovery_info:
+                        yield _sse_event("recovery_attempt", {"tool": recovery_info["tool"], "strategy": recovery_info["strategy"], "explanation": recovery_info["explanation"]})
+                        yield _sse_event("recovery_result", {"tool": recovery_info["tool"], "success": recovery_info["success"]})
+                    summary = _summarize_result(tool_name, result)
+                    yield _sse_event("tool_result", {"name": tool_name, "data": result})
+                    yield _sse_event("tool_done", {"name": tool_name, "summary": summary})
+                    tools_used.append(tool_name)
+                    all_tool_results.append({"tool": tool_name, "result": result})
+                    if tool_name == "analyze_recipe" and isinstance(result, dict) and "error" not in result:
+                        if result.get("phase") == "confirm_ingredients":
+                            import time as _time
+                            structured_store["recipe_pending"] = {
+                                "ingredients": result.get("extracted_ingredients", []),
+                                "corrections": result.get("corrections", []),
+                                "confidence": result.get("confidence", 0),
+                                "recipe_text": result.get("recipe_text", ""),
+                                "gemma_available": result.get("gemma_available", False),
+                                "created_at": _time.time(),
+                            }
+                        else:
+                            structured_store.setdefault("recipe_store", []).append({
+                                "name": (result.get("recipe_text") or "")[:50],
+                                "recipe_text": result.get("recipe_text", ""),
+                                "ingredients": result.get("ingredients", []),
+                                "total_nutrition": result.get("total", {}),
+                                "dri_analysis": result.get("dri_analysis"),
+                                "item_count": result.get("item_count", 0),
+                                "source": "advisor_analyze",
+                            })
+
+            ws.phase = "done"
+            ws.collected = {}
+            ws.missing = []
+            ws.active_intent = ""
+
+            ws._tool_results = all_tool_results  # type: ignore[attr-defined]
+            ws._tools_used = tools_used  # type: ignore[attr-defined]
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Background Memory Update（Step 6 背景化）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+async def _background_memory_update(
+    old_narr: str, user_msg: str, ai_reply: str,
+    tools_used: list[str], tool_results: list[dict],
+    store: dict, user_id: int, session_id: str,
+    ws_data: dict, history: list[dict], turn_idx: int,
+) -> None:
+    """背景執行記憶更新（narrative + structured）+ Checkpoint 儲存。"""
+    try:
+        narr_task = _summarize_narrative(
+            old_narr, user_msg, ai_reply, tools_used, tool_results,
+        )
+        extract_task = _extract_structured_data(
+            user_msg, tool_results, ai_reply,
+        )
+        new_narrative, patch = await asyncio.gather(narr_task, extract_task)
+
+        logger.info("BG DualMemory narrative: {}", new_narrative[:100])
+        logger.info("BG DualMemory patch keys: {}", list(patch.keys()) if patch else [])
+
+        updated_store = _merge_structured_store(store, patch)
+
+        await _save_memory_leaf(user_id, session_id, new_narrative, tools_used)
+
+        await _save_checkpoint_async(
+            session_id, user_id, turn_idx, ws_data,
+            new_narrative, updated_store, tool_results,
+            history, user_msg, ai_reply,
+        )
+        logger.info("BG checkpoint saved: session={} turn={}", session_id, turn_idx)
+    except Exception as e:
+        logger.error("Background memory update failed: {}", str(e))
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Main Endpoint
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+@router.post("/chat")
+async def advisor_chat(body: AdvisorRequest, request: Request,
+                       user: dict = Depends(require_auth)):
+    logger.info("advisor_chat user={} msg={} hist={} narr={} store_keys={} ws_phase={} session={}",
+                user["sub"], len(body.message), len(body.history),
+                len(body.narrative_memory), list(body.structured_store.keys()),
+                body.workflow_state.get("phase", "idle"), body.session_id or "(none)")
+    auth_header = request.headers.get("authorization", "")
+    auth_token = auth_header.replace("Bearer ", "") if auth_header.startswith("Bearer ") else ""
+    user_id: int = user["sub"]
+
+    # ── Session 管理：建立或沿用 ──
+    session_id = body.session_id
+    if not session_id:
+        try:
+            async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+                resp = await c.post(f"{settings.backend_url}/conversations/sessions",
+                                    json={"user_id": user_id, "title": body.message[:50]})
+                if resp.status_code == 201:
+                    session_id = resp.json().get("id", "")
+                    logger.info("Created new session: {}", session_id)
+        except Exception as e:
+            logger.error("Session creation failed: {}", str(e))
+
+    # ── Checkpoint 恢復 ──
+    _resume_tool_calls: list[dict] | None = None
+    _resume_completed: list[dict] | None = None
+    if body.resume_checkpoint and session_id:
+        try:
+            async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+                resp = await c.get(f"{settings.backend_url}/conversations/checkpoints/latest",
+                                   params={"session_id": session_id, "user_id": user_id})
+                if resp.status_code == 200:
+                    cp = resp.json()
+                    body.history = cp.get("message_history", body.history)
+                    body.narrative_memory = cp.get("narrative_memory", body.narrative_memory)
+                    body.structured_store = cp.get("structured_store", body.structured_store)
+                    body.workflow_state = cp.get("workflow_state", body.workflow_state)
+                    pending = cp.get("pending_tool_calls") or []
+                    if pending and cp.get("phase") == "execute":
+                        body.workflow_state = {"phase": "ready"}
+                        _resume_tool_calls = pending
+                        _resume_completed = cp.get("completed_results") or []
+                        logger.info("Resume mode: {} pending tools, {} already completed",
+                                    len(pending), len(_resume_completed))
+                    logger.info("Restored checkpoint turn={} phase={}",
+                                cp.get("turn_index"), cp.get("phase"))
+        except Exception as e:
+            logger.error("Checkpoint restore failed: {}", str(e))
+
+    try:
+        ws = WorkflowState(**body.workflow_state) if body.workflow_state else WorkflowState()
+    except Exception:
+        ws = WorkflowState()
+
+    if _resume_tool_calls:
+        ws._resume_tool_calls = _resume_tool_calls
+        ws._resume_completed = _resume_completed or []
+
+    narr = body.narrative_memory
+    store = dict(body.structured_store) if body.structured_store else {}
+
+    async def event_stream():
+        nonlocal ws, narr, store
+        _reply_sent = False
+        try:
+            async for evt in _event_stream_inner():
+                if "event: reply" in evt:
+                    _reply_sent = True
+                yield evt
+        except Exception as e:
+            logger.error("event_stream unhandled: {}", str(e))
+            if not _reply_sent:
+                yield _sse_event("reply", {"content": f"抱歉，處理過程發生錯誤：{str(e)[:100]}。請重新送出。"})
+
+    async def _event_stream_inner():
+        nonlocal ws, narr, store
+        ws._emitted_phases = set()
+        profile_data: dict = {}
+
+        # 長期記憶（記憶樹）：非同步啟動，不阻塞 Echo
+        _mem_tree_task = None
+        if user_id:
+            _mem_tree_task = asyncio.create_task(
+                _get_memory_tree_context(user_id, max_tokens=500, query=body.message))
+
+        # ── recipe_pending 過期清理（15 分鐘）──
+        import time as _time
+        _pending = store.get("recipe_pending")
+        if _pending and (_time.time() - _pending.get("created_at", 0)) > 900:
+            store.pop("recipe_pending", None)
+            logger.info("recipe_pending expired, auto-cleaned")
+
+        # ── Step 1: Echo（與記憶樹載入並行，蒐集 / 確認階段跳過）──
+        _skip_echo = ws.phase == "collecting" or body.message.startswith("[RECIPE_CONFIRM]")
+        if not _skip_echo:
+            yield _yield_phase(ws, "echo", "理解需求中...")
+            echo_text = await _step_echo(body.message, body.history, narr)
+            yield _sse_event("echo", {"content": echo_text})
+            logger.info("Step1 Echo: {}", echo_text[:80])
+        else:
+            echo_text = ""
+
+        # 等待記憶樹載入完成（此時 Echo 已送出）
+        long_term_context = ""
+        if _mem_tree_task:
+            tree_ctx = await _mem_tree_task
+            if tree_ctx:
+                long_term_context = tree_ctx
+                logger.info("long_term_context loaded: {}chars", len(tree_ctx))
+
+        # ── Flow Controller（Phase1 + Phase2 + Execute）──
+        flow_replied = False
+        all_tool_results: list[dict] = []
+        tools_used: list[str] = []
+        turn_idx = len(body.history) + 1
+
+        async for event in _flow_controller(
+            body.message, body.history, narr, store,
+            ws, profile_data, auth_token,
+            long_term_context=long_term_context,
+            session_id=session_id,
+            user_id=user_id,
+        ):
+            if '"content"' in event and "event: reply" in event:
+                flow_replied = True
+            yield event
+
+        all_tool_results = getattr(ws, "_tool_results", [])
+        tools_used = getattr(ws, "_tools_used", [])
+
+        # ── Step 5: Analysis（串流模式 — 思考過程 + 回覆）──
+        if all_tool_results and not flow_replied:
+            # 確認階段 passthrough：跳過 Analysis LLM
+            _confirm_phase = False
+            for _tr in all_tool_results:
+                if (_tr.get("tool") == "analyze_recipe"
+                        and isinstance(_tr.get("result"), dict)
+                        and _tr["result"].get("phase") == "confirm_ingredients"):
+                    _confirm_phase = True
+                    _cr = _tr["result"]
+                    _ing_names = [
+                        (i.get("name") or i.get("ingredient", ""))
+                        for i in _cr.get("extracted_ingredients", [])
+                    ]
+                    _corrections = _cr.get("corrections", [])
+                    _conf = _cr.get("confidence", 0)
+                    lines = [f"我從食譜中提取了 **{len(_ing_names)} 種食材**（信心分數 {_conf}）："]
+                    lines.append("、".join(_ing_names))
+                    if _corrections:
+                        lines.append(f"\n⚡ Gemma 校正了 {len(_corrections)} 項")
+                    lines.append("\n請在下方卡片確認食材清單，可新增或移除，確認後再進行完整營養分析。")
+                    reply_content = "\n".join(lines)
+                    yield _sse_event("reply", {"content": reply_content})
+                    break
+
+            if _confirm_phase:
+                pass  # skip analysis LLM — reply already sent above
+            else:
+                yield _yield_phase(ws, "analysis", "分析結果中...")
+
+                # GraphRAG passthrough: 不走 LLM
+                _graphrag_reply = None
+                for _tr in all_tool_results:
+                    if _tr.get("tool") == "search_graphrag":
+                        _r = _tr.get("result", {})
+                        _ans = _r.get("answer", "")
+                        if _ans and not _ans.startswith("[ERROR]"):
+                            parts = [_ans]
+                            _evi = _r.get("evidence", "")
+                            if _evi and not _evi.startswith("[ERROR]"):
+                                parts.append("\n\n---\n\n## 研究方法與證據佐證\n\n" + _evi)
+                            _graphrag_reply = "\n".join(parts)
+                            break
+
+                if _graphrag_reply:
+                    reply_content = _graphrag_reply
+                    yield _sse_event("thinking_start", {"step": "analysis", "label": "生成分析"})
+                    yield _sse_event("thinking_delta", {"step": "analysis", "content": "GraphRAG 直接回傳學術分析（跳過 LLM）"})
+                    yield _sse_event("thinking_end", {"step": "analysis"})
+                else:
+                    # 串流 Analysis LLM call
+                    memory_block = f"對話脈絡摘要：{narr}" if narr else ""
+                    trimmed = _trim_tool_results_for_analysis(all_tool_results)
+                    results_text = json.dumps(trimmed, ensure_ascii=False)
+                    analysis_prompt = PROMPT_ANALYSIS.format(
+                        message=body.message, memory_block=memory_block, tool_results=results_text,
+                    )
+
+                    yield _sse_event("thinking_start", {"step": "analysis", "label": "生成分析"})
+                    _analysis_full = ""
+                    try:
+                        async for chunk in _call_gemma_stream(
+                            [{"role": "user", "content": analysis_prompt}],
+                            temperature=0.3,
+                        ):
+                            _analysis_full += chunk
+                            yield _sse_event("thinking_delta", {"step": "analysis", "content": chunk})
+                    except Exception as e:
+                        logger.warning("Analysis stream failed, fallback: {}", str(e))
+                        if not _analysis_full:
+                            try:
+                                _analysis_full = await _call_gemma(
+                                    [{"role": "user", "content": analysis_prompt}],
+                                    temperature=0.3,
+                                )
+                                yield _sse_event("thinking_delta", {"step": "analysis", "content": _analysis_full})
+                            except Exception as e2:
+                                logger.warning("Analysis fallback also failed: {}", str(e2))
+                    yield _sse_event("thinking_end", {"step": "analysis"})
+
+                    reply_content = _strip_thinking(_analysis_full).strip()
+                    if not reply_content or len(reply_content) < _MIN_ANALYSIS_LEN:
+                        logger.info("Analysis stream too short ({}), fallback to _step_analysis", len(reply_content or ""))
+                        try:
+                            reply_content, _ = await _step_analysis(body.message, narr, all_tool_results)
+                        except Exception:
+                            reply_content = "工具查詢已完成，結果顯示在上方卡片中。（LLM 分析暫時無法使用）"
+
+                yield _sse_event("reply", {"content": reply_content})
+        elif not flow_replied:
+            reply_content = echo_text
+            if reply_content:
+                yield _sse_event("reply", {"content": reply_content})
+        else:
+            reply_content = ""
+
+        # ── Interrupted task hint ──
+        if ws.interrupted_state and ws.phase == "done":
+            hint = f"\n\n---\n💡 您之前還有未完成的任務：**{ws.interrupted_from}**。回覆「回到剛才」即可繼續。"
+            yield _sse_event("reply", {"content": hint})
+
+        # ── Emit workflow_state + session_id early（記憶壓縮可能超時，先送關鍵狀態）──
+        ws_data = ws.model_dump()
+        for k in ("_tool_results", "_tools_used", "_phase2_tool_calls", "_prev_results"):
+            ws_data.pop(k, None)
+        yield _sse_event("workflow_state", ws_data)
+        if session_id:
+            yield _sse_event("session_id", {"session_id": session_id})
+
+        # ── Step 6: Dual Memory（背景執行，不阻塞 SSE 串流）──
+        for _p in _PHASE_ORDER:
+            if _p not in ws._emitted_phases:
+                yield _yield_phase(ws, _p, _PHASE_FILL_LABELS[_p])
+        yield _yield_phase(ws, "memory", "更新記憶")
+        should_update_memory = (
+            all_tool_results
+            or (not flow_replied and reply_content)
+            or (flow_replied and ws.phase != "collecting")
+        )
+
+        yield _sse_event("narrative_memory", {"summary": narr})
+        yield _sse_event("structured_store", {"store": store})
+
+        if should_update_memory and session_id:
+            asyncio.create_task(_background_memory_update(
+                narr, body.message, reply_content, tools_used, all_tool_results,
+                dict(store), user_id, session_id, ws_data,
+                list(body.history), turn_idx,
+            ))
+        elif session_id:
+            asyncio.create_task(_save_checkpoint_async(
+                session_id, user_id, turn_idx, ws_data,
+                narr, store, all_tool_results, body.history, body.message,
+                reply_content,
+            ))
+
+        if session_id:
+            yield _sse_event("checkpoint_saved", {
+                "session_id": session_id, "turn_index": turn_idx,
+            })
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Checkpoint Persistence
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+async def _save_checkpoint_async(
+    session_id: str, user_id: int, turn_index: int,
+    ws_data: dict, narrative: str, store: dict,
+    tool_results: list, history: list,
+    user_msg: str, reply_content: str,
+) -> None:
+    msg_history = list(history[-28:])
+    if user_msg:
+        msg_history.append({"role": "user", "content": user_msg})
+    if reply_content:
+        msg_history.append({"role": "assistant", "content": reply_content[:2000]})
+    completed = []
+    for tr in tool_results:
+        completed.append({
+            "tool": tr.get("tool", ""),
+            "summary": _summarize_result(tr.get("tool", ""), tr.get("result", {})),
+        })
+    try:
+        async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+            resp = await c.post(
+                f"{settings.backend_url}/conversations/checkpoints",
+                json={
+                    "session_id": session_id,
+                    "user_id": user_id,
+                    "turn_index": turn_index,
+                    "phase": ws_data.get("phase", "idle"),
+                    "workflow_state": ws_data,
+                    "pending_tool_calls": [],
+                    "completed_results": completed,
+                    "narrative_memory": narrative,
+                    "structured_store": store,
+                    "message_history": msg_history[-30:],
+                },
+            )
+            if resp.status_code != 201:
+                logger.warning("Checkpoint save HTTP {}: {}", resp.status_code, resp.text[:200])
+    except Exception as e:
+        logger.error("Checkpoint save failed: {}", str(e))
+
+
+async def _save_checkpoint_incremental(
+    session_id: str, user_id: int, turn_index: int, phase: str,
+    narrative: str, store: dict,
+    history: list[dict], message: str,
+    completed_results: list[dict], pending_tool_calls: list[dict],
+) -> None:
+    msg_history = list(history[-28:])
+    msg_history.append({"role": "user", "content": message})
+    try:
+        async with httpx.AsyncClient(timeout=_BACKEND_TIMEOUT) as c:
+            resp = await c.post(
+                f"{settings.backend_url}/conversations/checkpoints",
+                json={
+                    "session_id": session_id,
+                    "user_id": user_id,
+                    "turn_index": turn_index,
+                    "phase": phase,
+                    "workflow_state": {"phase": phase},
+                    "pending_tool_calls": pending_tool_calls,
+                    "completed_results": completed_results,
+                    "narrative_memory": narrative,
+                    "structured_store": store,
+                    "message_history": msg_history[-30:],
+                },
+            )
+            if resp.status_code != 201:
+                logger.warning("Incremental checkpoint HTTP {}: {}", resp.status_code, resp.text[:200])
+    except Exception as e:
+        logger.error("Incremental checkpoint error: {}", str(e))
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Helpers
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def _summarize_result(tool_name: str, result: dict) -> str:
+    if "error" in result:
+        return f"⚠️ {result['error']}"
+    summaries = {
+        "search_symptom": lambda r: f"找到 {len(r.get('effects', []))} 個效果、{len(r.get('recommendations', []))} 個推薦、{len(r.get('vector_matches', []))} 個語義匹配",
+        "search_graphrag": lambda r: f"找到 {len(r.get('sources', []))} 篇文獻（含完整學術分析）",
+        "get_nutrient_ranking": lambda r: f"取得前 {len(r.get('top_foods', []))} 名",
+        "search_food": lambda r: f"找到 {len(r.get('results', []))} 筆食物",
+        "browse_taiwan_food": lambda r: f"找到 {r.get('pagination', {}).get('total', len(r.get('foods', [])))} 筆台灣食品",
+        "analyze_recipe": lambda r: f"分析完成（{r.get('item_count', len(r.get('ingredients', [])))} 種食材）",
+        "get_literature_papers": lambda r: f"找到 {r.get('total', len(r.get('papers', [])))} 篇論文",
+        "get_saved_recipes": lambda r: f"取得 {r.get('total', 0)} 份食譜",
+        "get_calendar_entries": lambda r: f"取得 {len(r.get('entries', []))} 筆",
+        "add_to_calendar": lambda r: f"已加入行事曆（{r.get('entry_date', '')}）" if r.get("success") else "加入失敗",
+        "delete_calendar_entry": lambda r: f"已刪除 {r.get('deleted_count', 0)} 筆（{r.get('entry_date', '')}）" if r.get("success") else "刪除失敗",
+        "get_user_profile": lambda r: f"個人資料（{r.get('gender', '')} {r.get('age', '')}歲）",
+        "update_user_profile": lambda r: "個人資料已更新",
+        "synthesize_advice": lambda r: f"營養建議（{r.get('recipe_name', '食譜')}，{r.get('dri_analysis', {}).get('deficient_count', '?')} 項不足）",
+    }
+    fn = summaries.get(tool_name)
+    return fn(result) if fn else "完成"
