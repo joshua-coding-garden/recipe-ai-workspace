@@ -1,0 +1,1 @@
+import{c as a}from"./client-6-3A6J8p.js";const n=(t,e)=>a.post("/auth/login",{email:t,password:e}).then(o=>o.data),i=(t,e,o)=>a.post("/auth/register",{email:t,password:e,name:o}).then(s=>s.data),l=()=>a.get("/profile").then(t=>t.data),p=t=>a.put("/profile",t).then(e=>e.data);export{l as g,n as l,i as r,p as u};

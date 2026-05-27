@@ -1,0 +1,1 @@
+import{j as e,t as r}from"./index-Cbvnt8tZ.js";function n({message:o}){return o?e.jsx("div",{style:{background:r.errorBg,border:`1px solid ${r.error}`,borderRadius:"8px",padding:"12px 16px",color:r.error,margin:"12px 0"},children:o}):null}export{n as E};

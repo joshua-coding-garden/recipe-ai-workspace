@@ -1,0 +1,16 @@
+import client from "./client";
+
+export const listEntries = (startDate, endDate) =>
+  client
+    .get("/calendar/entries", {
+      params: { start_date: startDate, end_date: endDate },
+    })
+    .then((r) => r.data);
+
+export const addEntry = (entryDate, recipeId) =>
+  client
+    .post("/calendar/entries", { entry_date: entryDate, recipe_id: recipeId })
+    .then((r) => r.data);
+
+export const deleteEntry = (entryId) =>
+  client.delete(`/calendar/entries/${entryId}`).then((r) => r.data);

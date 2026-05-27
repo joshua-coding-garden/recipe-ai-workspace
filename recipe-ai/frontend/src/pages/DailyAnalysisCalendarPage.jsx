@@ -1,0 +1,846 @@
+import { useEffect, useMemo, useState, useCallback } from "react";
+import theme from "../utils/theme";
+import { listRecipes } from "../api/recipeApi";
+import { getProfile } from "../api/authApi";
+import { listEntries, addEntry, updateEntry, deleteEntry } from "../api/calendarApi";
+import { getNutrientFoods } from "../api/healthApi";
+import { sumRecipeNutrients } from "../utils/recipeNutritionAggregator";
+import {
+  getDriTargets,
+  getNutrientMeta,
+  FIELD_META_LIST,
+  ACTIVITY_DEFAULT,
+} from "../utils/driReferences";
+import { buildDriRows, calculateDriGap, suggestedServing, STATUS_COLORS } from "../utils/driCalculations";
+import ServingReferenceBox from "../components/common/ServingReferenceBox";
+
+const RECIPE_DND_MIME = "application/x-recipe-id";
+
+export default function DailyAnalysisCalendarPage() {
+  const today = useMemo(() => new Date(), []);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const [selectedDate, setSelectedDate] = useState(formatDateKey(today));
+  const [recipes, setRecipes] = useState([]);
+  const [entries, setEntries] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [foodRecs, setFoodRecs] = useState({});
+  const [recsLoading, setRecsLoading] = useState(false);
+  const [hoverCell, setHoverCell] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [rs, p] = await Promise.all([listRecipes(), getProfile().catch(() => null)]);
+        setRecipes(rs || []);
+        setProfile(p || null);
+      } catch (e) {
+        setError("載入食譜失敗：" + (e.response?.data?.detail || e.message));
+      }
+    })();
+  }, []);
+
+  const monthRange = useMemo(() => {
+    const first = new Date(viewYear, viewMonth, 1);
+    const last = new Date(viewYear, viewMonth + 1, 0);
+    return { first, last };
+  }, [viewYear, viewMonth]);
+
+  const refreshEntries = useCallback(async () => {
+    try {
+      const data = await listEntries(
+        formatDateKey(monthRange.first),
+        formatDateKey(monthRange.last),
+      );
+      setEntries(data || []);
+    } catch (e) {
+      setError("載入行事曆失敗：" + (e.response?.data?.detail || e.message));
+    }
+  }, [monthRange.first, monthRange.last]);
+
+  useEffect(() => {
+    refreshEntries();
+  }, [refreshEntries]);
+
+  const entriesByDate = useMemo(() => {
+    const m = {};
+    for (const e of entries) {
+      const k = e.entry_date;
+      (m[k] = m[k] || []).push(e);
+    }
+    return m;
+  }, [entries]);
+
+  const selectedEntries = entriesByDate[selectedDate] || [];
+
+  const aggregatedIntake = useMemo(
+    () => sumRecipeNutrients(selectedEntries),
+    [selectedEntries],
+  );
+
+  const driInfo = useMemo(() => {
+    const age = Number(profile?.age) || 30;
+    const gender = profile?.gender === "female" ? "female" : "male";
+    const activityLevel = profile?.activity_level_zh || ACTIVITY_DEFAULT;
+    return getDriTargets({ age, gender, activityLevel });
+  }, [profile]);
+
+  const driRows = useMemo(
+    () => buildDriRows(driInfo.targets, driInfo.upperLimits),
+    [driInfo],
+  );
+
+  const gapResults = useMemo(
+    () => calculateDriGap(aggregatedIntake, driRows),
+    [aggregatedIntake, driRows],
+  );
+
+  const deficientGaps = useMemo(
+    () => gapResults.filter((g) => g.supported && (g.status === "deficient" || g.status === "low")),
+    [gapResults],
+  );
+
+  useEffect(() => {
+    if (selectedEntries.length === 0) {
+      setFoodRecs({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        setRecsLoading(true);
+        const recs = {};
+        for (const g of deficientGaps) {
+          try {
+            const data = await getNutrientFoods(g.field, 5);
+            recs[g.field] = {
+              nutrient: g.nutrient,
+              gap: g.gap,
+              unit: g.unit,
+              foods: data?.foods || data || [],
+            };
+          } catch {
+            recs[g.field] = { nutrient: g.nutrient, gap: g.gap, unit: g.unit, foods: [] };
+          }
+          if (cancelled) return;
+        }
+        if (!cancelled) setFoodRecs(recs);
+      } finally {
+        if (!cancelled) setRecsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDate, deficientGaps.length, selectedEntries.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function shiftMonth(delta) {
+    const d = new Date(viewYear, viewMonth + delta, 1);
+    setViewYear(d.getFullYear());
+    setViewMonth(d.getMonth());
+  }
+
+  async function handleAddRecipeToDate(dateKey, recipeId) {
+    if (!dateKey || !recipeId) return;
+    try {
+      setBusy(true);
+      await addEntry(dateKey, Number(recipeId));
+      await refreshEntries();
+      setSelectedDate(dateKey);
+    } catch (e) {
+      alert("加入失敗：" + (e.response?.data?.detail || e.message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleRemoveEntry(entryId) {
+    try {
+      setBusy(true);
+      await deleteEntry(entryId);
+      await refreshEntries();
+    } catch (e) {
+      alert("移除失敗：" + (e.response?.data?.detail || e.message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleUpdateEntryServings(entryId, servingsOverride) {
+    try {
+      setBusy(true);
+      await updateEntry(entryId, { servings_override: servingsOverride });
+      await refreshEntries();
+    } catch (e) {
+      alert("更新份數失敗：" + (e.response?.data?.detail || e.message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div style={s.page}>
+      <h2 style={s.title}>日分析行事曆</h2>
+      {error && <div style={s.error}>{error}</div>}
+
+      <div style={s.layout}>
+        <aside style={s.sidePanel}>
+          <h3 style={s.sideTitle}>我的食譜</h3>
+          <p style={s.hint}>拖到日期格，或點 + 加到所選日期</p>
+          {recipes.length === 0 ? (
+            <p style={s.muted}>尚無儲存食譜</p>
+          ) : (
+            <div style={s.recipeList}>
+              {recipes.map((r) => (
+                <div
+                  key={r.id}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = "copy";
+                    e.dataTransfer.setData(RECIPE_DND_MIME, String(r.id));
+                    e.dataTransfer.setData("text/plain", String(r.id));
+                  }}
+                  style={s.recipeChip}
+                >
+                  <span style={s.recipeName}>{r.recipe_name || "未命名食譜"}</span>
+                  <button
+                    style={s.addBtn}
+                    title={`加到 ${selectedDate}`}
+                    onClick={() => handleAddRecipeToDate(selectedDate, r.id)}
+                    disabled={busy}
+                  >
+                    + 加到 {selectedDate.slice(5)}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </aside>
+
+        <section style={s.mainPanel}>
+          <CalendarGrid
+            year={viewYear}
+            month={viewMonth}
+            entriesByDate={entriesByDate}
+            selectedDate={selectedDate}
+            hoverCell={hoverCell}
+            today={today}
+            onShiftMonth={shiftMonth}
+            onSelectDate={setSelectedDate}
+            onDragOverCell={(dateKey) => setHoverCell(dateKey)}
+            onDragLeaveCell={() => setHoverCell(null)}
+            onDropOnCell={(dateKey, e) => {
+              const recipeId = e.dataTransfer.getData(RECIPE_DND_MIME);
+              setHoverCell(null);
+              if (!recipeId) return;
+              handleAddRecipeToDate(dateKey, recipeId);
+            }}
+          />
+
+          <DailyDetailPanel
+            selectedDate={selectedDate}
+            entries={selectedEntries}
+            aggregatedIntake={aggregatedIntake}
+            driInfo={driInfo}
+            gapResults={gapResults}
+            foodRecs={foodRecs}
+            recsLoading={recsLoading}
+            onUpdateEntryServings={handleUpdateEntryServings}
+            onRemoveEntry={handleRemoveEntry}
+            busy={busy}
+          />
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function CalendarGrid({
+  year,
+  month,
+  entriesByDate,
+  selectedDate,
+  hoverCell,
+  today,
+  onShiftMonth,
+  onSelectDate,
+  onDragOverCell,
+  onDragLeaveCell,
+  onDropOnCell,
+}) {
+  const cells = useMemo(() => buildMonthCells(year, month), [year, month]);
+  const todayKey = formatDateKey(today);
+
+  return (
+    <div style={s.calendarCard}>
+      <div style={s.calendarHeader}>
+        <button style={s.navBtn} onClick={() => onShiftMonth(-1)}>◀</button>
+        <span style={s.monthLabel}>{year} 年 {month + 1} 月</span>
+        <button style={s.navBtn} onClick={() => onShiftMonth(1)}>▶</button>
+      </div>
+
+      <div style={s.weekHeader}>
+        {["日", "一", "二", "三", "四", "五", "六"].map((w) => (
+          <div key={w} style={s.weekHeaderCell}>{w}</div>
+        ))}
+      </div>
+
+      <div style={s.calendarGrid}>
+        {cells.map((cell) => {
+          const dateKey = cell.dateKey;
+          const dayEntries = entriesByDate[dateKey] || [];
+          const isSelected = dateKey === selectedDate;
+          const isToday = dateKey === todayKey;
+          const isHover = dateKey === hoverCell;
+          const isOutMonth = !cell.inMonth;
+
+          return (
+            <div
+              key={dateKey}
+              onClick={() => onSelectDate(dateKey)}
+              onDragOver={(e) => {
+                if (e.dataTransfer.types.includes(RECIPE_DND_MIME)) {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "copy";
+                  onDragOverCell(dateKey);
+                }
+              }}
+              onDragLeave={onDragLeaveCell}
+              onDrop={(e) => {
+                e.preventDefault();
+                onDropOnCell(dateKey, e);
+              }}
+              style={{
+                ...s.dayCell,
+                ...(isOutMonth ? s.dayOutMonth : {}),
+                ...(isSelected ? s.daySelected : {}),
+                ...(isToday ? s.dayToday : {}),
+                ...(isHover ? s.dayHover : {}),
+              }}
+            >
+              <div style={s.dayNumber}>{cell.day}</div>
+              {dayEntries.length > 0 && (
+                <div style={s.dayBadge}>{dayEntries.length}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function DailyDetailPanel({
+  selectedDate,
+  entries,
+  aggregatedIntake,
+  driInfo,
+  gapResults,
+  foodRecs,
+  recsLoading,
+  onUpdateEntryServings,
+  onRemoveEntry,
+  busy,
+}) {
+  const supportedFields = useMemo(
+    () => FIELD_META_LIST.filter((f) => f.supported !== false),
+    [],
+  );
+  const groupedFields = useMemo(() => {
+    const groups = {};
+    for (const f of supportedFields) {
+      const key = f.category || "其他";
+      (groups[key] = groups[key] || []).push(f);
+    }
+    return groups;
+  }, [supportedFields]);
+  const groupNames = Object.keys(groupedFields);
+  const [customGroup, setCustomGroup] = useState(groupNames[0] || "");
+  const fieldsForGroup = groupedFields[customGroup] || supportedFields;
+  const [customField, setCustomField] = useState(fieldsForGroup[0]?.field || "");
+  const [customResult, setCustomResult] = useState(null);
+  const [customLoading, setCustomLoading] = useState(false);
+
+  useEffect(() => {
+    if (!groupNames.includes(customGroup) && groupNames[0]) {
+      setCustomGroup(groupNames[0]);
+      setCustomField((groupedFields[groupNames[0]] || [])[0]?.field || "");
+      setCustomResult(null);
+    }
+  }, [customGroup, groupNames, groupedFields]);
+
+  function handleCustomGroupChange(nextGroup) {
+    const nextFields = groupedFields[nextGroup] || [];
+    setCustomGroup(nextGroup);
+    setCustomField(nextFields[0]?.field || "");
+    setCustomResult(null);
+  }
+
+  function handleCustomFieldChange(nextField) {
+    setCustomField(nextField);
+    setCustomResult(null);
+  }
+
+  async function handleCustomNutrientQuery() {
+    if (!customField) return;
+    try {
+      setCustomLoading(true);
+      const meta = getNutrientMeta(customField);
+      const data = await getNutrientFoods(customField, 10);
+      setCustomResult({
+        field: customField,
+        nutrient: meta.label || customField,
+        unit: meta.unit || "",
+        foods: data?.foods || data || [],
+      });
+    } finally {
+      setCustomLoading(false);
+    }
+  }
+
+  const macroItems = [
+    { key: "calories", label: "熱量", unit: "kcal", target: driInfo.targets?.cal_per_100g },
+    { key: "protein", label: "蛋白質", unit: "g", target: driInfo.targets?.protein_per_100g },
+    { key: "carbs", label: "碳水", unit: "g", target: driInfo.targets?.carbon_per_100g },
+    { key: "fat", label: "脂肪", unit: "g", target: driInfo.targets?.fats_per_100g },
+    { key: "fiber", label: "纖維", unit: "g", target: driInfo.targets?.dietary_fiber_per_100g },
+  ];
+
+  const hpaIntake = useMemo(() => {
+    const out = { ...aggregatedIntake };
+    if (out.cal_per_100g == null) out.cal_per_100g = aggregatedIntake.calories || 0;
+    if (out.protein_per_100g == null) out.protein_per_100g = aggregatedIntake.protein || 0;
+    if (out.carbon_per_100g == null) out.carbon_per_100g = aggregatedIntake.carbs || 0;
+    if (out.fats_per_100g == null) out.fats_per_100g = aggregatedIntake.fat || 0;
+    if (out.dietary_fiber_per_100g == null) out.dietary_fiber_per_100g = aggregatedIntake.fiber || 0;
+    return out;
+  }, [aggregatedIntake]);
+
+  const driRowsHpa = useMemo(
+    () => buildDriRows(driInfo.targets, driInfo.upperLimits),
+    [driInfo],
+  );
+  const gapsHpa = useMemo(
+    () => calculateDriGap(hpaIntake, driRowsHpa),
+    [hpaIntake, driRowsHpa],
+  );
+
+  return (
+    <div style={s.detailCard}>
+      <div style={s.detailHeader}>
+        <h3 style={s.detailTitle}>{selectedDate} 該日詳情</h3>
+        <span style={s.muted}>{entries.length} 份食譜</span>
+      </div>
+
+      {entries.length === 0 ? (
+        <p style={s.muted}>尚未匯入任何食譜。從左側拖一個食譜到日期格，或點 +。</p>
+      ) : (
+        <>
+          <div style={s.entryList}>
+            {entries.map((e) => (
+              <div key={e.id} style={s.entryRow}>
+                <div style={s.entryMain}>
+                  <span style={s.entryName}>{e.recipe_name || "未命名食譜"}</span>
+                  <span style={s.entryMeta}>原食譜 {round2(e.recipe_servings || 1)} 份，今日計入</span>
+                </div>
+                <label style={s.servingsControl}>
+                  <span>份數</span>
+                  <input
+                    style={s.servingsInput}
+                    type="number"
+                    min="0.1"
+                    step="0.5"
+                    value={e.servings_override ?? 1}
+                    disabled={busy}
+                    onChange={(ev) => {
+                      const next = Math.max(0.1, Number(ev.target.value) || 1);
+                      onUpdateEntryServings(e.id, next);
+                    }}
+                  />
+                </label>
+                <button
+                  style={s.removeBtn}
+                  onClick={() => onRemoveEntry(e.id)}
+                  disabled={busy}
+                  title="從本日移除"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <h4 style={s.sectionTitle}>主要營養素</h4>
+          <div style={s.macroGrid}>
+            {macroItems.map((m) => (
+              <MacroBlock
+                key={m.key}
+                label={m.label}
+                value={aggregatedIntake[m.key] || 0}
+                target={m.target}
+                unit={m.unit}
+              />
+            ))}
+          </div>
+
+          <h4 style={s.sectionTitle}>DRI 缺口分析</h4>
+          <div style={s.gapList}>
+            {gapsHpa.map((g) => {
+              const color = STATUS_COLORS[g.status] || STATUS_COLORS.adequate;
+              const meta = getNutrientMeta(g.field);
+              return (
+                <div key={g.field} style={{ ...s.gapRow, background: color.bg }}>
+                  <span style={s.gapName}>{meta.label}</span>
+                  <span style={{ ...s.gapStatus, color: color.text }}>{color.label}</span>
+                  <span style={s.gapValues}>
+                    {round2(g.actual)} / {round2(g.target)} {g.unit}
+                    {g.gapPercent != null && ` (${g.gapPercent}%)`}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          <h4 style={s.sectionTitle}>
+            缺口推薦食物 {recsLoading && <span style={s.muted}>（載入中…）</span>}
+          </h4>
+          {Object.keys(foodRecs).length === 0 ? (
+            <p style={s.muted}>無顯著缺口或暫無推薦資料。</p>
+          ) : (
+            <div style={s.recsContainer}>
+              {Object.entries(foodRecs).map(([field, rec]) => (
+                <div key={field} style={s.recBlock}>
+                  <div style={s.recHeader}>
+                    {rec.nutrient} <span style={s.muted}>(缺口 {round2(rec.gap)} {rec.unit})</span>
+                  </div>
+                  {rec.foods.length === 0 ? (
+                    <p style={s.muted}>暫無推薦食物</p>
+                  ) : (
+                    <div style={s.recTable}>
+                      <div style={{ ...s.recTableRow, ...s.recTableHead }}>
+                        <span>食物</span>
+                        <span>分類 / 來源</span>
+                        <span>含量</span>
+                        <span>建議份數</span>
+                      </div>
+                      {rec.foods.slice(0, 5).map((f, i) => {
+                        const contentVal = Number(f.content_per_100g ?? f.value ?? 0);
+                        return (
+                        <div key={`${f.id}-${f.source}-${i}`} style={s.recTableRow}>
+                          <span>{f.name || f.food_name || "—"}</span>
+                          <span style={s.muted}>
+                            {f.category || "未分類"} / {sourceLabel(f.source)}
+                          </span>
+                          <span style={s.muted}>
+                            {round2(contentVal)} {rec.unit}/100g
+                          </span>
+                          <span style={{ color: theme.primary, fontWeight: 500, whiteSpace: "nowrap" }}>
+                            {suggestedServing(Math.abs(rec.gap), contentVal, f)}
+                          </span>
+                        </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <h4 style={s.sectionTitle}>自選營養素攝取狀況</h4>
+          <div style={s.customPanel}>
+            <select
+              style={s.select}
+              value={customGroup}
+              onChange={(e) => handleCustomGroupChange(e.target.value)}
+            >
+              {groupNames.map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+            <select
+              style={s.select}
+              value={customField}
+              onChange={(e) => handleCustomFieldChange(e.target.value)}
+            >
+              {fieldsForGroup.map((f) => (
+                <option key={f.field} value={f.field}>{f.name}</option>
+              ))}
+            </select>
+            <button
+              style={s.queryBtn}
+              onClick={handleCustomNutrientQuery}
+              disabled={customLoading || !customField}
+            >
+              {customLoading ? "查詢中..." : "查詢 Top 10"}
+            </button>
+          </div>
+          {customResult && (
+            <div style={s.customResult}>
+              <div style={s.recHeader}>
+                {customResult.nutrient}
+                <span style={s.muted}> 目前攝取 {round2(hpaIntake[customResult.field])} {customResult.unit}</span>
+              </div>
+              <div style={s.recTable}>
+                <div style={{ ...s.recTableRow, ...s.recTableHead }}>
+                  <span>食物</span>
+                  <span>分類 / 來源</span>
+                  <span>含量</span>
+                  <span>備註</span>
+                </div>
+                {customResult.foods.slice(0, 10).map((f, i) => (
+                  <div key={`${customResult.field}-${f.id}-${f.source}-${i}`} style={s.recTableRow}>
+                    <span>{f.name || f.food_name || "—"}</span>
+                    <span style={s.muted}>{f.category || "未分類"} / {sourceLabel(f.source)}</span>
+                    <span style={s.muted}>{round2(Number(f.content_per_100g ?? f.value ?? 0))} {customResult.unit}/100g</span>
+                    <span style={s.muted}>{i + 1}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <ServingReferenceBox />
+        </>
+      )}
+    </div>
+  );
+}
+
+function MacroBlock({ label, value, target, unit }) {
+  const t = Number(target) || 0;
+  const v = Number(value) || 0;
+  const pct = t > 0 ? Math.round((v / t) * 100) : null;
+  return (
+    <div style={s.macroBox}>
+      <div style={s.macroLabel}>{label}</div>
+      <div style={s.macroValue}>
+        {round2(v)} {unit}
+      </div>
+      <div style={s.macroTarget}>
+        / {t > 0 ? round2(t) : "—"} {unit}
+        {pct != null && ` (${pct}%)`}
+      </div>
+    </div>
+  );
+}
+
+// ===== helpers =====
+
+function formatDateKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function buildMonthCells(year, month) {
+  const first = new Date(year, month, 1);
+  const startWeekday = first.getDay(); // 0=Sun..6=Sat
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < startWeekday; i++) {
+    const d = new Date(year, month, i - startWeekday + 1);
+    cells.push({ day: d.getDate(), dateKey: formatDateKey(d), inMonth: false });
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(year, month, day);
+    cells.push({ day, dateKey: formatDateKey(d), inMonth: true });
+  }
+  while (cells.length % 7 !== 0) {
+    const last = cells[cells.length - 1];
+    const next = new Date(last.dateKey);
+    next.setDate(next.getDate() + 1);
+    cells.push({ day: next.getDate(), dateKey: formatDateKey(next), inMonth: false });
+  }
+  return cells;
+}
+
+function round2(v) {
+  return Math.round((Number(v) || 0) * 100) / 100;
+}
+
+function sourceLabel(source) {
+  if (source === "taiwan") return "台灣食品";
+  if (source === "foodb") return "FooDB";
+  return source || "資料庫";
+}
+
+const s = {
+  page: { padding: "24px", maxWidth: "1280px", margin: "0 auto" },
+  title: { color: theme.accent, marginBottom: "12px" },
+  error: { background: theme.errorBg, color: theme.error, padding: "8px 12px", borderRadius: 6, marginBottom: 12 },
+  layout: { display: "grid", gridTemplateColumns: "260px 1fr", gap: "16px", alignItems: "start" },
+  sidePanel: { background: theme.cardBg, border: `1px solid ${theme.border}`, borderRadius: 10, padding: 12, position: "sticky", top: 12 },
+  sideTitle: { margin: "4px 0 8px", color: theme.text },
+  hint: { fontSize: 12, color: theme.textLight, marginTop: 0 },
+  recipeList: { display: "flex", flexDirection: "column", gap: 6, maxHeight: "60vh", overflowY: "auto" },
+  recipeChip: {
+    background: theme.inputBg,
+    border: `1px solid ${theme.border}`,
+    borderRadius: 8,
+    padding: "8px 10px",
+    cursor: "grab",
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+  },
+  recipeName: { color: theme.text, fontSize: 13, fontWeight: 600 },
+  addBtn: {
+    background: theme.accentLight,
+    color: theme.accent,
+    border: `1px solid ${theme.accent}`,
+    borderRadius: 4,
+    padding: "2px 8px",
+    fontSize: 11,
+    cursor: "pointer",
+    alignSelf: "flex-start",
+  },
+  mainPanel: { display: "flex", flexDirection: "column", gap: 16 },
+  calendarCard: { background: theme.cardBg, border: `1px solid ${theme.border}`, borderRadius: 10, padding: 12 },
+  calendarHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
+  navBtn: { background: "transparent", border: `1px solid ${theme.border}`, color: theme.text, borderRadius: 4, padding: "4px 12px", cursor: "pointer", fontSize: 16 },
+  monthLabel: { color: theme.text, fontSize: 16, fontWeight: 600 },
+  weekHeader: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, marginBottom: 4 },
+  weekHeaderCell: { textAlign: "center", color: theme.textMuted, fontSize: 12, padding: "4px 0" },
+  calendarGrid: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 },
+  dayCell: {
+    background: theme.inputBg,
+    border: `1px solid ${theme.border}`,
+    borderRadius: 6,
+    minHeight: 60,
+    padding: 4,
+    cursor: "pointer",
+    position: "relative",
+    color: theme.text,
+    fontSize: 12,
+  },
+  dayOutMonth: { background: "transparent", color: theme.textLight, opacity: 0.55 },
+  daySelected: { borderColor: theme.accent, borderWidth: 2, background: theme.accentLight },
+  dayToday: { boxShadow: `inset 0 0 0 1px ${theme.accent}` },
+  dayHover: { background: "#fff8d4", borderColor: theme.warning },
+  dayNumber: { fontWeight: 600 },
+  dayBadge: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+    background: theme.accent,
+    color: "#fff",
+    borderRadius: 12,
+    padding: "0 6px",
+    fontSize: 11,
+    minWidth: 18,
+    textAlign: "center",
+  },
+  detailCard: { background: theme.cardBg, border: `1px solid ${theme.border}`, borderRadius: 10, padding: 16 },
+  detailHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
+  detailTitle: { margin: 0, color: theme.text },
+  muted: { color: theme.textLight, fontSize: 12 },
+  entryList: { display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 },
+  entryRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    background: theme.inputBg,
+    border: `1px solid ${theme.border}`,
+    borderRadius: 6,
+    padding: "6px 10px",
+  },
+  entryMain: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 },
+  entryName: { color: theme.text, fontSize: 13 },
+  entryMeta: { color: theme.textLight, fontSize: 11 },
+  servingsControl: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    color: theme.textMuted,
+    fontSize: 12,
+    whiteSpace: "nowrap",
+  },
+  servingsInput: {
+    width: 62,
+    padding: "3px 6px",
+    border: `1px solid ${theme.border}`,
+    borderRadius: 4,
+    background: theme.cardBg,
+    color: theme.text,
+    fontSize: 12,
+  },
+  removeBtn: {
+    background: "transparent",
+    border: `1px solid ${theme.error}`,
+    color: theme.error,
+    borderRadius: 4,
+    padding: "0 8px",
+    cursor: "pointer",
+    fontSize: 14,
+    lineHeight: 1.4,
+  },
+  sectionTitle: { color: theme.text, marginTop: 16, marginBottom: 8 },
+  macroGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 },
+  macroBox: { background: theme.accentLight, border: `1px solid ${theme.borderLight}`, borderRadius: 8, padding: "8px 10px", textAlign: "center" },
+  macroLabel: { color: theme.textMuted, fontSize: 12 },
+  macroValue: { color: theme.accent, fontSize: 16, fontWeight: 700 },
+  macroTarget: { color: theme.textLight, fontSize: 11 },
+  gapList: { display: "flex", flexDirection: "column", gap: 4 },
+  gapRow: {
+    display: "grid",
+    gridTemplateColumns: "1fr auto auto",
+    gap: 8,
+    alignItems: "center",
+    padding: "4px 10px",
+    borderRadius: 4,
+    fontSize: 12,
+  },
+  gapName: { color: theme.text },
+  gapStatus: { fontWeight: 600 },
+  gapValues: { color: theme.textMuted, fontSize: 11 },
+  recsContainer: { display: "flex", flexDirection: "column", gap: 12 },
+  recBlock: { background: theme.inputBg, border: `1px solid ${theme.border}`, borderRadius: 6, padding: "8px 12px" },
+  recHeader: { color: theme.text, fontWeight: 600, marginBottom: 4, fontSize: 13 },
+  recTable: { display: "flex", flexDirection: "column", gap: 2, fontSize: 12 },
+  recTableRow: {
+    display: "grid",
+    gridTemplateColumns: "1.4fr 1fr 1fr 0.8fr",
+    gap: 8,
+    alignItems: "center",
+    color: theme.text,
+    padding: "4px 0",
+    borderTop: `1px solid ${theme.borderLight}`,
+  },
+  recTableHead: { color: theme.textMuted, fontWeight: 700, borderTop: "none" },
+  customPanel: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 8,
+    alignItems: "center",
+    background: theme.inputBg,
+    border: `1px solid ${theme.border}`,
+    borderRadius: 6,
+    padding: 10,
+  },
+  select: {
+    minWidth: 150,
+    padding: "6px 8px",
+    border: `1px solid ${theme.border}`,
+    borderRadius: 4,
+    background: theme.cardBg,
+    color: theme.text,
+  },
+  queryBtn: {
+    background: theme.accent,
+    color: "#fff",
+    border: "none",
+    borderRadius: 4,
+    padding: "7px 12px",
+    cursor: "pointer",
+    fontSize: 12,
+    fontWeight: 600,
+  },
+  customResult: {
+    marginTop: 8,
+    background: theme.inputBg,
+    border: `1px solid ${theme.border}`,
+    borderRadius: 6,
+    padding: "8px 12px",
+  },
+};

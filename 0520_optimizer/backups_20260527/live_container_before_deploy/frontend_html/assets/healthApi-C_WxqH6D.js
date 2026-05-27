@@ -1,0 +1,1 @@
+import{c as a}from"./client-6-3A6J8p.js";async function n(t){return(await a.post("/health/symptom-search",{keyword:t})).data}async function r(t,s=10){return(await a.get(`/health/nutrients/${encodeURIComponent(t)}/top-foods`,{params:{limit:s}})).data}export{r as g,n as s};
