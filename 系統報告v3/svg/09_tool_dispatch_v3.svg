@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <linearGradient id="headerGrad09" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <filter id="shadow09" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1000" rx="12" fill="#F8FAFB"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1600" height="56" rx="12" fill="url(#headerGrad09)"/>
+  <rect x="0" y="30" width="1600" height="26" fill="url(#headerGrad09)"/>
+  <text x="800" y="38" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">v3 完整工具調度表（13 個工具）</text>
+
+  <!-- Table header -->
+  <rect x="30" y="75" width="50" height="40" rx="6" fill="#0C4A6E"/>
+  <rect x="80" y="75" width="230" height="40" rx="0" fill="#0C4A6E"/>
+  <rect x="310" y="75" width="460" height="40" rx="0" fill="#0C4A6E"/>
+  <rect x="770" y="75" width="290" height="40" rx="0" fill="#0C4A6E"/>
+  <rect x="1060" y="75" width="510" height="40" rx="6" fill="#0C4A6E"/>
+
+  <text x="55" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">#</text>
+  <text x="195" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">工具名</text>
+  <text x="540" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">後端路由</text>
+  <text x="915" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">必要參數</text>
+  <text x="1315" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">說明</text>
+
+  <!-- Row height: 62px each, starting at y=115 -->
+
+  <!-- Row 1 -->
+  <rect x="30" y="118" width="1540" height="58" rx="0" fill="#F0F9FF"/>
+  <text x="55" y="152" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">1</text>
+  <text x="95" y="145" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">get_nutrient_ranking</text>
+  <text x="95" y="163" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">營養素排名</text>
+  <text x="325" y="152" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /health/nutrients/{field}/top-foods</text>
+  <text x="785" y="145" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">field (營養素欄位名)</text>
+  <text x="785" y="163" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">top_n (預設 10)</text>
+  <text x="1075" y="152" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">查詢特定營養素含量最高的食物排名</text>
+
+  <!-- Row 2 -->
+  <rect x="30" y="176" width="1540" height="58" rx="0" fill="white"/>
+  <text x="55" y="210" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">2</text>
+  <text x="95" y="203" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">search_food</text>
+  <text x="95" y="221" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">食物搜尋</text>
+  <text x="325" y="210" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /food/search?q={query}</text>
+  <text x="785" y="210" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">query (搜尋關鍵字)</text>
+  <text x="1075" y="210" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">搜尋台灣食品 + FooDB 食品（雙來源合併）</text>
+
+  <!-- Row 3 -->
+  <rect x="30" y="234" width="1540" height="58" rx="0" fill="#F0F9FF"/>
+  <text x="55" y="268" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">3</text>
+  <text x="95" y="261" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">browse_taiwan_food</text>
+  <text x="95" y="279" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">分類瀏覽</text>
+  <text x="325" y="268" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /food/taiwan/browse?category={cat}</text>
+  <text x="785" y="268" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">category (分類名稱)</text>
+  <text x="1075" y="268" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">依分類瀏覽台灣食品資料庫</text>
+
+  <!-- Row 4 - ENHANCED -->
+  <rect x="30" y="292" width="1540" height="72" rx="0" fill="#FFFBEB"/>
+  <text x="55" y="332" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">4</text>
+  <text x="95" y="318" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B45309" font-weight="bold">analyze_recipe</text>
+  <rect x="235" y="308" width="72" height="18" rx="4" fill="#F59E0B"/>
+  <text x="271" y="321" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">ENHANCED v3</text>
+  <text x="95" y="338" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">食譜分析</text>
+  <text x="325" y="320" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">3 步驟: extract → lookup → calculate</text>
+  <text x="325" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#92400E">+ DRI gap 分析 + 結構化存入 recipe_store</text>
+  <text x="785" y="320" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">recipe_text, servings</text>
+  <text x="785" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">user_profile (可選)</text>
+  <text x="1075" y="320" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">LLM 提取食材 → DB 比對 → 110+ 營養素計算</text>
+  <text x="1075" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#92400E">v3: 結果直接 eager 寫入 structured_store</text>
+
+  <!-- Row 5 -->
+  <rect x="30" y="364" width="1540" height="58" rx="0" fill="white"/>
+  <text x="55" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">5</text>
+  <text x="95" y="391" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">get_literature_papers</text>
+  <text x="95" y="409" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">文獻查詢</text>
+  <text x="325" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /graphrag-api/papers/enriched</text>
+  <text x="785" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">（無必要參數）</text>
+  <text x="1075" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">取得所有論文元數據（含圖表資訊）</text>
+
+  <!-- Row 6 - CHANGED -->
+  <rect x="30" y="422" width="1540" height="58" rx="0" fill="#FFFBEB"/>
+  <text x="55" y="456" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">6</text>
+  <text x="95" y="445" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B45309" font-weight="bold">search_symptom</text>
+  <rect x="235" y="435" width="72" height="18" rx="4" fill="#D97706"/>
+  <text x="271" y="448" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">CHANGED v3</text>
+  <text x="95" y="465" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">症狀搜尋</text>
+  <text x="325" y="456" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">POST /health/symptom-search</text>
+  <text x="785" y="449" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">symptom_text (中文)</text>
+  <text x="785" y="467" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#92400E">v3: 中文直傳，不再前端翻譯</text>
+  <text x="1075" y="456" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">症狀→化合物→推薦食物鏈</text>
+
+  <!-- Row 7 -->
+  <rect x="30" y="480" width="1540" height="58" rx="0" fill="#F0F9FF"/>
+  <text x="55" y="514" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">7</text>
+  <text x="95" y="507" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">search_graphrag</text>
+  <text x="95" y="525" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">GraphRAG 查詢</text>
+  <text x="325" y="514" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">POST graphrag:8002/query-sync</text>
+  <text x="785" y="514" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">query, method (A/B/C/D)</text>
+  <text x="1075" y="514" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">向 GraphRAG API 查詢學術文獻知識圖譜</text>
+
+  <!-- Row 8 -->
+  <rect x="30" y="538" width="1540" height="58" rx="0" fill="white"/>
+  <text x="55" y="572" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">8</text>
+  <text x="95" y="565" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">get_saved_recipes</text>
+  <text x="95" y="583" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">已存食譜</text>
+  <text x="325" y="572" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /recipe/list</text>
+  <text x="785" y="572" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">（無，依 JWT user_id）</text>
+  <text x="1075" y="572" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">取得使用者所有已儲存的食譜清單</text>
+
+  <!-- Row 9 -->
+  <rect x="30" y="596" width="1540" height="58" rx="0" fill="#F0F9FF"/>
+  <text x="55" y="630" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">9</text>
+  <text x="95" y="623" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">get_calendar_entries</text>
+  <text x="95" y="641" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">行事曆查詢</text>
+  <text x="325" y="630" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /calendar/entries?start=...&amp;end=...</text>
+  <text x="785" y="630" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">start_date, end_date</text>
+  <text x="1075" y="630" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">取得指定日期範圍的飲食行事曆</text>
+
+  <!-- Row 10 -->
+  <rect x="30" y="654" width="1540" height="64" rx="0" fill="white"/>
+  <text x="55" y="690" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">10</text>
+  <text x="95" y="680" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">add_to_calendar</text>
+  <text x="95" y="698" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">加入行事曆</text>
+  <text x="325" y="680" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">POST /recipe/save</text>
+  <text x="325" y="698" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">+ POST /calendar/entries（兩步）</text>
+  <text x="785" y="680" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">recipe_data, date,</text>
+  <text x="785" y="698" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">meal_type</text>
+  <text x="1075" y="690" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">先存食譜再建行事曆條目（原子操作）</text>
+
+  <!-- Row 11 - NEW -->
+  <rect x="30" y="718" width="1540" height="64" rx="0" fill="#ECFDF5"/>
+  <text x="55" y="754" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">11</text>
+  <text x="95" y="742" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#059669" font-weight="bold">delete_calendar_entry</text>
+  <rect x="268" y="732" width="52" height="18" rx="4" fill="#10B981"/>
+  <text x="294" y="745" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">NEW v3</text>
+  <text x="95" y="762" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">刪除行事曆</text>
+  <text x="325" y="742" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET → filter → DELETE</text>
+  <text x="325" y="762" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#059669">（智慧匹配：日期+餐別+食譜名）</text>
+  <text x="785" y="742" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">date, meal_type (可選),</text>
+  <text x="785" y="762" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">recipe_name (可選)</text>
+  <text x="1075" y="742" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">先查詢符合條件的條目，再逐一刪除</text>
+  <text x="1075" y="762" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#059669">v3 新增：自然語言意圖 → 結構化參數</text>
+
+  <!-- Row 12 -->
+  <rect x="30" y="782" width="1540" height="58" rx="0" fill="white"/>
+  <text x="55" y="816" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">12</text>
+  <text x="95" y="809" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">get_user_profile</text>
+  <text x="95" y="827" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">取得使用者檔案</text>
+  <text x="325" y="816" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">GET /profile</text>
+  <text x="785" y="816" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">（無，依 JWT user_id）</text>
+  <text x="1075" y="816" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">取得 age/gender/height/weight/activity 等</text>
+
+  <!-- Row 13 -->
+  <rect x="30" y="840" width="1540" height="58" rx="0" fill="#F0F9FF"/>
+  <text x="55" y="874" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#0C4A6E" text-anchor="middle" font-weight="bold">13</text>
+  <text x="95" y="867" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">update_user_profile</text>
+  <text x="95" y="885" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6B7280">更新使用者檔案</text>
+  <text x="325" y="874" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">PUT /profile</text>
+  <text x="785" y="867" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">JSON body: 任意 profile</text>
+  <text x="785" y="885" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">欄位的子集</text>
+  <text x="1075" y="874" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#374151">部分更新使用者個人資料</text>
+
+  <!-- Bottom border -->
+  <rect x="30" y="898" width="1540" height="3" rx="1" fill="#0C4A6E"/>
+
+  <!-- Legend -->
+  <rect x="30" y="915" width="1540" height="65" rx="8" fill="#F5F3FF" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="60" y="942" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5B21B6">標記說明：</text>
+  <rect x="165" y="930" width="72" height="18" rx="4" fill="#F59E0B"/>
+  <text x="201" y="943" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">ENHANCED v3</text>
+  <text x="245" y="943" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">= v3 強化既有功能</text>
+  <rect x="430" y="930" width="72" height="18" rx="4" fill="#D97706"/>
+  <text x="466" y="943" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">CHANGED v3</text>
+  <text x="510" y="943" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">= v3 改變行為</text>
+  <rect x="660" y="930" width="52" height="18" rx="4" fill="#10B981"/>
+  <text x="686" y="943" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">NEW v3</text>
+  <text x="720" y="943" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">= v3 全新工具</text>
+  <text x="60" y="968" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6B7280" font-style="italic">所有工具透過 control 層代理（port 8000），前端不直接呼叫 backend（port 8001）或 graphrag（port 8002）</text>
+</svg>

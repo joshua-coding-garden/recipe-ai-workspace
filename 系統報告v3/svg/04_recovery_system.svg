@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="800" viewBox="0 0 1300 800">
+  <defs>
+    <marker id="arrR" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrD" markerWidth="10" markerHeight="7" refX="5" refY="0" orient="auto">
+      <polygon points="0 0, 10 0, 5 7" fill="#555"/>
+    </marker>
+    <marker id="arrRed" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#DC2626"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16A34A"/>
+    </marker>
+    <filter id="shadow4" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1300" height="800" fill="#FAFBFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="650" y="42" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="26" font-weight="bold" fill="#1E293B">v3 工具自癒引擎（ReIn）</text>
+  <line x1="300" y1="55" x2="1000" y2="55" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- ===== Main Flow: 4 steps horizontal ===== -->
+
+  <!-- Step 1: _execute_tool() -->
+  <rect x="40" y="90" width="250" height="90" rx="12" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow4)"/>
+  <text x="165" y="125" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="17" font-weight="bold" fill="#1E40AF">_execute_tool()</text>
+  <text x="165" y="150" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">執行工具呼叫</text>
+  <text x="165" y="170" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">Backend API → 取得結果</text>
+
+  <!-- Arrow → fail detection -->
+  <line x1="290" y1="135" x2="350" y2="135" stroke="#555" stroke-width="2" marker-end="url(#arrR)"/>
+  <text x="320" y="127" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#DC2626">失敗?</text>
+
+  <!-- Step 2: diagnose() -->
+  <rect x="355" y="90" width="250" height="90" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" filter="url(#shadow4)"/>
+  <text x="480" y="125" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="17" font-weight="bold" fill="#92400E">diagnose()</text>
+  <text x="480" y="150" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B45309">診斷錯誤類型</text>
+  <text x="480" y="170" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">分析失敗原因</text>
+
+  <!-- Arrow → plan -->
+  <line x1="605" y1="135" x2="665" y2="135" stroke="#555" stroke-width="2" marker-end="url(#arrR)"/>
+
+  <!-- Step 3: plan_recovery() -->
+  <rect x="670" y="90" width="280" height="90" rx="12" fill="#F3E8FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow4)"/>
+  <text x="810" y="125" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="17" font-weight="bold" fill="#6B21A8">plan_recovery()</text>
+  <text x="810" y="150" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#9333EA">規劃修復策略</text>
+  <text x="810" y="170" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">選擇最佳修復方案</text>
+
+  <!-- Arrow → execute -->
+  <line x1="950" y1="135" x2="1010" y2="135" stroke="#555" stroke-width="2" marker-end="url(#arrR)"/>
+
+  <!-- Step 4: execute_recovery() -->
+  <rect x="1015" y="90" width="250" height="90" rx="12" fill="#DCFCE7" stroke="#22C55E" stroke-width="2" filter="url(#shadow4)"/>
+  <text x="1140" y="120" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="17" font-weight="bold" fill="#166534">execute_recovery()</text>
+  <text x="1140" y="145" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#16A34A">重試修復</text>
+  <text x="1140" y="168" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">最多重試 1 次</text>
+
+  <!-- ===== 4 Diagnosis Types (below diagnose) ===== -->
+  <line x1="480" y1="180" x2="480" y2="215" stroke="#555" stroke-width="2" marker-end="url(#arrD)"/>
+
+  <rect x="40" y="220" width="240" height="70" rx="8" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="160" y="250" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#9A3412">empty_result</text>
+  <text x="160" y="275" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#EA580C">查詢結果為空</text>
+
+  <rect x="300" y="220" width="240" height="70" rx="8" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="420" y="250" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#9A3412">tool_timeout</text>
+  <text x="420" y="275" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#EA580C">工具執行逾時</text>
+
+  <rect x="560" y="220" width="240" height="70" rx="8" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="680" y="250" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#9A3412">param_mismatch</text>
+  <text x="680" y="275" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#EA580C">參數不匹配</text>
+
+  <rect x="820" y="220" width="240" height="70" rx="8" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="940" y="250" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#9A3412">backend_error</text>
+  <text x="940" y="275" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#EA580C">後端錯誤</text>
+
+  <!-- Connecting lines from diagnose to types -->
+  <path d="M 280 240 L 160 240" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <path d="M 480 215 L 420 220" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <path d="M 480 215 L 680 220" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <path d="M 800 240 L 940 240" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- ===== 4 Recovery Strategies (below plan_recovery) ===== -->
+  <line x1="810" y1="180" x2="810" y2="340" stroke="#555" stroke-width="2" marker-end="url(#arrD)"/>
+
+  <rect x="40" y="350" width="260" height="70" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="170" y="380" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#065F46">synonym_expand</text>
+  <text x="170" y="405" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#059669">同義詞擴展搜尋</text>
+
+  <rect x="320" y="350" width="260" height="70" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="450" y="380" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#065F46">retry_timeout</text>
+  <text x="450" y="405" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#059669">逾時重試（加倍等待）</text>
+
+  <rect x="600" y="350" width="260" height="70" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="730" y="380" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#065F46">field_remap</text>
+  <text x="730" y="405" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#059669">欄位重新映射</text>
+
+  <rect x="880" y="350" width="260" height="70" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow4)"/>
+  <text x="1010" y="380" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#065F46">skip</text>
+  <text x="1010" y="405" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#059669">跳過（附說明）</text>
+
+  <!-- Connecting lines from plan to strategies -->
+  <path d="M 300 385 L 170 385" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <path d="M 810 340 L 450 350" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <path d="M 810 340 L 730 350" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <path d="M 860 385 L 1010 385" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Mapping lines: diagnosis → strategy -->
+  <text x="650" y="318" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#64748B">診斷 → 策略 映射</text>
+  <line x1="160" y1="290" x2="170" y2="350" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="420" y1="290" x2="450" y2="350" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="680" y1="290" x2="730" y2="350" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="940" y1="290" x2="1010" y2="350" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- ===== Example scenario ===== -->
+  <rect x="40" y="470" width="1220" height="200" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="60" y="500" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">範例：食材同義詞自動修復</text>
+
+  <!-- Example flow boxes -->
+  <rect x="60" y="520" width="220" height="65" rx="8" fill="#FFF1F2" stroke="#F43F5E" stroke-width="1.5"/>
+  <text x="170" y="548" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#9F1239">查詢「芝士」</text>
+  <text x="170" y="572" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#E11D48">結果: 0 筆 (empty_result)</text>
+
+  <line x1="280" y1="552" x2="330" y2="552" stroke="#DC2626" stroke-width="2" marker-end="url(#arrRed)"/>
+
+  <rect x="335" y="520" width="250" height="65" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="460" y="548" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#92400E">synonym_expand</text>
+  <text x="460" y="572" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#B45309">_COMMON_FOOD_SYNONYMS 查表</text>
+
+  <line x1="585" y1="552" x2="635" y2="552" stroke="#555" stroke-width="2" marker-end="url(#arrR)"/>
+
+  <rect x="640" y="520" width="320" height="65" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="800" y="543" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1E40AF">嘗試替代名稱</text>
+  <text x="800" y="567" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">「起司」→「乾酪」→「cheese」</text>
+
+  <line x1="960" y1="552" x2="1010" y2="552" stroke="#16A34A" stroke-width="2" marker-end="url(#arrGreen)"/>
+
+  <rect x="1015" y="520" width="220" height="65" rx="8" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="1125" y="548" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">找到「起司」</text>
+  <text x="1125" y="572" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#059669">修復成功! 返回結果</text>
+
+  <!-- Synonyms dictionary concept -->
+  <rect x="60" y="600" width="1200" height="55" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="80" y="625" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">_COMMON_FOOD_SYNONYMS 同義詞字典：</text>
+  <text x="380" y="625" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">"芝士" → ["起司","乾酪","cheese"]   |   "番茄" → ["西紅柿","蕃茄","tomato"]   |   "馬鈴薯" → ["土豆","洋芋","potato"]  ...</text>
+  <text x="80" y="645" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">涵蓋常見台灣/中國/英文食材名稱對照，持續擴充中</text>
+
+  <!-- Legend -->
+  <rect x="40" y="700" width="580" height="50" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="60" y="731" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">圖例:</text>
+  <rect x="110" y="715" width="20" height="20" rx="4" fill="#FFF7ED" stroke="#F97316" stroke-width="1"/>
+  <text x="140" y="731" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">診斷類型</text>
+  <rect x="220" y="715" width="20" height="20" rx="4" fill="#ECFDF5" stroke="#10B981" stroke-width="1"/>
+  <text x="250" y="731" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">修復策略</text>
+  <line x1="340" y1="725" x2="370" y2="725" stroke="#DC2626" stroke-width="2"/>
+  <text x="380" y="731" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#DC2626">失敗路徑</text>
+  <line x1="450" y1="725" x2="480" y2="725" stroke="#16A34A" stroke-width="2"/>
+  <text x="490" y="731" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#16A34A">成功修復</text>
+
+  <!-- Version -->
+  <rect x="1140" y="730" width="130" height="40" rx="8" fill="#1E293B"/>
+  <text x="1205" y="756" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v3 | 2026-05</text>
+</svg>

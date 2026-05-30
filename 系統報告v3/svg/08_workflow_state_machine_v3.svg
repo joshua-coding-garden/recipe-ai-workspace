@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 900" width="1500" height="900">
+  <defs>
+    <marker id="arrow08" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrow08r" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#DC2626"/>
+    </marker>
+    <marker id="arrow08b" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow08g" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#059669"/>
+    </marker>
+    <marker id="arrow08o" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#D97706"/>
+    </marker>
+    <marker id="arrow08p" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7C3AED"/>
+    </marker>
+    <linearGradient id="headerGrad08" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+    <filter id="shadow08" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <filter id="glow08" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1500" height="900" rx="12" fill="#FAFAFE"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1500" height="56" rx="12" fill="url(#headerGrad08)"/>
+  <rect x="0" y="30" width="1500" height="26" fill="url(#headerGrad08)"/>
+  <text x="750" y="38" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">v3 工作流程狀態機（含中斷恢復）</text>
+
+  <!-- ===== STATE MACHINE AREA ===== -->
+
+  <!-- STATE: idle -->
+  <ellipse cx="200" cy="220" rx="80" ry="45" fill="#DBEAFE" stroke="#2563EB" stroke-width="3" filter="url(#shadow08)"/>
+  <text x="200" y="215" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E3A8A" text-anchor="middle">idle</text>
+  <text x="200" y="237" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1E40AF" text-anchor="middle">閒置 / 一般聊天</text>
+
+  <!-- STATE: collecting -->
+  <ellipse cx="550" cy="220" rx="100" ry="50" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3" filter="url(#shadow08)"/>
+  <text x="550" y="215" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#92400E" text-anchor="middle">collecting</text>
+  <text x="550" y="237" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F" text-anchor="middle">收集必要參數中</text>
+
+  <!-- STATE: ready -->
+  <ellipse cx="900" cy="220" rx="80" ry="45" fill="#D1FAE5" stroke="#10B981" stroke-width="3" filter="url(#shadow08)"/>
+  <text x="900" y="215" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#065F46" text-anchor="middle">ready</text>
+  <text x="900" y="237" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#047857" text-anchor="middle">參數齊全，待執行</text>
+
+  <!-- STATE: executing -->
+  <ellipse cx="1200" cy="220" rx="90" ry="50" fill="#EDE9FE" stroke="#7C3AED" stroke-width="3" filter="url(#shadow08)"/>
+  <text x="1200" y="215" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#5B21B6" text-anchor="middle">executing</text>
+  <text x="1200" y="237" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6D28D9" text-anchor="middle">工具執行中</text>
+
+  <!-- STATE: done -->
+  <ellipse cx="1200" cy="420" rx="80" ry="45" fill="#CCFBF1" stroke="#14B8A6" stroke-width="3" filter="url(#shadow08)"/>
+  <text x="1200" y="415" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F766E" text-anchor="middle">done</text>
+  <text x="1200" y="437" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#115E59" text-anchor="middle">執行完成</text>
+
+  <!-- ===== TRANSITIONS ===== -->
+
+  <!-- idle → collecting -->
+  <path d="M280,210 L440,210" stroke="#2563EB" stroke-width="2.5" fill="none" marker-end="url(#arrow08b)"/>
+  <rect x="310" y="186" width="175" height="22" rx="4" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+  <text x="397" y="201" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1E40AF" text-anchor="middle">Phase1 偵測到需要參數</text>
+
+  <!-- collecting → ready -->
+  <path d="M650,210 L810,210" stroke="#059669" stroke-width="2.5" fill="none" marker-end="url(#arrow08g)"/>
+  <rect x="685" y="186" width="140" height="22" rx="4" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="755" y="201" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46" text-anchor="middle">所有參數收齊</text>
+
+  <!-- ready → executing -->
+  <path d="M980,210 L1100,210" stroke="#7C3AED" stroke-width="2.5" fill="none" marker-end="url(#arrow08p)"/>
+  <rect x="1000" y="186" width="100" height="22" rx="4" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="1050" y="201" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle">工具執行</text>
+
+  <!-- executing → done -->
+  <path d="M1200,270 L1200,365" stroke="#14B8A6" stroke-width="2.5" fill="none" marker-end="url(#arrow08g)"/>
+  <rect x="1215" y="305" width="60" height="22" rx="4" fill="#CCFBF1" stroke="#5EEAD4" stroke-width="1"/>
+  <text x="1245" y="320" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0F766E" text-anchor="middle">完成</text>
+
+  <!-- done → idle -->
+  <path d="M1120,430 C900,500 400,500 210,270" stroke="#6B7280" stroke-width="2" fill="none" stroke-dasharray="8,4" marker-end="url(#arrow08)"/>
+  <rect x="600" y="472" width="100" height="22" rx="4" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="650" y="487" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151" text-anchor="middle">下一輪</text>
+
+  <!-- ===== INTERRUPTION: collecting → idle ===== -->
+  <path d="M460,250 C380,310 280,290 210,270" stroke="#DC2626" stroke-width="2.5" fill="none" marker-end="url(#arrow08r)"/>
+  <rect x="280" y="290" width="200" height="40" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="380" y="306" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#991B1B" text-anchor="middle">中斷偵測</text>
+  <text x="380" y="323" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#B91C1C" text-anchor="middle">_detect_interruption_smart()</text>
+
+  <!-- ===== RESUME: idle/done → collecting ===== -->
+  <path d="M200,265 C200,350 350,380 450,270" stroke="#D97706" stroke-width="2.5" fill="none" marker-end="url(#arrow08o)"/>
+  <rect x="240" y="345" width="200" height="40" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="340" y="361" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#92400E" text-anchor="middle">恢復偵測</text>
+  <text x="340" y="378" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#B45309" text-anchor="middle">_detect_resume_smart()</text>
+
+  <!-- done → collecting (resume from done) -->
+  <path d="M1130,440 C900,480 700,350 640,265" stroke="#D97706" stroke-width="2" fill="none" stroke-dasharray="6,3" marker-end="url(#arrow08o)"/>
+  <rect x="830" y="415" width="180" height="22" rx="4" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/>
+  <text x="920" y="430" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#92400E" text-anchor="middle">done 時也可恢復先前任務</text>
+
+  <!-- ===== INTERRUPTED STATE STORAGE ===== -->
+  <rect x="30" y="510" width="530" height="170" rx="10" fill="#FFF1F2" stroke="#E11D48" stroke-width="2" filter="url(#shadow08)"/>
+  <rect x="30" y="510" width="530" height="36" rx="10" fill="#E11D48"/>
+  <rect x="30" y="536" width="530" height="10" fill="#E11D48"/>
+  <text x="295" y="534" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">interrupted_state 儲存結構</text>
+
+  <text x="50" y="570" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#881337" font-weight="bold">intent</text>
+  <text x="150" y="570" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9F1239">原始意圖（如 "analyze_recipe"）</text>
+
+  <text x="50" y="595" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#881337" font-weight="bold">collected</text>
+  <text x="150" y="595" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9F1239">已收集的參數 {recipe_text: "..."}</text>
+
+  <text x="50" y="620" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#881337" font-weight="bold">missing</text>
+  <text x="150" y="620" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9F1239">尚缺參數 ["servings"]</text>
+
+  <text x="50" y="645" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#881337" font-weight="bold">turn_count</text>
+  <text x="150" y="645" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9F1239">已追問幾輪（達上限自動放棄）</text>
+
+  <text x="295" y="672" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#BE123C" text-anchor="middle" font-style="italic">中斷時凍結到 interrupted_state；恢復時解凍回 collecting 狀態</text>
+
+  <!-- ===== TWO RESUME PATHS ===== -->
+  <rect x="590" y="510" width="870" height="170" rx="10" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2" filter="url(#shadow08)"/>
+  <rect x="590" y="510" width="870" height="36" rx="10" fill="#D97706"/>
+  <rect x="590" y="536" width="870" height="10" fill="#D97706"/>
+  <text x="1025" y="534" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">兩種恢復路徑</text>
+
+  <!-- Resume Path 1 -->
+  <rect x="610" y="555" width="405" height="110" rx="8" fill="#FEF9C3" stroke="#EAB308" stroke-width="1.5"/>
+  <text x="620" y="578" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#854D0E">路徑 A：顯式恢復</text>
+  <text x="620" y="600" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#713F12">使用者說：「回到剛才」「繼續分析」</text>
+  <line x1="620" y1="610" x2="1005" y2="610" stroke="#EAB308" stroke-width="1"/>
+  <text x="620" y="630" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">→ LLM classify_resume() 判斷為恢復意圖</text>
+  <text x="620" y="650" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">→ 解凍 interrupted_state → 回到 collecting</text>
+
+  <!-- Resume Path 2 -->
+  <rect x="1035" y="555" width="405" height="110" rx="8" fill="#FEF9C3" stroke="#EAB308" stroke-width="1.5"/>
+  <text x="1045" y="578" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#854D0E">路徑 B：隱式恢復</text>
+  <text x="1045" y="600" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#713F12">使用者直接給缺少的參數值</text>
+  <line x1="1045" y1="610" x2="1430" y2="610" stroke="#EAB308" stroke-width="1"/>
+  <text x="1045" y="630" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">→ _extract_params_deterministic() 偵測到</text>
+  <text x="1045" y="650" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">→ 匹配 missing 欄位 → 自動補齊 → ready</text>
+
+  <!-- ===== DETECTION DETAIL ===== -->
+  <rect x="30" y="705" width="1430" height="85" rx="10" fill="#F0F9FF" stroke="#0EA5E9" stroke-width="2" filter="url(#shadow08)"/>
+  <text x="750" y="732" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#0C4A6E" text-anchor="middle">中斷/恢復偵測機制</text>
+  <text x="50" y="758" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#0C4A6E">_detect_interruption_smart()：LLM 分類（是否偏離主題）+ regex 匹配（問候語/新主題關鍵字），兩者 OR 判定為中斷</text>
+  <text x="50" y="778" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#0C4A6E">_detect_resume_smart()：LLM 分類（是否恢復先前任務），僅在 interrupted_state 存在時才啟用，避免無謂呼叫</text>
+
+  <!-- ===== STATE LEGEND ===== -->
+  <rect x="30" y="810" width="1430" height="70" rx="8" fill="#F5F3FF" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="80" y="840" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5B21B6">狀態色彩</text>
+  <ellipse cx="190" cy="845" rx="12" ry="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="210" y="850" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">idle</text>
+  <ellipse cx="290" cy="845" rx="12" ry="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="310" y="850" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">collecting</text>
+  <ellipse cx="410" cy="845" rx="12" ry="10" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="430" y="850" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">ready</text>
+  <ellipse cx="510" cy="845" rx="12" ry="10" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="530" y="850" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">executing</text>
+  <ellipse cx="630" cy="845" rx="12" ry="10" fill="#CCFBF1" stroke="#14B8A6" stroke-width="1.5"/>
+  <text x="650" y="850" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">done</text>
+
+  <text x="780" y="840" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5B21B6">轉換線色</text>
+  <line x1="870" y1="840" x2="910" y2="840" stroke="#DC2626" stroke-width="2.5"/>
+  <text x="920" y="845" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">中斷</text>
+  <line x1="970" y1="840" x2="1010" y2="840" stroke="#D97706" stroke-width="2.5"/>
+  <text x="1020" y="845" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">恢復</text>
+  <line x1="1080" y1="840" x2="1120" y2="840" stroke="#6B7280" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="1130" y="845" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">循環</text>
+  <line x1="1190" y1="840" x2="1230" y2="840" stroke="#2563EB" stroke-width="2.5"/>
+  <text x="1240" y="845" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#374151">正向推進</text>
+</svg>

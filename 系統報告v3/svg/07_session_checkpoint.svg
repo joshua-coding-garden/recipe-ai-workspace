@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 850" width="1400" height="850">
+  <defs>
+    <marker id="arrow07" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrow07g" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#059669"/>
+    </marker>
+    <linearGradient id="headerGrad07" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0F766E"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <filter id="shadow07" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="850" rx="12" fill="#F8FAFB"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1400" height="56" rx="12" fill="url(#headerGrad07)"/>
+  <rect x="0" y="30" width="1400" height="26" fill="url(#headerGrad07)"/>
+  <text x="700" y="38" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">v3 會話管理與 Checkpoint 系統</text>
+
+  <!-- ===== PART 1: SESSION LIFECYCLE ===== -->
+  <rect x="30" y="75" width="1340" height="220" rx="12" fill="#F0FDFA" stroke="#14B8A6" stroke-width="2" filter="url(#shadow07)"/>
+  <text x="700" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F766E" text-anchor="middle">Part 1：Session 生命週期</text>
+
+  <!-- Step 1: New conversation -->
+  <rect x="55" y="120" width="120" height="55" rx="8" fill="#CCFBF1" stroke="#14B8A6" stroke-width="1.5"/>
+  <text x="115" y="144" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#0F766E" text-anchor="middle">新對話開始</text>
+  <text x="115" y="163" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#115E59" text-anchor="middle">前端觸發</text>
+
+  <line x1="175" y1="147" x2="200" y2="147" stroke="#555" stroke-width="1.5" marker-end="url(#arrow07)"/>
+
+  <!-- Step 2: POST -->
+  <rect x="205" y="120" width="175" height="55" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="292" y="140" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1E40AF" text-anchor="middle">POST</text>
+  <text x="292" y="158" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1E40AF" text-anchor="middle">/conversations/sessions</text>
+  <text x="292" y="172" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#3B82F6" text-anchor="middle">body: {user_id}</text>
+
+  <line x1="380" y1="147" x2="405" y2="147" stroke="#555" stroke-width="1.5" marker-end="url(#arrow07)"/>
+
+  <!-- Step 3: UUID -->
+  <rect x="410" y="120" width="130" height="55" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="475" y="144" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#92400E" text-anchor="middle">回傳 UUID</text>
+  <text x="475" y="163" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#92400E" text-anchor="middle">session_id</text>
+
+  <line x1="540" y1="147" x2="565" y2="147" stroke="#555" stroke-width="1.5" marker-end="url(#arrow07)"/>
+
+  <!-- Step 4: Frontend holds -->
+  <rect x="570" y="120" width="160" height="55" rx="8" fill="#CCFBF1" stroke="#14B8A6" stroke-width="1.5"/>
+  <text x="650" y="140" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#0F766E" text-anchor="middle">前端持有</text>
+  <text x="650" y="158" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#115E59" text-anchor="middle">session_id</text>
+  <text x="650" y="172" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#115E59" text-anchor="middle">存入 React state</text>
+
+  <line x1="730" y1="147" x2="755" y2="147" stroke="#555" stroke-width="1.5" marker-end="url(#arrow07)"/>
+
+  <!-- Step 5: Every request -->
+  <rect x="760" y="120" width="200" height="55" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="860" y="140" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1E40AF" text-anchor="middle">每次 request 帶</text>
+  <text x="860" y="158" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1E40AF" text-anchor="middle">session_id（header / body）</text>
+  <text x="860" y="172" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#3B82F6" text-anchor="middle">後端用此關聯 checkpoint</text>
+
+  <line x1="960" y1="147" x2="985" y2="147" stroke="#555" stroke-width="1.5" marker-end="url(#arrow07)"/>
+
+  <!-- Step 6: close_session -->
+  <rect x="990" y="120" width="150" height="55" rx="8" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="1065" y="140" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#991B1B" text-anchor="middle">close_session()</text>
+  <text x="1065" y="158" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#991B1B" text-anchor="middle">is_active = false</text>
+  <text x="1065" y="172" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#B91C1C" text-anchor="middle">或逾時自動關閉</text>
+
+  <!-- Lifecycle note -->
+  <text x="700" y="205" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#0F766E" text-anchor="middle" font-style="italic">session 是 checkpoint 的容器；一個 session 可有多個 checkpoint（每輪一個 + 工具中途快照）</text>
+
+  <!-- Horizontal divider label -->
+  <rect x="30" y="245" width="1340" height="3" rx="1" fill="#14B8A6" opacity="0.3"/>
+
+  <!-- ===== PART 2 SECTION HEADER ===== -->
+  <text x="700" y="280" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#0F766E" text-anchor="middle">Part 2：Checkpoint 儲存與恢復流程</text>
+
+  <!-- ===== SAVE PATH ===== -->
+  <rect x="30" y="300" width="660" height="280" rx="12" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2" filter="url(#shadow07)"/>
+  <rect x="30" y="300" width="660" height="36" rx="10" fill="#3B82F6"/>
+  <rect x="30" y="326" width="660" height="10" fill="#3B82F6"/>
+  <text x="360" y="324" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="white" text-anchor="middle">儲存路徑</text>
+
+  <!-- Save - regular -->
+  <rect x="50" y="350" width="280" height="100" rx="8" fill="#DBEAFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="190" y="372" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF" text-anchor="middle">每輪結束</text>
+  <text x="190" y="395" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1E3A8A" text-anchor="middle">_save_checkpoint_async()</text>
+  <line x1="60" y1="410" x2="320" y2="410" stroke="#93C5FD" stroke-width="1"/>
+  <text x="70" y="428" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1E3A8A">儲存完整狀態快照</text>
+  <text x="70" y="443" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1E3A8A">非阻塞（asyncio.create_task）</text>
+
+  <!-- Save - incremental -->
+  <rect x="50" y="465" width="280" height="100" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="190" y="487" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#92400E" text-anchor="middle">工具執行中</text>
+  <text x="190" y="510" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F" text-anchor="middle">_save_checkpoint_incremental()</text>
+  <line x1="60" y1="525" x2="320" y2="525" stroke="#FCD34D" stroke-width="1"/>
+  <text x="70" y="543" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78350F">中途快照（防長工具崩潰遺失）</text>
+  <text x="70" y="558" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78350F">記錄 pending_tools 狀態</text>
+
+  <!-- Saved fields -->
+  <rect x="355" y="350" width="320" height="215" rx="8" fill="#F0F9FF" stroke="#0EA5E9" stroke-width="1.5"/>
+  <text x="515" y="372" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0C4A6E" text-anchor="middle">Checkpoint 內容</text>
+  <line x1="365" y1="380" x2="665" y2="380" stroke="#BAE6FD" stroke-width="1"/>
+  <text x="375" y="400" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">1. workflow_state（狀態機位置）</text>
+  <text x="375" y="420" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">2. narrative（敘事摘要）</text>
+  <text x="375" y="440" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">3. structured_store（12 類結構化資料）</text>
+  <text x="375" y="460" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">4. history（對話歷史陣列）</text>
+  <text x="375" y="480" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">5. pending_tools（未完成工具呼叫）</text>
+  <text x="375" y="500" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">6. cognitive_facts（認知事實快照）</text>
+  <text x="375" y="520" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#0C4A6E">7. interrupted_state（中斷狀態備份）</text>
+  <text x="375" y="545" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#0369A1" font-style="italic">全部 JSON 序列化存 JSONB 欄位</text>
+
+  <!-- ===== RESTORE PATH ===== -->
+  <rect x="710" y="300" width="660" height="280" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="2" filter="url(#shadow07)"/>
+  <rect x="710" y="300" width="660" height="36" rx="10" fill="#059669"/>
+  <rect x="710" y="326" width="660" height="10" fill="#059669"/>
+  <text x="1040" y="324" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="white" text-anchor="middle">恢復路徑</text>
+
+  <!-- Restore step 1 -->
+  <rect x="730" y="350" width="200" height="70" rx="8" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="830" y="375" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#065F46" text-anchor="middle">resume_checkpoint=true</text>
+  <text x="830" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46" text-anchor="middle">前端重連時帶此參數</text>
+
+  <line x1="930" y1="385" x2="955" y2="385" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow07g)"/>
+
+  <!-- Restore step 2 -->
+  <rect x="960" y="350" width="195" height="70" rx="8" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="1057" y="372" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#065F46" text-anchor="middle">GET checkpoints/latest</text>
+  <text x="1057" y="395" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#065F46" text-anchor="middle">依 session_id 查最新快照</text>
+
+  <line x1="1155" y1="385" x2="1180" y2="385" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow07g)"/>
+
+  <!-- Restore step 3 -->
+  <rect x="1185" y="350" width="165" height="70" rx="8" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="1267" y="375" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#065F46" text-anchor="middle">還原所有狀態</text>
+  <text x="1267" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#065F46" text-anchor="middle">反序列化 7 項資料</text>
+
+  <!-- Restore step 4 -->
+  <rect x="730" y="440" width="620" height="60" rx="8" fill="#A7F3D0" stroke="#10B981" stroke-width="1.5"/>
+  <text x="1040" y="467" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#065F46" text-anchor="middle">繼續執行 pending_tools → 使用者無感恢復，不需重新描述需求</text>
+  <text x="1040" y="487" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46" text-anchor="middle">工具結果會追補進 history，再走正常回覆流程</text>
+
+  <!-- Restore note -->
+  <text x="1040" y="530" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#047857" text-anchor="middle" font-style="italic">若 checkpoint 找不到（已過期清除），回退到全新 session 模式</text>
+  <text x="1040" y="550" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#047857" text-anchor="middle" font-style="italic">checkpoint 保留天數由 env CHECKPOINT_TTL_DAYS 控制（預設 7）</text>
+
+  <!-- ===== DB TABLES ===== -->
+  <rect x="30" y="600" width="1340" height="230" rx="12" fill="#FDF4FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow07)"/>
+  <rect x="30" y="600" width="1340" height="36" rx="10" fill="#9333EA"/>
+  <rect x="30" y="626" width="1340" height="10" fill="#9333EA"/>
+  <text x="700" y="624" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="white" text-anchor="middle">資料庫表結構</text>
+
+  <!-- Table 1: conversation_sessions -->
+  <rect x="55" y="650" width="600" height="160" rx="8" fill="#FAF5FF" stroke="#C084FC" stroke-width="1.5"/>
+  <text x="355" y="675" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#6B21A8" text-anchor="middle">conversation_sessions</text>
+  <line x1="65" y1="685" x2="645" y2="685" stroke="#E9D5FF" stroke-width="1"/>
+
+  <text x="75" y="708" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">id</text>
+  <text x="155" y="708" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">UUID PRIMARY KEY</text>
+
+  <text x="75" y="730" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">user_id</text>
+  <text x="155" y="730" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">INTEGER REFERENCES users(id)</text>
+
+  <text x="75" y="752" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">is_active</text>
+  <text x="155" y="752" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">BOOLEAN DEFAULT true</text>
+
+  <text x="75" y="774" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">created_at</text>
+  <text x="155" y="774" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">TIMESTAMPTZ DEFAULT now()</text>
+
+  <text x="75" y="796" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">closed_at</text>
+  <text x="155" y="796" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">TIMESTAMPTZ（關閉時寫入）</text>
+
+  <!-- Table 2: conversation_checkpoints -->
+  <rect x="685" y="650" width="665" height="160" rx="8" fill="#FAF5FF" stroke="#C084FC" stroke-width="1.5"/>
+  <text x="1017" y="675" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#6B21A8" text-anchor="middle">conversation_checkpoints</text>
+  <line x1="695" y1="685" x2="1340" y2="685" stroke="#E9D5FF" stroke-width="1"/>
+
+  <text x="705" y="708" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">session_id</text>
+  <text x="810" y="708" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">UUID FK → conversation_sessions</text>
+
+  <text x="705" y="730" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">turn_index</text>
+  <text x="810" y="730" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">INTEGER（第幾輪對話）</text>
+
+  <text x="705" y="752" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">phase</text>
+  <text x="810" y="752" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">TEXT（'full' | 'incremental'）</text>
+
+  <text x="705" y="774" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">state_data</text>
+  <text x="810" y="774" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">JSONB（上述 7 項全部打包）</text>
+
+  <text x="705" y="796" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7C3AED" font-weight="bold">created_at</text>
+  <text x="810" y="796" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#581C87">TIMESTAMPTZ DEFAULT now()</text>
+
+  <!-- FK arrow -->
+  <line x1="680" y1="705" x2="660" y2="705" stroke="#A855F7" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="670" y="720" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#A855F7" text-anchor="middle">FK</text>
+</svg>

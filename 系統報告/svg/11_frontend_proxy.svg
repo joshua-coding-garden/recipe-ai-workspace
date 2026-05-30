@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#555">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#4A90D9">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#27AE60">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#9B59B6">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#E74C3C">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="700" fill="white" />
+
+  <!-- Title -->
+  <text x="500" y="32" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="22" font-weight="bold" fill="#333">Frontend Proxy Routing Architecture</text>
+  <text x="500" y="52" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#777">Vite Dev Server 代理設定 + axios client 配置</text>
+
+  <!-- Legend -->
+  <rect x="20" y="62" width="560" height="32" rx="6" fill="#F8F8F8" stroke="#DDD" stroke-width="1" />
+  <rect x="30" y="70" width="12" height="12" rx="2" fill="#4A90D9" />
+  <text x="48" y="81" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">Frontend routes</text>
+  <rect x="150" y="70" width="12" height="12" rx="2" fill="#27AE60" />
+  <text x="168" y="81" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">Control routes</text>
+  <rect x="270" y="70" width="12" height="12" rx="2" fill="#9B59B6" />
+  <text x="288" y="81" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">Backend routes</text>
+  <rect x="390" y="70" width="12" height="12" rx="2" fill="#E74C3C" />
+  <text x="408" y="81" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">GraphRAG routes</text>
+
+  <!-- ================================================================ -->
+  <!-- Browser Box -->
+  <!-- ================================================================ -->
+  <rect x="20" y="105" width="200" height="55" rx="10" fill="#FFF3E0" stroke="#E67E22" stroke-width="2.5" filter="url(#shadow)" />
+  <text x="120" y="130" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#D35400">Browser</text>
+  <text x="120" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="#888">localhost:3001</text>
+
+  <!-- ================================================================ -->
+  <!-- Vite Dev Server -->
+  <!-- ================================================================ -->
+  <rect x="280" y="100" width="195" height="65" rx="10" fill="#D6EAF8" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="377" y="125" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C6FAC">Vite Dev Server</text>
+  <text x="377" y="143" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#5DADE2">Proxy (vite.config.js)</text>
+  <text x="377" y="158" text-anchor="middle" font-family="monospace" font-size="10" fill="#888">:3001</text>
+
+  <!-- Arrow Browser → Vite -->
+  <line x1="220" y1="132" x2="278" y2="132" stroke="#E67E22" stroke-width="2" marker-end="url(#arrowhead)" />
+
+  <!-- ================================================================ -->
+  <!-- Two proxy paths from Vite -->
+  <!-- ================================================================ -->
+
+  <!-- PATH 1: /api/* → Control -->
+  <line x1="475" y1="115" x2="555" y2="115" stroke="#4A90D9" stroke-width="2.5" marker-end="url(#arrowhead-blue)" />
+  <text x="515" y="108" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#4A90D9">/api/*</text>
+  <text x="515" y="128" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#888">rewrite → /*</text>
+
+  <!-- PATH 2: /graphrag-api/* → GraphRAG -->
+  <line x1="475" y1="150" x2="555" y2="150" stroke="#E74C3C" stroke-width="2.5" marker-end="url(#arrowhead-red)" />
+  <text x="515" y="143" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#E74C3C">/graphrag-api/*</text>
+  <text x="515" y="163" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#888">rewrite → /*</text>
+
+  <!-- ================================================================ -->
+  <!-- Control Service Box -->
+  <!-- ================================================================ -->
+  <rect x="560" y="70" width="200" height="70" rx="10" fill="#D5F5E3" stroke="#27AE60" stroke-width="2.5" filter="url(#shadow)" />
+  <text x="660" y="97" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1E8449">Control Service</text>
+  <text x="660" y="115" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#27AE60">FastAPI</text>
+  <text x="660" y="132" text-anchor="middle" font-family="monospace" font-size="11" fill="#888">localhost:8000</text>
+
+  <!-- ================================================================ -->
+  <!-- GraphRAG API Box -->
+  <!-- ================================================================ -->
+  <rect x="560" y="150" width="200" height="55" rx="10" fill="#FADBD8" stroke="#E74C3C" stroke-width="2.5" filter="url(#shadow)" />
+  <text x="660" y="175" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#C0392B">GraphRAG API</text>
+  <text x="660" y="195" text-anchor="middle" font-family="monospace" font-size="11" fill="#888">localhost:8002</text>
+
+  <!-- ================================================================ -->
+  <!-- /api/* route details (tree layout) -->
+  <!-- ================================================================ -->
+  <rect x="20" y="175" width="510" height="280" rx="8" fill="#EBF5FB" stroke="#85C1E9" stroke-width="1.5" />
+  <text x="30" y="195" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#2C6FAC">/api/* → Control Service (:8000)  [rewrite 掉 /api 前綴]</text>
+
+  <!-- Tree items -->
+  <text x="35" y="218" font-family="monospace" font-size="11" fill="#333">├── /api/advisor/chat</text>
+  <text x="260" y="218" font-family="monospace" font-size="11" fill="#27AE60">→ /advisor/chat</text>
+  <text x="450" y="218" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#E67E22">(SSE stream)</text>
+
+  <text x="35" y="238" font-family="monospace" font-size="11" fill="#333">├── /api/recipe/*</text>
+  <text x="260" y="238" font-family="monospace" font-size="11" fill="#27AE60">→ /recipe/*</text>
+
+  <text x="35" y="258" font-family="monospace" font-size="11" fill="#333">├── /api/food/*</text>
+  <text x="260" y="258" font-family="monospace" font-size="11" fill="#27AE60">→ /food/*</text>
+
+  <text x="35" y="278" font-family="monospace" font-size="11" fill="#333">├── /api/health/*</text>
+  <text x="260" y="278" font-family="monospace" font-size="11" fill="#27AE60">→ /health/*</text>
+
+  <text x="35" y="298" font-family="monospace" font-size="11" fill="#333">├── /api/auth/*</text>
+  <text x="260" y="298" font-family="monospace" font-size="11" fill="#27AE60">→ /auth/*</text>
+
+  <text x="35" y="318" font-family="monospace" font-size="11" fill="#333">├── /api/dri/*</text>
+  <text x="260" y="318" font-family="monospace" font-size="11" fill="#27AE60">→ /dri/*</text>
+
+  <text x="35" y="338" font-family="monospace" font-size="11" fill="#333">├── /api/profile</text>
+  <text x="260" y="338" font-family="monospace" font-size="11" fill="#27AE60">→ /profile</text>
+
+  <text x="35" y="358" font-family="monospace" font-size="11" fill="#333">├── /api/stopwords/*</text>
+  <text x="260" y="358" font-family="monospace" font-size="11" fill="#27AE60">→ /stopwords/*</text>
+
+  <text x="35" y="378" font-family="monospace" font-size="11" fill="#333">├── /api/synonym-dict/*</text>
+  <text x="260" y="378" font-family="monospace" font-size="11" fill="#27AE60">→ /synonym-dict/*</text>
+
+  <text x="35" y="398" font-family="monospace" font-size="11" fill="#333">├── /api/calendar/*</text>
+  <text x="260" y="398" font-family="monospace" font-size="11" fill="#27AE60">→ /calendar/*</text>
+
+  <text x="35" y="418" font-family="monospace" font-size="11" fill="#333">└── /api/diet-logs/*</text>
+  <text x="260" y="418" font-family="monospace" font-size="11" fill="#27AE60">→ /diet-logs/*</text>
+
+  <!-- Vertical connector line for tree -->
+  <line x1="42" y1="210" x2="42" y2="412" stroke="#CCC" stroke-width="1" />
+
+  <!-- ================================================================ -->
+  <!-- /graphrag-api/* route details -->
+  <!-- ================================================================ -->
+  <rect x="555" y="215" width="420" height="100" rx="8" fill="#FDEDEC" stroke="#F1948A" stroke-width="1.5" />
+  <text x="565" y="235" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#C0392B">/graphrag-api/* → GraphRAG API (:8002)</text>
+
+  <text x="570" y="258" font-family="monospace" font-size="11" fill="#333">├── /graphrag-api/query</text>
+  <text x="790" y="258" font-family="monospace" font-size="11" fill="#E74C3C">→ /query</text>
+  <text x="870" y="258" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#E67E22">(SSE)</text>
+
+  <text x="570" y="278" font-family="monospace" font-size="11" fill="#333">├── /graphrag-api/papers/*</text>
+  <text x="790" y="278" font-family="monospace" font-size="11" fill="#E74C3C">→ /papers/*</text>
+
+  <text x="570" y="298" font-family="monospace" font-size="11" fill="#333">└── /graphrag-api/health</text>
+  <text x="790" y="298" font-family="monospace" font-size="11" fill="#E74C3C">→ /health</text>
+
+  <!-- ================================================================ -->
+  <!-- Control → Backend internal routing -->
+  <!-- ================================================================ -->
+  <rect x="555" y="330" width="420" height="155" rx="8" fill="#F4ECF7" stroke="#BB8FCE" stroke-width="1.5" />
+  <text x="565" y="352" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#7D3C98">Control (:8000) → Backend (:8001) Internal Routing</text>
+  <text x="565" y="370" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">Control 內部再透過 httpx 轉發到 Backend</text>
+
+  <!-- Backend box inside -->
+  <rect x="820" y="384" width="140" height="40" rx="6" fill="#E8DAEF" stroke="#9B59B6" stroke-width="2" />
+  <text x="890" y="404" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#7D3C98">Backend</text>
+  <text x="890" y="418" text-anchor="middle" font-family="monospace" font-size="10" fill="#888">:8001</text>
+
+  <text x="570" y="398" font-family="monospace" font-size="11" fill="#333">├── /food/*</text>
+  <text x="720" y="398" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#9B59B6">proxied via httpx</text>
+
+  <text x="570" y="418" font-family="monospace" font-size="11" fill="#333">├── /recipe/*</text>
+  <text x="720" y="418" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#9B59B6">calls backend endpoints</text>
+
+  <text x="570" y="438" font-family="monospace" font-size="11" fill="#333">├── /health/*</text>
+  <text x="720" y="438" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#9B59B6">proxied</text>
+
+  <text x="570" y="458" font-family="monospace" font-size="11" fill="#333">└── /calendar/*</text>
+  <text x="720" y="458" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#9B59B6">proxied</text>
+
+  <!-- Arrows from tree items to Backend box -->
+  <line x1="780" y1="404" x2="818" y2="404" stroke="#9B59B6" stroke-width="1.5" marker-end="url(#arrowhead-purple)" />
+
+  <!-- ================================================================ -->
+  <!-- Axios Client Configuration -->
+  <!-- ================================================================ -->
+  <rect x="20" y="470" width="510" height="210" rx="10" fill="#FEF9E7" stroke="#F4D03F" stroke-width="2" filter="url(#shadow)" />
+  <text x="35" y="495" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#B7950B">Axios Client Configuration (api.js)</text>
+
+  <!-- Config items -->
+  <rect x="35" y="510" width="480" height="35" rx="5" fill="white" stroke="#F4D03F" stroke-width="1" />
+  <text x="45" y="528" font-family="monospace" font-size="12" fill="#333">baseURL: <tspan fill="#E74C3C">"/api"</tspan></text>
+  <text x="195" y="528" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">— 所有請求自動加上 /api 前綴</text>
+
+  <rect x="35" y="553" width="480" height="35" rx="5" fill="white" stroke="#F4D03F" stroke-width="1" />
+  <text x="45" y="571" font-family="monospace" font-size="12" fill="#333">timeout: <tspan fill="#E74C3C">120000</tspan>ms</text>
+  <text x="245" y="571" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">— 2 分鐘超時</text>
+
+  <rect x="35" y="596" width="480" height="35" rx="5" fill="white" stroke="#F4D03F" stroke-width="1" />
+  <text x="45" y="614" font-family="monospace" font-size="12" fill="#333">interceptor: <tspan fill="#4A90D9">Authorization: Bearer {JWT}</tspan></text>
+  <text x="400" y="614" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">— 自動附加</text>
+
+  <rect x="35" y="639" width="480" height="30" rx="5" fill="#FADBD8" stroke="#E74C3C" stroke-width="1" />
+  <text x="45" y="659" font-family="monospace" font-size="12" fill="#333">401 response →</text>
+  <text x="185" y="659" font-family="monospace" font-size="12" fill="#E74C3C">redirect to /login</text>
+  <text x="380" y="659" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">— 清除 token</text>
+
+  <!-- ================================================================ -->
+  <!-- Full flow summary at bottom right -->
+  <!-- ================================================================ -->
+  <rect x="555" y="500" width="420" height="180" rx="10" fill="#F0F0F0" stroke="#AAA" stroke-width="1.5" filter="url(#shadow)" />
+  <text x="765" y="525" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#555">Complete Request Flow</text>
+
+  <!-- Flow diagram -->
+  <rect x="575" y="540" width="80" height="30" rx="5" fill="#FFF3E0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="615" y="560" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#D35400">Browser</text>
+
+  <line x1="655" y1="555" x2="683" y2="555" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" />
+
+  <rect x="695" y="540" width="60" height="30" rx="5" fill="#D6EAF8" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="725" y="560" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2C6FAC">Vite</text>
+
+  <line x1="755" y1="555" x2="783" y2="555" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" />
+
+  <rect x="795" y="540" width="75" height="30" rx="5" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5" />
+  <text x="832" y="560" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#1E8449">Control</text>
+
+  <line x1="870" y1="555" x2="898" y2="555" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" />
+
+  <rect x="910" y="540" width="50" height="30" rx="5" fill="#E8DAEF" stroke="#9B59B6" stroke-width="1.5" />
+  <text x="935" y="560" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#7D3C98">BE</text>
+
+  <!-- Port labels -->
+  <text x="615" y="582" text-anchor="middle" font-family="monospace" font-size="9" fill="#888">:3001</text>
+  <text x="725" y="582" text-anchor="middle" font-family="monospace" font-size="9" fill="#888">proxy</text>
+  <text x="832" y="582" text-anchor="middle" font-family="monospace" font-size="9" fill="#888">:8000</text>
+  <text x="935" y="582" text-anchor="middle" font-family="monospace" font-size="9" fill="#888">:8001</text>
+
+  <!-- GraphRAG path -->
+  <rect x="695" y="600" width="60" height="30" rx="5" fill="#D6EAF8" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="725" y="620" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2C6FAC">Vite</text>
+
+  <line x1="755" y1="615" x2="783" y2="615" stroke="#E74C3C" stroke-width="1.5" marker-end="url(#arrowhead-red)" />
+
+  <rect x="795" y="600" width="110" height="30" rx="5" fill="#FADBD8" stroke="#E74C3C" stroke-width="1.5" />
+  <text x="850" y="620" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#C0392B">GraphRAG</text>
+
+  <text x="850" y="645" text-anchor="middle" font-family="monospace" font-size="9" fill="#888">:8002</text>
+
+  <!-- Label -->
+  <text x="580" y="620" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#E74C3C">/graphrag-api</text>
+
+  <!-- Note -->
+  <text x="765" y="672" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#999">GraphRAG 走獨立路徑，不經過 Control</text>
+</svg>

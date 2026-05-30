@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Recipe-AI 系統架構圖</title>
+    <style>
+      html,body{margin:0;height:100%;font-family:Segoe UI, Arial, sans-serif;background:#f5f7fb}
+      .frame{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+      .canvas{position:relative;width:1600px;height:900px;margin:0 auto;background:#ffffff;border:2px solid #d0d6e0;border-radius:16px;box-sizing:border-box}
+      svg{position:absolute;left:0;top:0;z-index:1}
+
+      /* lines */
+      .line{stroke:#5a6475;stroke-width:2.4;fill:none}
+      .lineControlOut{stroke:#5a6475;stroke-width:2.6;fill:none}
+      .lineBackendOut{stroke:#315ea8;stroke-width:2.6;fill:none}
+      .lineNlpOut{stroke:#8b5e34;stroke-width:2.4;fill:none}
+
+      /* boxes */
+      .box{position:absolute;border:2px solid #2f3b52;border-radius:12px;box-sizing:border-box;padding:12px 14px;display:flex;flex-direction:column;justify-content:center}
+      .feature{width:280px;height:110px;background:#cfe5fb}
+      .service{width:280px;height:110px;background:#d5ecd8}
+      .db{width:470px;height:88px;background:#f8dfb7}
+      .userBox{position:absolute;left:40px;top:330px;width:170px;height:110px;border:2px solid #2f3b52;border-radius:12px;background:#eeeeee;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:2}
+      .userTitle{font-size:34px;font-weight:700;line-height:1.1}
+      .userSub{font-size:28px;line-height:1.1}
+
+      .boxTitle{font-size:32px;font-weight:700;line-height:1.08;color:#1f2937}
+      .boxSub{margin-top:8px;font-size:24px;line-height:1.2;color:#1f2937}
+      .dbTitle{font-size:29px;font-weight:700;line-height:1.05;color:#1f2937}
+      .dbSub{margin-top:4px;font-size:22px;line-height:1.15;color:#1f2937}
+
+      .mappingNote{position:absolute;left:230px;right:36px;bottom:18px;border:2px solid #9aa5b1;border-radius:10px;background:#f6f8fb;padding:10px 12px;font-size:20px;line-height:1.3;z-index:2}
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="canvas" role="main">
+        <svg width="1600" height="900" aria-hidden="true">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6475" />
+            </marker>
+            <marker id="arrow-backend" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#315ea8" />
+            </marker>
+            <marker id="arrow-nlp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5e34" />
+            </marker>
+          </defs>
+
+          <path d="M 180 385 L 260 165" class="line" marker-end="url(#arrow)" />
+          <path d="M 180 385 L 260 325" class="line" marker-end="url(#arrow)" />
+          <path d="M 180 385 L 260 485" class="line" marker-end="url(#arrow)" />
+          <path d="M 180 385 L 260 645" class="line" marker-end="url(#arrow)" />
+
+          <path d="M 540 165 L 700 445" class="line" marker-end="url(#arrow)" />
+          <path d="M 540 325 L 700 445" class="line" marker-end="url(#arrow)" />
+          <path d="M 540 485 L 700 445" class="line" marker-end="url(#arrow)" />
+          <path d="M 540 645 L 700 445" class="line" marker-end="url(#arrow)" />
+
+          <path d="M 840 390 L 840 300" class="lineControlOut" marker-end="url(#arrow)" />
+          <path d="M 840 500 L 840 590" class="lineControlOut" marker-end="url(#arrow)" />
+
+          <path d="M 980 645 L 1042 645 L 1042 124 L 1080 124" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+          <path d="M 980 645 L 1042 645 L 1042 224 L 1080 224" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+          <path d="M 980 645 L 1042 645 L 1042 324 L 1080 324" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+          <path d="M 980 645 L 1042 645 L 1042 424 L 1080 424" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+          <path d="M 980 645 L 1042 645 L 1042 524 L 1080 524" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+          <path d="M 980 645 L 1042 645 L 1042 624 L 1080 624" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+          <path d="M 980 645 L 1042 645 L 1042 724 L 1080 724" class="lineBackendOut" marker-end="url(#arrow-backend)" />
+
+          <path d="M 980 245 L 1006 245 L 1006 146 L 1080 146" class="lineNlpOut" marker-end="url(#arrow-nlp)" />
+          <path d="M 980 245 L 1006 245 L 1006 246 L 1080 246" class="lineNlpOut" marker-end="url(#arrow-nlp)" />
+          <path d="M 980 245 L 1006 245 L 1006 346 L 1080 346" class="lineNlpOut" marker-end="url(#arrow-nlp)" />
+        </svg>
+
+        <div class="userBox">
+          <div class="userTitle">使用者</div>
+          <div class="userSub">(User)</div>
+        </div>
+
+        <!-- Frontend features -->
+        <div class="box feature" style="left:260px;top:110px">
+          <div class="boxTitle">食譜分析</div>
+          <div class="boxSub">提取食材、匹配營養、生成分析結果</div>
+        </div>
+        <div class="box feature" style="left:260px;top:270px">
+          <div class="boxTitle">我的食譜</div>
+          <div class="boxSub">儲存與查詢個人食譜</div>
+        </div>
+        <div class="box feature" style="left:260px;top:430px">
+          <div class="boxTitle">DRI 分析</div>
+          <div class="boxSub">攝取彙總與目標值比對</div>
+        </div>
+        <div class="box feature" style="left:260px;top:590px">
+          <div class="boxTitle">個人資料</div>
+          <div class="boxSub">帳號設定、身體資料、偏好</div>
+        </div>
+
+        <!-- Services -->
+        <div class="box service" style="left:700px;top:190px">
+          <div class="boxTitle">NLP Modules</div>
+          <div class="boxSub">翻譯、分詞、同義詞擴展</div>
+        </div>
+        <div class="box service" style="left:700px;top:390px">
+          <div class="boxTitle">Control</div>
+          <div class="boxSub">業務流程編排、授權與邏輯判斷</div>
+        </div>
+        <div class="box service" style="left:700px;top:590px">
+          <div class="boxTitle">Backend</div>
+          <div class="boxSub">資料讀寫、營養查詢與聚合</div>
+        </div>
+
+        <!-- Databases / resources -->
+        <div class="box db" style="left:1080px;top:80px">
+          <div class="dbTitle">foodb (table: foods)</div>
+          <div class="dbSub">英文食材與營養主資料</div>
+        </div>
+        <div class="box db" style="left:1080px;top:180px">
+          <div class="dbTitle">taiwan_foods</div>
+          <div class="dbSub">台灣食材營養資料</div>
+        </div>
+        <div class="box db" style="left:1080px;top:280px">
+          <div class="dbTitle">synonym / alias</div>
+          <div class="dbSub">同義詞與別名映射</div>
+        </div>
+        <div class="box db" style="left:1080px;top:380px">
+          <div class="dbTitle">recipes</div>
+          <div class="dbSub">使用者食譜與食材明細</div>
+        </div>
+        <div class="box db" style="left:1080px;top:480px">
+          <div class="dbTitle">diet_logs</div>
+          <div class="dbSub">每日攝取與分析紀錄</div>
+        </div>
+        <div class="box db" style="left:1080px;top:580px">
+          <div class="dbTitle">users / profiles</div>
+          <div class="dbSub">帳號與個人屬性</div>
+        </div>
+        <div class="box db" style="left:1080px;top:680px">
+          <div class="dbTitle">DRI 規則參考</div>
+          <div class="dbSub">driReferences / dri_gap_service</div>
+        </div>
+
+        <div class="mappingNote">功能與資料對應: 食譜分析 -> foodb + taiwan_foods + synonym/alias + diet_logs; 我的食譜 -> recipes; DRI 分析 -> diet_logs + DRI 規則參考; 個人資料 -> users/profiles</div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1000" width="1200" height="1000">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#555">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#4A90D9">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#27AE60">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#E67E22">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#E74C3C">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1000" fill="white" />
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="22" font-weight="bold" fill="#333">Prompt Positions in Communication Chain</text>
+  <text x="600" y="56" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#777">每個 Prompt 在單次使用者互動中的位置與執行順序</text>
+
+  <!-- Legend -->
+  <rect x="30" y="68" width="520" height="38" rx="6" fill="#F8F8F8" stroke="#DDD" stroke-width="1" />
+  <rect x="40" y="78" width="14" height="14" rx="3" fill="#D6EAF8" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="60" y="90" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Main Pipeline</text>
+  <rect x="155" y="78" width="14" height="14" rx="3" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5" />
+  <text x="175" y="90" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Memory</text>
+  <rect x="240" y="78" width="14" height="14" rx="3" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="260" y="90" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Tool Sub-prompts</text>
+  <rect x="380" y="78" width="14" height="14" rx="3" fill="#FADBD8" stroke="#E74C3C" stroke-width="1.5" />
+  <text x="400" y="90" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Fallback</text>
+
+  <!-- Right side: LLM target column header -->
+  <rect x="920" y="68" width="250" height="38" rx="6" fill="#F0F0F0" stroke="#AAA" stroke-width="1" />
+  <text x="1045" y="91" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#555">Gemma LLM (:8080)</text>
+
+  <!-- Timeline vertical line -->
+  <line x1="60" y1="120" x2="60" y2="960" stroke="#CCC" stroke-width="3" />
+  <text x="60" y="975" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#999">TIME</text>
+  <polygon points="55,960 60,975 65,960" fill="#CCC" />
+
+  <!-- Timeline arrow at top -->
+  <text x="60" y="118" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#999">START</text>
+
+  <!-- ================================================================ -->
+  <!-- STEP 1: PROMPT_ECHO -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="148" r="16" fill="#4A90D9" />
+  <text x="60" y="153" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">1</text>
+
+  <rect x="90" y="128" width="800" height="58" rx="8" fill="#D6EAF8" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="148" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C6FAC">PROMPT_ECHO (advisor.py L43)</text>
+  <rect x="450" y="136" width="65" height="20" rx="4" fill="#4A90D9" />
+  <text x="482" y="150" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">temp=0.0</text>
+  <text x="100" y="165" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Position: advisor.py → _step_echo() → _call_gemma()</text>
+  <text x="100" y="180" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">使用者訊息進入 — 回聲確認</text>
+
+  <!-- Arrow to LLM -->
+  <line x1="890" y1="148" x2="918" y2="87" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-blue)" />
+
+  <!-- ================================================================ -->
+  <!-- STEP 2: PROMPT_PHASE1 + system_manual.md -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="228" r="16" fill="#4A90D9" />
+  <text x="60" y="233" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">2</text>
+
+  <rect x="90" y="205" width="800" height="68" rx="8" fill="#D6EAF8" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="225" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C6FAC">PROMPT_PHASE1 (advisor.py L84) + system_manual.md (548 lines)</text>
+  <rect x="620" y="213" width="65" height="20" rx="4" fill="#4A90D9" />
+  <text x="652" y="227" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">temp=0.3</text>
+  <text x="100" y="243" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Position: advisor.py → _step_phase1() → _call_gemma()</text>
+  <text x="100" y="258" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">意圖判斷 + 工具選擇 — narrative_memory 注入於此</text>
+  <text x="100" y="268" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#4A90D9">system_manual.md: 工具使用說明書 (548行，隨 system prompt 一起送入)</text>
+
+  <line x1="890" y1="228" x2="918" y2="87" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-blue)" />
+
+  <!-- ================================================================ -->
+  <!-- STEP 3: PROMPT_PHASE2 -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="318" r="16" fill="#4A90D9" />
+  <text x="60" y="323" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">3</text>
+
+  <rect x="90" y="298" width="800" height="58" rx="8" fill="#D6EAF8" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="318" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C6FAC">PROMPT_PHASE2 (advisor.py L173)</text>
+  <rect x="370" y="306" width="65" height="20" rx="4" fill="#4A90D9" />
+  <text x="402" y="320" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">temp=0.1</text>
+  <text x="100" y="335" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Position: advisor.py → _step_phase2() → _call_gemma()  [OR _system_generate_toolcalls() — no prompt]</text>
+  <text x="100" y="350" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">參數填充 / tool call 生成 — structured_store 注入於此</text>
+
+  <line x1="890" y1="318" x2="918" y2="87" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-blue)" />
+
+  <!-- ================================================================ -->
+  <!-- STEP 4: Tool Execution Sub-prompts -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="425" r="16" fill="#E67E22" />
+  <text x="60" y="430" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">4</text>
+
+  <!-- 4 bracket: entire sub-section -->
+  <rect x="90" y="375" width="800" height="195" rx="8" fill="#FDF2E9" stroke="#E67E22" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="395" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#D35400">TOOL EXECUTION — Sub-prompts (conditional)</text>
+
+  <!-- 4a -->
+  <rect x="110" y="405" width="760" height="45" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="120" y="422" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">4a. _SYSTEM_PROMPT (gemma_extraction_service.py L16)</text>
+  <rect x="490" y="410" width="65" height="18" rx="3" fill="#E67E22" />
+  <text x="522" y="423" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white">temp=0.1</text>
+  <text x="120" y="440" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">IF analyze_recipe → recipe.py → extract-with-amounts → gemma_extraction_service → gemma_client.complete_json()</text>
+
+  <!-- 4b -->
+  <rect x="110" y="458" width="760" height="45" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="120" y="475" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">4b. _SYSTEM_PROMPT (gemma_verification_service.py L16)</text>
+  <rect x="500" y="463" width="65" height="18" rx="3" fill="#E67E22" />
+  <text x="532" y="476" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white">temp=0.1</text>
+  <text x="120" y="493" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">IF analyze_recipe → recipe.py → lookup → gemma_verification_service → gemma_client.complete_json()</text>
+
+  <!-- 4c -->
+  <rect x="110" y="511" width="760" height="48" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="120" y="528" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">4c. SYSTEM_PROMPT + EVIDENCE_PROMPT (api_server.py L56, L69)</text>
+  <rect x="530" y="516" width="65" height="18" rx="3" fill="#E67E22" />
+  <text x="562" y="529" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white">temp=0.4</text>
+  <text x="120" y="549" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">IF search_graphrag → api_server.py → _call_gemma_sync()  [GraphRAG API → Gemma(:8080)]</text>
+
+  <!-- Arrows to LLM for step 4 -->
+  <line x1="890" y1="425" x2="918" y2="87" stroke="#E67E22" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-orange)" />
+
+  <!-- ================================================================ -->
+  <!-- STEP 5: PROMPT_ANALYSIS -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="610" r="16" fill="#4A90D9" />
+  <text x="60" y="615" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">5</text>
+
+  <rect x="90" y="590" width="800" height="58" rx="8" fill="#D6EAF8" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="610" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C6FAC">PROMPT_ANALYSIS (advisor.py L234)</text>
+  <rect x="400" y="598" width="65" height="20" rx="4" fill="#4A90D9" />
+  <text x="432" y="612" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">temp=0.5</text>
+  <text x="100" y="627" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Position: advisor.py → _step_analysis() → _call_gemma()</text>
+  <text x="100" y="642" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">工具結果 + 原始問題 → 生成最終回答 (SSE 串流給前端)</text>
+
+  <line x1="890" y1="610" x2="918" y2="87" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-blue)" />
+
+  <!-- ================================================================ -->
+  <!-- STEP 6a & 6b: Memory Prompts (parallel) -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="700" r="16" fill="#27AE60" />
+  <text x="60" y="705" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">6</text>
+
+  <!-- 6a -->
+  <rect x="90" y="668" width="390" height="58" rx="8" fill="#D5F5E3" stroke="#27AE60" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="688" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E8449">6a. PROMPT_NARRATIVE_SUMMARY</text>
+  <rect x="370" y="676" width="65" height="18" rx="3" fill="#27AE60" />
+  <text x="402" y="689" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white">temp=0.2</text>
+  <text x="100" y="705" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">advisor.py L281 → _summarize_narrative()</text>
+  <text x="100" y="720" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">→ _call_gemma()</text>
+
+  <!-- 6b -->
+  <rect x="500" y="668" width="390" height="58" rx="8" fill="#D5F5E3" stroke="#27AE60" stroke-width="2" filter="url(#shadow)" />
+  <text x="510" y="688" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E8449">6b. PROMPT_STRUCTURED_EXTRACT</text>
+  <rect x="780" y="676" width="65" height="18" rx="3" fill="#27AE60" />
+  <text x="812" y="689" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white">temp=0.1</text>
+  <text x="510" y="705" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">advisor.py L305 → _extract_structured_data()</text>
+  <text x="510" y="720" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">→ _call_gemma()</text>
+
+  <!-- Parallel bracket -->
+  <text x="490" y="697" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" fill="#27AE60">||</text>
+  <text x="490" y="715" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#888">parallel</text>
+
+  <line x1="890" y1="700" x2="918" y2="87" stroke="#27AE60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-green)" />
+
+  <!-- ================================================================ -->
+  <!-- STEP 7: PROMPT_EXTRACT_PARAMS (Fallback) -->
+  <!-- ================================================================ -->
+  <circle cx="60" cy="785" r="16" fill="#E74C3C" />
+  <text x="60" y="790" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">7</text>
+
+  <rect x="90" y="760" width="800" height="65" rx="8" fill="#FADBD8" stroke="#E74C3C" stroke-width="2" filter="url(#shadow)" />
+  <text x="100" y="780" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#C0392B">PROMPT_EXTRACT_PARAMS (advisor.py L1849)</text>
+  <rect x="440" y="768" width="65" height="20" rx="4" fill="#E74C3C" />
+  <text x="472" y="782" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">temp=0.0</text>
+  <text x="100" y="797" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Position: advisor.py → _extract_params_llm() → _call_gemma()</text>
+  <text x="100" y="814" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#C0392B">ONLY if parameter collection needed — Fallback 路徑</text>
+
+  <line x1="890" y1="785" x2="918" y2="87" stroke="#E74C3C" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-red)" />
+
+  <!-- ================================================================ -->
+  <!-- BOTTOM: Component Mapping -->
+  <!-- ================================================================ -->
+  <rect x="30" y="845" width="1140" height="140" rx="10" fill="#F8F8F8" stroke="#CCC" stroke-width="1.5" />
+  <text x="600" y="870" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#555">Component → LLM Direction Map</text>
+
+  <!-- advisor.py -->
+  <rect x="55" y="885" width="220" height="40" rx="6" fill="#D6EAF8" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="165" y="905" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">advisor.py (control)</text>
+  <text x="165" y="920" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">Steps 1,2,3,5,6,7</text>
+
+  <!-- Arrow -->
+  <line x1="275" y1="905" x2="320" y2="905" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" />
+
+  <!-- gemma_extraction/verification -->
+  <rect x="330" y="885" width="260" height="40" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="460" y="905" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">gemma_*_service.py (control)</text>
+  <text x="460" y="920" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">Steps 4a, 4b</text>
+
+  <!-- Arrow -->
+  <line x1="590" y1="905" x2="635" y2="905" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" />
+
+  <!-- api_server.py -->
+  <rect x="645" y="885" width="220" height="40" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5" />
+  <text x="755" y="905" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">api_server.py (graph/)</text>
+  <text x="755" y="920" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">Step 4c</text>
+
+  <!-- Arrow -->
+  <line x1="865" y1="905" x2="910" y2="905" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" />
+
+  <!-- LLM target -->
+  <rect x="920" y="880" width="230" height="50" rx="8" fill="#2C3E50" />
+  <text x="1035" y="905" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Gemma-2-27B</text>
+  <text x="1035" y="922" text-anchor="middle" font-family="monospace" font-size="11" fill="#BDC3C7">llama-server :8080</text>
+
+  <!-- Note about all arrows going to same LLM -->
+  <text x="600" y="960" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#999">All prompts target the same local Gemma-2-27B instance via llama-server HTTP API on port 8080</text>
+  <text x="600" y="978" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#BBB">Steps 6a/6b run in parallel (asyncio.gather); Step 7 only fires when parameter collection is needed</text>
+</svg>

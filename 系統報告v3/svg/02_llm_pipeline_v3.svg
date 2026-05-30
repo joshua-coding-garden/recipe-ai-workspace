@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <marker id="arrowDown" markerWidth="10" markerHeight="7" refX="5" refY="0" orient="auto">
+      <polygon points="0 0, 10 0, 5 7" fill="#555"/>
+    </marker>
+    <marker id="arrowRight" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrowBlue2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <marker id="arrowDownBlue" markerWidth="10" markerHeight="7" refX="5" refY="0" orient="auto">
+      <polygon points="0 0, 10 0, 5 7" fill="#2563EB"/>
+    </marker>
+    <filter id="shadow2" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1000" fill="#FAFBFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="800" y="42" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="26" font-weight="bold" fill="#1E293B">v3 六步驟 LLM Pipeline（含記憶樹 + 認知引擎）</text>
+  <line x1="250" y1="55" x2="1350" y2="55" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- ===== 長期記憶載入 (top, NEW) ===== -->
+  <rect x="60" y="80" width="300" height="80" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow2)"/>
+  <text x="210" y="112" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1D4ED8">長期記憶載入</text>
+  <text x="210" y="135" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">記憶樹語意檢索 → system_prompt 注入</text>
+  <rect x="62" y="82" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="80" y="95" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- Arrow: memory → Step 1,2 area -->
+  <line x1="210" y1="160" x2="210" y2="185" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowDownBlue)" stroke-dasharray="6,3"/>
+  <path d="M 210 185 L 210 195 L 500 195" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="360" y="190" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2563EB">注入 Step 1, 2</text>
+
+  <!-- ===== Step 1: Echo ===== -->
+  <rect x="400" y="80" width="750" height="90" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" filter="url(#shadow2)"/>
+  <circle cx="430" cy="125" r="20" fill="#F59E0B"/>
+  <text x="430" y="131" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="white">1</text>
+  <text x="470" y="110" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#92400E">Echo 即時確認</text>
+  <text x="470" y="135" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B45309">temp=0.5 | 快速回應使用者，提供即時反饋</text>
+  <text x="470" y="155" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#78716C">SSE: echo → 前端即時顯示確認訊息</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="775" y1="170" x2="775" y2="195" stroke="#555" stroke-width="2" marker-end="url(#arrowDown)"/>
+
+  <!-- ===== Step 2: Phase1 Intent ===== -->
+  <rect x="400" y="200" width="750" height="90" rx="10" fill="#DCFCE7" stroke="#22C55E" stroke-width="2" filter="url(#shadow2)"/>
+  <circle cx="430" cy="245" r="20" fill="#22C55E"/>
+  <text x="430" y="251" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="white">2</text>
+  <text x="470" y="230" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#166534">Phase1 Intent 意圖判定</text>
+  <text x="470" y="255" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#16A34A">temp=0.1 | 2 次嘗試 | 讀系統說明書(function schema)</text>
+  <text x="470" y="275" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#78716C">輸出: intent + 判定要呼叫哪些工具 + 參數</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="775" y1="290" x2="775" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrowDown)"/>
+
+  <!-- ===== Step 3: Phase2 ToolCall ===== -->
+  <rect x="400" y="320" width="750" height="90" rx="10" fill="#F3E8FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow2)"/>
+  <circle cx="430" cy="365" r="20" fill="#A855F7"/>
+  <text x="430" y="371" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="white">3</text>
+  <text x="470" y="350" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#6B21A8">Phase2 ToolCall 工具呼叫</text>
+  <text x="470" y="375" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#9333EA">系統優先解析 → LLM 備援 | temp=0.1</text>
+  <text x="470" y="395" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#78716C">先嘗試 regex/rule 解析，失敗才 fallback LLM 重新生成</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="775" y1="410" x2="775" y2="435" stroke="#555" stroke-width="2" marker-end="url(#arrowDown)"/>
+
+  <!-- ===== Step 4: Execute ===== -->
+  <rect x="400" y="440" width="750" height="110" rx="10" fill="#FFF1F2" stroke="#F43F5E" stroke-width="2" filter="url(#shadow2)"/>
+  <circle cx="430" cy="490" r="20" fill="#F43F5E"/>
+  <text x="430" y="496" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="white">4</text>
+  <text x="470" y="472" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#9F1239">Execute 工具執行</text>
+  <text x="470" y="497" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E11D48">呼叫 Backend API → 取得資料</text>
+  <text x="470" y="517" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#78716C">SSE: tool_start → tool_result → tool_done</text>
+  <!-- Recovery inline badge -->
+  <rect x="830" y="460" width="300" height="45" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="980" y="480" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1D4ED8">含自癒引擎 Recovery (ReIn)</text>
+  <text x="980" y="498" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#3B82F6">失敗 → diagnose → plan → retry</text>
+  <rect x="832" y="462" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="850" y="475" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- Cognitive Engine (optional, after tool results) -->
+  <rect x="60" y="460" width="280" height="70" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow2)"/>
+  <text x="200" y="492" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">認知事實提取（可選）</text>
+  <text x="200" y="515" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">從工具結果萃取結構化事實</text>
+  <rect x="62" y="462" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="80" y="475" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+  <line x1="340" y1="495" x2="397" y2="495" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrowBlue2)" stroke-dasharray="6,3"/>
+
+  <!-- Arrow 4→5 -->
+  <line x1="775" y1="550" x2="775" y2="575" stroke="#555" stroke-width="2" marker-end="url(#arrowDown)"/>
+
+  <!-- ===== Step 5: Analysis ===== -->
+  <rect x="400" y="580" width="750" height="90" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="2" filter="url(#shadow2)"/>
+  <circle cx="430" cy="625" r="20" fill="#10B981"/>
+  <text x="430" y="631" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="white">5</text>
+  <text x="470" y="610" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#065F46">Analysis 分析回覆</text>
+  <text x="470" y="635" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#059669">temp=0.3 | 2 次嘗試 | 整合工具結果產生回覆</text>
+  <text x="470" y="655" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#78716C">SSE: reply → validation → 前端渲染最終回覆</text>
+
+  <!-- Arrow 5→6 -->
+  <line x1="775" y1="670" x2="775" y2="695" stroke="#555" stroke-width="2" marker-end="url(#arrowDown)"/>
+
+  <!-- ===== Step 6: DualMemory ===== -->
+  <rect x="400" y="700" width="750" height="110" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow2)"/>
+  <circle cx="430" cy="755" r="20" fill="#3B82F6"/>
+  <text x="430" y="761" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="white">6</text>
+  <text x="470" y="732" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E40AF">DualMemory 雙重記憶</text>
+  <text x="470" y="757" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">並行處理:</text>
+  <!-- Two parallel sub-boxes -->
+  <rect x="565" y="740" width="250" height="30" rx="6" fill="#BFDBFE" stroke="#60A5FA" stroke-width="1"/>
+  <text x="690" y="760" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1E40AF">Narrative Summary 敘事摘要</text>
+  <rect x="835" y="740" width="250" height="30" rx="6" fill="#BFDBFE" stroke="#60A5FA" stroke-width="1"/>
+  <text x="960" y="760" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1E40AF">Structured Extract 結構化萃取</text>
+  <text x="470" y="795" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#78716C">SSE: narrative_memory + structured_store</text>
+
+  <!-- ===== Post-Step 6: Memory Tree leaf + Checkpoint (NEW) ===== -->
+  <rect x="60" y="730" width="280" height="60" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow2)"/>
+  <text x="200" y="758" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">記憶樹 leaf 儲存</text>
+  <text x="200" y="778" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">摘要 → leaf node + embedding</text>
+  <rect x="62" y="732" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="80" y="745" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+  <line x1="340" y1="760" x2="397" y2="760" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrowBlue2)" stroke-dasharray="6,3"/>
+
+  <rect x="60" y="810" width="280" height="60" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow2)"/>
+  <text x="200" y="838" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">Checkpoint 儲存</text>
+  <text x="200" y="858" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">session_id + turn_index → DB</text>
+  <rect x="62" y="812" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="80" y="825" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+  <line x1="340" y1="840" x2="400" y2="810" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrowBlue2)" stroke-dasharray="6,3"/>
+
+  <!-- Legend -->
+  <rect x="400" y="840" width="750" height="55" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="420" y="863" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">圖例:</text>
+  <line x1="470" y1="860" x2="510" y2="860" stroke="#555" stroke-width="2"/>
+  <text x="520" y="865" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">Pipeline 流程</text>
+  <rect x="620" y="850" width="60" height="22" rx="4" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="690" y="865" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2563EB">v3 新增模組</text>
+  <rect x="800" y="852" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="818" y="865" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+  <text x="845" y="865" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">v3 新增標記</text>
+
+  <!-- Version -->
+  <rect x="1440" y="940" width="130" height="40" rx="8" fill="#1E293B"/>
+  <text x="1505" y="966" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v3 | 2026-05</text>
+</svg>

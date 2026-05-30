@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 900" width="1100" height="900">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#555">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#4A90D9">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#50C878">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#E67E22">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#9B59B6">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15" />
+    </filter>
+    <linearGradient id="gradNarrative" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8F4FD" />
+      <stop offset="100%" stop-color="#D0E8F7" />
+    </linearGradient>
+    <linearGradient id="gradStructured" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8FDE8" />
+      <stop offset="100%" stop-color="#C8EDC8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="900" fill="white" />
+
+  <!-- Title -->
+  <text x="550" y="35" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="22" font-weight="bold" fill="#333">Dual Memory System — 雙記憶體架構</text>
+  <text x="550" y="56" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#777">advisor.py 在每輪對話結束後同時更新兩條平行記憶路徑</text>
+
+  <!-- ================================================================ -->
+  <!-- TOP: User Message Input -->
+  <!-- ================================================================ -->
+  <rect x="400" y="72" width="300" height="42" rx="21" fill="#FFF3E0" stroke="#E67E22" stroke-width="2" filter="url(#shadow)" />
+  <text x="550" y="98" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#D35400">User Message + AI Reply + Tools</text>
+
+  <!-- Fork arrows down to left and right -->
+  <line x1="470" y1="114" x2="270" y2="155" stroke="#4A90D9" stroke-width="2.5" marker-end="url(#arrowhead-blue)" />
+  <line x1="630" y1="114" x2="830" y2="155" stroke="#50C878" stroke-width="2.5" marker-end="url(#arrowhead-green)" />
+
+  <!-- ================================================================ -->
+  <!-- LEFT COLUMN: Narrative Memory -->
+  <!-- ================================================================ -->
+  <rect x="20" y="155" width="500" height="510" rx="12" fill="url(#gradNarrative)" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="270" y="180" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C6FAC">LEFT: Narrative Memory (敘述記憶)</text>
+
+  <!-- Source -->
+  <rect x="40" y="195" width="460" height="38" rx="6" fill="white" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="50" y="213" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">Source:</text>
+  <text x="105" y="213" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">PROMPT_NARRATIVE_SUMMARY (L281-303, temp=0.2)</text>
+  <text x="50" y="227" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#666">advisor.py → _summarize_narrative() → _call_gemma()</text>
+
+  <!-- Input -->
+  <rect x="40" y="243" width="460" height="50" rx="6" fill="white" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="50" y="261" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">Input:</text>
+  <text x="95" y="261" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">old_narrative + user_msg + ai_reply</text>
+  <text x="95" y="280" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">+ tools_used + tool_summary</text>
+
+  <!-- Processing -->
+  <rect x="40" y="303" width="460" height="32" rx="6" fill="#D6EAF8" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="50" y="323" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">Processing:</text>
+  <text x="130" y="323" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">Gemma LLM 摘要對話流程 (summarize conversation flow)</text>
+
+  <!-- Output -->
+  <rect x="40" y="345" width="460" height="32" rx="6" fill="white" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="50" y="365" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">Output:</text>
+  <text x="105" y="365" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">Free text string (分號分隔片段)</text>
+
+  <!-- Rules -->
+  <rect x="40" y="387" width="460" height="32" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1" />
+  <text x="50" y="407" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">Rules:</text>
+  <text x="100" y="407" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">僅記錄對話流程，不含數字、不含具體數據</text>
+
+  <!-- Example -->
+  <rect x="40" y="429" width="460" height="48" rx="6" fill="#EBF5FB" stroke="#85C1E9" stroke-width="1" stroke-dasharray="4,2" />
+  <text x="50" y="448" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#5DADE2">Example:</text>
+  <text x="115" y="448" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">"使用者問疲勞原因；AI查症狀建議補鐵；</text>
+  <text x="115" y="466" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">使用者接著問含鐵食物排名"</text>
+
+  <!-- Storage -->
+  <rect x="40" y="487" width="460" height="38" rx="6" fill="white" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="50" y="505" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">Storage:</text>
+  <text x="110" y="505" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">SSE → "narrative_memory" event</text>
+  <text x="110" y="519" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#666">→ localStorage "advisor_narrative"</text>
+
+  <!-- Usage -->
+  <rect x="40" y="535" width="460" height="32" rx="6" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5" />
+  <text x="50" y="555" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E8449">Usage:</text>
+  <text x="105" y="555" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">Fed into PROMPT_PHASE1 as intent context</text>
+
+  <!-- Arrow down from usage -->
+  <line x1="270" y1="567" x2="270" y2="600" stroke="#4A90D9" stroke-width="2" marker-end="url(#arrowhead-blue)" />
+  <rect x="175" y="600" width="190" height="34" rx="8" fill="#4A90D9" stroke="#2C6FAC" stroke-width="1.5" />
+  <text x="270" y="621" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">→ Phase 1 意圖判斷</text>
+  <text x="270" y="648" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A90D9">"上次在聊什麼？接下來要幹嘛？"</text>
+
+  <!-- ================================================================ -->
+  <!-- RIGHT COLUMN: Structured Store -->
+  <!-- ================================================================ -->
+  <rect x="580" y="155" width="500" height="510" rx="12" fill="url(#gradStructured)" stroke="#27AE60" stroke-width="2" filter="url(#shadow)" />
+  <text x="830" y="180" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="17" font-weight="bold" fill="#1E8449">RIGHT: Structured Store (結構化存儲)</text>
+
+  <!-- Source -->
+  <rect x="600" y="195" width="460" height="38" rx="6" fill="white" stroke="#27AE60" stroke-width="1.5" />
+  <text x="610" y="213" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E8449">Source:</text>
+  <text x="665" y="213" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">PROMPT_STRUCTURED_EXTRACT (L305-362, temp=0.1)</text>
+  <text x="610" y="227" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#666">advisor.py → _extract_structured_data() → _call_gemma()</text>
+
+  <!-- Input -->
+  <rect x="600" y="243" width="460" height="38" rx="6" fill="white" stroke="#27AE60" stroke-width="1.5" />
+  <text x="610" y="261" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E8449">Input:</text>
+  <text x="655" y="261" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">user_msg + tool_results_json + reply_summary</text>
+
+  <!-- Processing -->
+  <rect x="600" y="291" width="460" height="32" rx="6" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5" />
+  <text x="610" y="311" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E8449">Processing:</text>
+  <text x="695" y="311" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">Gemma LLM 萃取固定結構事實 (fixed-schema)</text>
+
+  <!-- Output: JSON categories -->
+  <rect x="600" y="333" width="460" height="186" rx="6" fill="white" stroke="#27AE60" stroke-width="1.5" />
+  <text x="610" y="351" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E8449">Output: JSON Object Categories</text>
+
+  <text x="615" y="370" font-family="monospace" font-size="10.5" fill="#333">user_facts: {age, gender, height_cm, weight_kg,</text>
+  <text x="640" y="383" font-family="monospace" font-size="10.5" fill="#333">activity_level, goal, health_conditions, ...}</text>
+  <text x="615" y="398" font-family="monospace" font-size="10.5" fill="#333">food_context: {foods_searched, foods_mentioned, ...}</text>
+  <text x="615" y="413" font-family="monospace" font-size="10.5" fill="#333">recipe_entry: {name, ingredients, total_nutrition}</text>
+  <text x="615" y="428" font-family="monospace" font-size="10.5" fill="#333">symptom_entry: {symptom_zh/en, compounds, foods}</text>
+  <text x="615" y="443" font-family="monospace" font-size="10.5" fill="#333">ranking_entry: {nutrient_field, top3_foods}</text>
+  <text x="615" y="458" font-family="monospace" font-size="10.5" fill="#333">calendar_update: {start_date, end_date, count}</text>
+  <text x="615" y="473" font-family="monospace" font-size="10.5" fill="#333">academic_entry: {query, sources_count, key_finding}</text>
+  <text x="615" y="488" font-family="monospace" font-size="10.5" fill="#333">dri_awareness: {deficient/excess nutrients}</text>
+  <text x="615" y="503" font-family="monospace" font-size="10.5" fill="#333">action_entry: {intent, tool, params, summary}</text>
+
+  <!-- Merge Logic -->
+  <rect x="600" y="529" width="460" height="38" rx="6" fill="#FDEBD0" stroke="#E67E22" stroke-width="1" />
+  <text x="610" y="547" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#D35400">Merge:</text>
+  <text x="660" y="547" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">_merge_structured_store() — deep merge</text>
+  <text x="660" y="561" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#666">arrays: append/deduplicate | scalars: overwrite</text>
+
+  <!-- Storage -->
+  <rect x="600" y="577" width="460" height="38" rx="6" fill="white" stroke="#27AE60" stroke-width="1.5" />
+  <text x="610" y="595" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E8449">Storage:</text>
+  <text x="670" y="595" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">SSE → "structured_store" event</text>
+  <text x="670" y="609" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#666">→ localStorage "advisor_structured_store"</text>
+
+  <!-- Usage -->
+  <rect x="600" y="625" width="460" height="32" rx="6" fill="#D6EAF8" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="610" y="645" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C6FAC">Usage:</text>
+  <text x="665" y="645" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#333">Fed into PROMPT_PHASE2 to avoid re-asking known facts</text>
+
+  <!-- Arrow down from usage -->
+  <line x1="830" y1="657" x2="830" y2="690" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowhead-green)" />
+  <rect x="735" y="690" width="190" height="34" rx="8" fill="#27AE60" stroke="#1E8449" stroke-width="1.5" />
+  <text x="830" y="711" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="white">→ Phase 2 參數填充</text>
+  <text x="830" y="738" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#27AE60">"已知年齡=30、性別=男，不必再問"</text>
+
+  <!-- ================================================================ -->
+  <!-- CENTER: Next Turn Flow -->
+  <!-- ================================================================ -->
+  <rect x="310" y="680" width="280" height="45" rx="10" fill="#F5EEF8" stroke="#9B59B6" stroke-width="2" filter="url(#shadow)" />
+  <text x="450" y="700" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#7D3C98">下一輪 (Next Turn)</text>
+  <text x="450" y="717" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9B59B6">兩條記憶同時注入 prompt</text>
+
+  <!-- Arrows from Phase1 and Phase2 to Next Turn -->
+  <path d="M 270 634 L 270 660 Q 270 675 310 693" stroke="#4A90D9" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowhead-blue)" />
+  <path d="M 830 724 Q 830 740 590 705" stroke="#27AE60" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowhead-green)" />
+
+  <!-- ================================================================ -->
+  <!-- BOTTOM: localStorage Persistence -->
+  <!-- ================================================================ -->
+  <rect x="100" y="770" width="900" height="110" rx="12" fill="#FFF9E6" stroke="#F39C12" stroke-width="2" filter="url(#shadow)" />
+  <text x="550" y="795" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#D68910">localStorage Persistence (瀏覽器持久化)</text>
+  <text x="550" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#888">所有記憶在頁面重新整理後依然存在 — All survive page refresh</text>
+
+  <!-- Four storage keys -->
+  <rect x="125" y="822" width="195" height="42" rx="6" fill="white" stroke="#E67E22" stroke-width="1.5" />
+  <text x="222" y="840" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E67E22">advisor_messages</text>
+  <text x="222" y="856" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">(last 30 messages)</text>
+
+  <rect x="340" y="822" width="195" height="42" rx="6" fill="white" stroke="#4A90D9" stroke-width="1.5" />
+  <text x="437" y="840" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#4A90D9">advisor_narrative</text>
+  <text x="437" y="856" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">(free text string)</text>
+
+  <rect x="555" y="822" width="210" height="42" rx="6" fill="white" stroke="#27AE60" stroke-width="1.5" />
+  <text x="660" y="840" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#27AE60">advisor_structured_store</text>
+  <text x="660" y="856" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">(JSON object)</text>
+
+  <rect x="785" y="822" width="195" height="42" rx="6" fill="white" stroke="#9B59B6" stroke-width="1.5" />
+  <text x="882" y="840" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#9B59B6">advisor_*</text>
+  <text x="882" y="856" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">(page refresh safe)</text>
+
+  <!-- Arrow from center flow down to localStorage -->
+  <line x1="450" y1="725" x2="450" y2="768" stroke="#F39C12" stroke-width="2" marker-end="url(#arrowhead-orange)" />
+  <text x="463" y="750" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#D68910">SSE events write</text>
+
+  <!-- ================================================================ -->
+  <!-- Legend -->
+  <!-- ================================================================ -->
+  <rect x="20" y="680" width="180" height="80" rx="6" fill="#F8F8F8" stroke="#CCC" stroke-width="1" />
+  <text x="30" y="697" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#555">Legend</text>
+  <rect x="30" y="705" width="12" height="12" fill="#4A90D9" />
+  <text x="48" y="715" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">Narrative (temp=0.2)</text>
+  <rect x="30" y="723" width="12" height="12" fill="#27AE60" />
+  <text x="48" y="733" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">Structured (temp=0.1)</text>
+  <rect x="30" y="741" width="12" height="12" fill="#F39C12" />
+  <text x="48" y="751" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#555">localStorage persistence</text>
+</svg>

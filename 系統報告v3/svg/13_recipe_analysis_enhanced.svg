@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+  <defs>
+    <filter id="shadow13" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow13" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrow13w" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1565C0"/>
+    </marker>
+    <linearGradient id="titleBg13" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00695C"/>
+      <stop offset="100%" stop-color="#00897B"/>
+    </linearGradient>
+    <linearGradient id="step5bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF3E0"/>
+      <stop offset="100%" stop-color="#FFE0B2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" rx="12" fill="#F0F7F5"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1400" height="60" rx="12" fill="url(#titleBg13)"/>
+  <rect x="0" y="30" width="1400" height="30" fill="url(#titleBg13)"/>
+  <text x="700" y="40" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" fill="white" font-weight="bold">v3 食譜分析增強流程（4步驟 + DRI 缺口）</text>
+
+  <!-- Input -->
+  <rect x="30" y="85" width="200" height="55" rx="25" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow13)"/>
+  <text x="130" y="108" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#1A237E" font-weight="bold">使用者輸入</text>
+  <text x="130" y="128" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1565C0">"早上吃了雞蛋、豆漿"</text>
+
+  <!-- Arrow to Step 1 -->
+  <line x1="230" y1="112" x2="270" y2="112" stroke="#555" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <!-- Step 1: Text Pre-processing -->
+  <rect x="280" y="78" width="300" height="130" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2" filter="url(#shadow13)"/>
+  <rect x="280" y="78" width="300" height="32" rx="10" fill="#2E7D32"/>
+  <rect x="280" y="95" width="300" height="15" fill="#2E7D32"/>
+  <text x="310" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="white" font-weight="bold">Step 1: 文字前處理</text>
+
+  <text x="300" y="135" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1B5E20">Regex 拆分符號：</text>
+  <rect x="300" y="142" width="250" height="22" rx="4" fill="white" stroke="#A5D6A7" stroke-width="1"/>
+  <text x="310" y="158" font-family="monospace" font-size="11" fill="#2E7D32">、 ， , \n → 換行分隔</text>
+  <text x="300" y="182" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1B5E20">去除前綴：</text>
+  <text x="300" y="198" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4CAF50">"早上吃了"、"午餐有" 等口語前綴</text>
+
+  <!-- Arrow to Step 2 -->
+  <line x1="580" y1="145" x2="620" y2="145" stroke="#555" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <!-- Step 2: Extract -->
+  <rect x="630" y="78" width="330" height="130" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow13)"/>
+  <rect x="630" y="78" width="330" height="32" rx="10" fill="#1565C0"/>
+  <rect x="630" y="95" width="330" height="15" fill="#1565C0"/>
+  <text x="660" y="100" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="white" font-weight="bold">Step 2: 食材提取</text>
+
+  <rect x="650" y="120" width="290" height="25" rx="4" fill="white" stroke="#90CAF9" stroke-width="1"/>
+  <text x="660" y="137" font-family="monospace" font-size="11" fill="#1565C0">POST /recipe/extract-with-amounts</text>
+  <text x="650" y="165" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1A237E">回傳結構化食材清單：</text>
+  <text x="650" y="183" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1565C0">[{name: "雞蛋", amount: "1顆"},</text>
+  <text x="658" y="198" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1565C0"> {name: "豆漿", amount: "240ml"}]</text>
+
+  <!-- Arrow to Step 3 -->
+  <line x1="795" y1="208" x2="795" y2="240" stroke="#555" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <!-- Step 3: Lookup -->
+  <rect x="530" y="250" width="530" height="195" rx="10" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2" filter="url(#shadow13)"/>
+  <rect x="530" y="250" width="530" height="32" rx="10" fill="#7B1FA2"/>
+  <rect x="530" y="267" width="530" height="15" fill="#7B1FA2"/>
+  <text x="560" y="272" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="white" font-weight="bold">Step 3: 雙軌匹配查詢</text>
+
+  <rect x="550" y="295" width="230" height="25" rx="4" fill="white" stroke="#CE93D8" stroke-width="1"/>
+  <text x="560" y="312" font-family="monospace" font-size="11" fill="#7B1FA2">POST /recipe/lookup</text>
+
+  <!-- Dual track -->
+  <rect x="550" y="335" width="220" height="95" rx="8" fill="#EDE7F6" stroke="#5E35B1" stroke-width="1.5"/>
+  <text x="660" y="358" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#311B92" font-weight="bold">優先軌：taiwan_foods</text>
+  <text x="660" y="378" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#5E35B1">精確匹配 → 模糊匹配</text>
+  <text x="660" y="398" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#5E35B1">2,213 筆台灣食品資料庫</text>
+  <text x="660" y="418" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#7E57C2">110 個營養素欄位</text>
+
+  <rect x="790" y="335" width="250" height="95" rx="8" fill="#FCE4EC" stroke="#C2185B" stroke-width="1.5"/>
+  <text x="915" y="358" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#880E4F" font-weight="bold">備援軌：FooDB</text>
+  <text x="915" y="378" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#AD1457">taiwan_foods 找不到時啟用</text>
+  <text x="915" y="398" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#AD1457">國際食品資料庫</text>
+  <text x="915" y="418" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#C2185B">_pick_best 擇優選取</text>
+
+  <!-- Arrow between tracks -->
+  <text x="780" y="385" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" fill="#7B1FA2">&#8594;</text>
+  <text x="780" y="400" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#9C27B0">fallback</text>
+
+  <!-- Arrow to Step 4 -->
+  <line x1="795" y1="445" x2="795" y2="475" stroke="#555" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <!-- Step 4: Calculate -->
+  <rect x="530" y="485" width="530" height="100" rx="10" fill="#E0F2F1" stroke="#00695C" stroke-width="2" filter="url(#shadow13)"/>
+  <rect x="530" y="485" width="530" height="32" rx="10" fill="#00695C"/>
+  <rect x="530" y="502" width="530" height="15" fill="#00695C"/>
+  <text x="560" y="507" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="white" font-weight="bold">Step 4: 營養計算</text>
+
+  <rect x="550" y="530" width="280" height="25" rx="4" fill="white" stroke="#80CBC4" stroke-width="1"/>
+  <text x="560" y="547" font-family="monospace" font-size="11" fill="#00695C">POST /recipe/calculate-nutrition</text>
+  <text x="550" y="575" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#004D40">加總各食材營養素 * 份量權重 → 總營養成分</text>
+
+  <!-- Arrow to Step 5 -->
+  <line x1="795" y1="585" x2="795" y2="615" stroke="#555" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <!-- Step 5: DRI Gap Analysis (NEW) -->
+  <rect x="30" y="625" width="1340" height="255" rx="10" fill="url(#step5bg)" stroke="#E65100" stroke-width="2.5" filter="url(#shadow13)"/>
+  <rect x="30" y="625" width="1340" height="35" rx="10" fill="#E65100"/>
+  <rect x="30" y="645" width="1340" height="15" fill="#E65100"/>
+  <text x="60" y="648" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" fill="white" font-weight="bold">Step 5 (NEW): DRI 缺口分析</text>
+  <rect x="320" y="633" width="55" height="22" rx="4" fill="#FFD600"/>
+  <text x="347" y="649" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E65100" font-weight="bold">NEW</text>
+
+  <!-- Sub-steps of Step 5 -->
+  <rect x="50" y="675" width="190" height="65" rx="8" fill="white" stroke="#FF8F00" stroke-width="1.5" filter="url(#shadow13)"/>
+  <text x="145" y="698" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E65100" font-weight="bold">取得使用者資料</text>
+  <text x="145" y="718" text-anchor="middle" font-family="monospace" font-size="10" fill="#F57C00">GET /profile</text>
+  <text x="145" y="732" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FF8F00">年齡/性別/特殊狀態</text>
+
+  <line x1="240" y1="707" x2="270" y2="707" stroke="#E65100" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <rect x="275" y="675" width="200" height="65" rx="8" fill="white" stroke="#FF8F00" stroke-width="1.5" filter="url(#shadow13)"/>
+  <text x="375" y="698" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E65100" font-weight="bold">查詢 DRI 目標值</text>
+  <text x="375" y="718" text-anchor="middle" font-family="monospace" font-size="10" fill="#F57C00">_get_dri_targets()</text>
+  <text x="375" y="732" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FF8F00">hpa_dri_v8.json 33 項</text>
+
+  <line x1="475" y1="707" x2="505" y2="707" stroke="#E65100" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <rect x="510" y="675" width="220" height="65" rx="8" fill="white" stroke="#FF8F00" stroke-width="1.5" filter="url(#shadow13)"/>
+  <text x="620" y="698" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E65100" font-weight="bold">計算達成率</text>
+  <text x="620" y="718" text-anchor="middle" font-family="monospace" font-size="10" fill="#F57C00">actual / target * 100%</text>
+  <text x="620" y="732" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FF8F00">逐項營養素比對</text>
+
+  <line x1="730" y1="707" x2="760" y2="707" stroke="#E65100" stroke-width="2" marker-end="url(#arrow13)"/>
+
+  <rect x="765" y="675" width="210" height="65" rx="8" fill="white" stroke="#FF8F00" stroke-width="1.5" filter="url(#shadow13)"/>
+  <text x="870" y="698" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E65100" font-weight="bold">狀態判定</text>
+  <text x="870" y="718" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#F57C00">ratio → 6 種狀態</text>
+  <text x="870" y="732" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FF8F00">見下方對照表</text>
+
+  <!-- 6 status types -->
+  <text x="60" y="765" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#BF360C" font-weight="bold">6 種狀態判定規則：</text>
+
+  <rect x="60" y="778" width="190" height="42" rx="6" fill="#C8E6C9" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="155" y="796" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1B5E20" font-weight="bold">sufficient (充足)</text>
+  <text x="155" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2E7D32">ratio ≥ 80%</text>
+
+  <rect x="270" y="778" width="190" height="42" rx="6" fill="#FFF9C4" stroke="#F9A825" stroke-width="1.5"/>
+  <text x="365" y="796" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#E65100" font-weight="bold">slightly_low (略低)</text>
+  <text x="365" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#F57F17">50% ≤ ratio &lt; 80%</text>
+
+  <rect x="480" y="778" width="190" height="42" rx="6" fill="#FFCDD2" stroke="#C62828" stroke-width="1.5"/>
+  <text x="575" y="796" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#B71C1C" font-weight="bold">deficient (缺乏)</text>
+  <text x="575" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#C62828">ratio &lt; 50%</text>
+
+  <rect x="690" y="778" width="190" height="42" rx="6" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1.5"/>
+  <text x="785" y="796" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#4A148C" font-weight="bold">excess (超標)</text>
+  <text x="785" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B1FA2">ratio &gt; UL 上限值</text>
+
+  <rect x="900" y="778" width="190" height="42" rx="6" fill="#FFE0B2" stroke="#E65100" stroke-width="1.5"/>
+  <text x="995" y="796" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#BF360C" font-weight="bold">near_limit (接近上限)</text>
+  <text x="995" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#E65100">ratio 90%-100% of UL</text>
+
+  <rect x="1110" y="778" width="190" height="42" rx="6" fill="#ECEFF1" stroke="#607D8B" stroke-width="1.5"/>
+  <text x="1205" y="796" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F" font-weight="bold">no_data (無資料)</text>
+  <text x="1205" y="812" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#607D8B">目標值或實際值缺失</text>
+
+  <!-- Footer note -->
+  <text x="60" y="862" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#795548">DRI 來源：HPA 第八版國人膳食營養素參考攝取量（hpa_dri_v8.json）　|　比對 33 項營養素（含熱量、三大營養素、13 種維生素、10 種礦物質等）</text>
+
+  <!-- Left side: overall flow label -->
+  <rect x="30" y="85" width="18" height="500" rx="4" fill="#00695C" opacity="0.3"/>
+  <text x="22" y="335" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#00695C" font-weight="bold" transform="rotate(-90, 22, 335)">食譜分析主流程</text>
+</svg>

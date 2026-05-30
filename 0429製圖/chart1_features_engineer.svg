@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+
+  <!-- 標題 -->
+  <text x="60" y="62" font-size="32" font-weight="700" fill="#1f2a3a">Recipe-AI 功能流程</text>
+  <text x="60" y="94" font-size="18" fill="#5c6b80">給工程人員參考 ── 前端頁面 → API → Service → 資料來源 的呼叫鏈</text>
+
+  <!-- 欄位標題 -->
+  <text x="210" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">Frontend Page</text>
+  <text x="575" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">API（語意名）</text>
+  <text x="965" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">Service / Repository</text>
+  <text x="1365" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">Data Source</text>
+
+  <line x1="60" y1="166" x2="1540" y2="166" stroke="#c9d2df" stroke-width="1.5"/>
+
+  <!-- ========================= 流程 1：整合分析（藍） ========================= -->
+  <rect x="60" y="190" width="300" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="210" y="226" font-size="20" font-weight="700" fill="#1f6fb8" text-anchor="middle">UnifiedAnalysisPage</text>
+  <text x="210" y="258" font-size="15" fill="#1f2a3a" text-anchor="middle">整合分析頁面</text>
+  <text x="210" y="284" font-size="14" fill="#5c6b80" text-anchor="middle">/analysis</text>
+
+  <rect x="410" y="190" width="330" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="575" y="222" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">Recipe Extract</text>
+  <text x="575" y="248" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">Nutrition Calc</text>
+  <text x="575" y="274" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">Nutrient TopFoods</text>
+
+  <rect x="790" y="190" width="350" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="965" y="226" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">ai_service</text>
+  <text x="965" y="256" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">reverse_search_service</text>
+  <text x="965" y="284" font-size="14" fill="#5c6b80" text-anchor="middle">food_repository</text>
+
+  <rect x="1190" y="190" width="350" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="1365" y="222" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">taiwan_foods</text>
+  <text x="1365" y="250" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">foodb_*</text>
+  <text x="1365" y="278" font-size="14" fill="#5c6b80" text-anchor="middle">nutrient_field_map.json</text>
+
+  <line x1="368" y1="250" x2="402" y2="250" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="748" y1="250" x2="782" y2="250" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1148" y1="250" x2="1182" y2="250" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ========================= 流程 2：症狀搜尋（綠） ========================= -->
+  <rect x="60" y="335" width="300" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="210" y="371" font-size="20" font-weight="700" fill="#1f8a5b" text-anchor="middle">SymptomSearchPage</text>
+  <text x="210" y="403" font-size="15" fill="#1f2a3a" text-anchor="middle">症狀搜尋頁面</text>
+  <text x="210" y="429" font-size="14" fill="#5c6b80" text-anchor="middle">/symptom-search</text>
+
+  <rect x="410" y="335" width="330" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="575" y="380" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">Symptom Search</text>
+  <text x="575" y="410" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">Symptom Lookup</text>
+
+  <rect x="790" y="335" width="350" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="965" y="371" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">symptom_service</text>
+  <text x="965" y="401" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">health_repository</text>
+  <text x="965" y="427" font-size="14" fill="#5c6b80" text-anchor="middle">精確 → ILIKE → trigram</text>
+
+  <rect x="1190" y="335" width="350" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="1365" y="371" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">symptom_mapping.json</text>
+  <text x="1365" y="399" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">foodb_health_effects</text>
+  <text x="1365" y="425" font-size="15" fill="#1f2a3a" text-anchor="middle">foodb_compounds</text>
+
+  <line x1="368" y1="395" x2="402" y2="395" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="748" y1="395" x2="782" y2="395" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1148" y1="395" x2="1182" y2="395" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ========================= 流程 3：DRI（橘） ========================= -->
+  <rect x="60" y="480" width="300" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="210" y="516" font-size="20" font-weight="700" fill="#d97a25" text-anchor="middle">DriGapPage</text>
+  <text x="210" y="548" font-size="15" fill="#1f2a3a" text-anchor="middle">DRI 缺口分析頁面</text>
+  <text x="210" y="574" font-size="14" fill="#5c6b80" text-anchor="middle">/dri-gap</text>
+
+  <rect x="410" y="480" width="330" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="575" y="512" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">DRI Gap</text>
+  <text x="575" y="540" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">Nutrient TopFoods</text>
+  <text x="575" y="568" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">DRI Fields</text>
+
+  <rect x="790" y="480" width="350" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="965" y="516" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">dri_gap_service</text>
+  <text x="965" y="546" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">health_repository</text>
+  <text x="965" y="572" font-size="14" fill="#5c6b80" text-anchor="middle">年齡 + 性別 → DRI profile</text>
+
+  <rect x="1190" y="480" width="350" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="1365" y="516" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">hpa_dri_v8.json</text>
+  <text x="1365" y="544" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">taiwan_foods</text>
+  <text x="1365" y="572" font-size="15" fill="#1f2a3a" text-anchor="middle">foodb_contents</text>
+
+  <line x1="368" y1="540" x2="402" y2="540" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="748" y1="540" x2="782" y2="540" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1148" y1="540" x2="1182" y2="540" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ========================= 流程 4：個人資料（灰） ========================= -->
+  <rect x="60" y="625" width="300" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="210" y="661" font-size="20" font-weight="700" fill="#5b6776" text-anchor="middle">ProfilePage</text>
+  <text x="210" y="693" font-size="15" fill="#1f2a3a" text-anchor="middle">個人資料頁面</text>
+  <text x="210" y="719" font-size="14" fill="#5c6b80" text-anchor="middle">/profile</text>
+
+  <rect x="410" y="625" width="330" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="575" y="675" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">Profile</text>
+  <text x="575" y="703" font-size="14" fill="#5c6b80" text-anchor="middle">取得 / 更新</text>
+
+  <rect x="790" y="625" width="350" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="965" y="675" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">user_repository</text>
+  <text x="965" y="703" font-size="14" fill="#5c6b80" text-anchor="middle">DB 連線層</text>
+
+  <rect x="1190" y="625" width="350" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="1365" y="675" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">profiles</text>
+  <text x="1365" y="703" font-size="14" fill="#5c6b80" text-anchor="middle">PostgreSQL 資料表</text>
+
+  <line x1="368" y1="685" x2="402" y2="685" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="748" y1="685" x2="782" y2="685" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1148" y1="685" x2="1182" y2="685" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- 底部說明 -->
+  <line x1="60" y1="785" x2="1540" y2="785" stroke="#c9d2df" stroke-width="1.5"/>
+  <text x="800" y="820" font-size="16" fill="#5c6b80" text-anchor="middle">※ 規則 + 檢索雙軌制：規則提取（jieba 斷詞 + 停用詞）｜檢索聚合（精確比對 → ILIKE → trigram 相似度）</text>
+  <text x="800" y="850" font-size="15" fill="#5c6b80" text-anchor="middle">技術棧：React (Vite) + FastAPI (control / backend 兩層) + PostgreSQL；不使用模型推論</text>
+</svg>

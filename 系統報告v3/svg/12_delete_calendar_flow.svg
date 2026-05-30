@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <filter id="shadow12" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow12" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2E7D32"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#C62828"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1565C0"/>
+    </marker>
+    <linearGradient id="titleBg12" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1565C0"/>
+      <stop offset="100%" stop-color="#1976D2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" rx="12" fill="#F5F7FA"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1200" height="60" rx="12" fill="url(#titleBg12)"/>
+  <rect x="0" y="30" width="1200" height="30" fill="url(#titleBg12)"/>
+  <text x="600" y="40" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" fill="white" font-weight="bold">v3 行事曆刪除工具流程（智慧匹配）</text>
+
+  <!-- Start node -->
+  <rect x="480" y="85" width="240" height="50" rx="25" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="600" y="115" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" fill="#1A237E" font-weight="bold">使用者要求刪除行事曆</text>
+
+  <!-- Decision 1: has entry_id? -->
+  <line x1="600" y1="135" x2="600" y2="165" stroke="#555" stroke-width="2" marker-end="url(#arrow12)"/>
+
+  <polygon points="600,170 730,230 600,290 470,230" fill="#FFF9C4" stroke="#F9A825" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="600" y="225" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="#E65100" font-weight="bold">有 entry_id?</text>
+  <text x="600" y="245" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#795548">(Phase2 提取)</text>
+
+  <!-- YES path - direct delete -->
+  <line x1="730" y1="230" x2="890" y2="230" stroke="#2E7D32" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="810" y="220" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#2E7D32" font-weight="bold">YES</text>
+
+  <rect x="900" y="200" width="270" height="60" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="1035" y="225" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#1B5E20" font-weight="bold">DELETE /calendar/entries/{id}</text>
+  <text x="1035" y="248" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#4CAF50">直接刪除指定條目</text>
+
+  <!-- NO path - need to query -->
+  <line x1="600" y1="290" x2="600" y2="320" stroke="#C62828" stroke-width="2.5" marker-end="url(#arrowRed)"/>
+  <text x="615" y="310" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#C62828" font-weight="bold">NO</text>
+
+  <!-- Query step -->
+  <rect x="400" y="325" width="400" height="60" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="600" y="352" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#1A237E" font-weight="bold">GET /calendar/entries?date=X</text>
+  <text x="600" y="374" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1565C0">取得當日所有條目</text>
+
+  <!-- Error: no entries -->
+  <line x1="800" y1="355" x2="900" y2="355" stroke="#C62828" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+  <rect x="900" y="318" width="270" height="75" rx="10" fill="#FFEBEE" stroke="#C62828" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="1035" y="345" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#B71C1C" font-weight="bold">錯誤：日期無紀錄</text>
+  <text x="1035" y="365" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#C62828">回傳提示訊息：</text>
+  <text x="1035" y="383" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E53935">"該日期沒有行事曆紀錄"</text>
+
+  <!-- Decision 2: has recipe_name? -->
+  <line x1="600" y1="385" x2="600" y2="415" stroke="#555" stroke-width="2" marker-end="url(#arrow12)"/>
+
+  <polygon points="600,420 730,475 600,530 470,475" fill="#E1F5FE" stroke="#0288D1" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="600" y="468" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="#01579B" font-weight="bold">有 recipe_name?</text>
+  <text x="600" y="488" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#0277BD">(模糊匹配參數)</text>
+
+  <!-- YES - fuzzy match -->
+  <line x1="470" y1="475" x2="210" y2="475" stroke="#2E7D32" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="340" y="465" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#2E7D32" font-weight="bold">YES</text>
+
+  <rect x="30" y="440" width="180" height="70" rx="10" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="120" y="465" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#4A148C" font-weight="bold">模糊匹配</text>
+  <text x="120" y="485" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A1B9A">case-insensitive</text>
+  <text x="120" y="500" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A1B9A">contains 比對</text>
+
+  <!-- Match found -->
+  <line x1="120" y1="510" x2="120" y2="545" stroke="#555" stroke-width="2" marker-end="url(#arrow12)"/>
+
+  <!-- Match sub-decision -->
+  <polygon points="120,548 210,580 120,612 30,580" fill="#FFF9C4" stroke="#F9A825" stroke-width="1.5"/>
+  <text x="120" y="584" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#E65100" font-weight="bold">匹配?</text>
+
+  <!-- Match YES -->
+  <line x1="30" y1="580" x2="30" y2="545" stroke="#2E7D32" stroke-width="2"/>
+  <line x1="30" y1="545" x2="30" y2="545" stroke="#2E7D32" stroke-width="2"/>
+
+  <rect x="240" y="555" width="200" height="55" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="340" y="578" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1B5E20" font-weight="bold">只刪匹配的條目</text>
+  <text x="340" y="598" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4CAF50">DELETE 匹配的 entry_ids</text>
+  <line x1="210" y1="580" x2="240" y2="580" stroke="#2E7D32" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <text x="225" y="570" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2E7D32">YES</text>
+
+  <!-- Match NO - error -->
+  <rect x="240" y="620" width="280" height="65" rx="8" fill="#FFEBEE" stroke="#C62828" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="380" y="643" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B71C1C" font-weight="bold">錯誤：recipe_name 不匹配</text>
+  <text x="380" y="663" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#C62828">回傳現有條目清單供使用者選擇：</text>
+  <text x="380" y="678" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#E53935">"找不到 X，當日有: [A, B, C]"</text>
+  <line x1="120" y1="612" x2="120" y2="650" stroke="#C62828" stroke-width="1.5"/>
+  <line x1="120" y1="650" x2="240" y2="650" stroke="#C62828" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+  <text x="140" y="640" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#C62828">NO</text>
+
+  <!-- NO recipe_name - delete all -->
+  <line x1="730" y1="475" x2="900" y2="475" stroke="#1565C0" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <text x="815" y="465" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#1565C0" font-weight="bold">NO</text>
+
+  <rect x="900" y="445" width="270" height="60" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="1035" y="470" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#1A237E" font-weight="bold">刪除當日全部條目</text>
+  <text x="1035" y="493" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1565C0">逐一 DELETE 每個 entry_id</text>
+
+  <!-- Success results -->
+  <rect x="900" y="540" width="270" height="50" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2" filter="url(#shadow12)"/>
+  <text x="1035" y="565" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#1B5E20" font-weight="bold">成功回傳已刪除筆數</text>
+  <text x="1035" y="582" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4CAF50">"已成功刪除 N 筆行事曆紀錄"</text>
+
+  <line x1="1035" y1="505" x2="1035" y2="540" stroke="#2E7D32" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="1035" y1="260" x2="1035" y2="295" stroke="#2E7D32" stroke-width="1.5"/>
+  <line x1="1035" y1="295" x2="1145" y2="295" stroke="#2E7D32" stroke-width="1.5"/>
+  <line x1="1145" y1="295" x2="1145" y2="548" stroke="#2E7D32" stroke-width="1.5"/>
+  <line x1="1145" y1="548" x2="1170" y2="565" stroke="#2E7D32" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+
+  <!-- Legend -->
+  <rect x="30" y="80" width="200" height="120" rx="8" fill="white" stroke="#BDBDBD" stroke-width="1" filter="url(#shadow12)"/>
+  <text x="50" y="105" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#333" font-weight="bold">圖例</text>
+  <rect x="50" y="115" width="12" height="12" fill="#FFF9C4" stroke="#F9A825"/>
+  <text x="70" y="126" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">判斷節點</text>
+  <line x1="50" y1="142" x2="62" y2="142" stroke="#2E7D32" stroke-width="2"/>
+  <text x="70" y="146" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">成功路徑</text>
+  <line x1="50" y1="162" x2="62" y2="162" stroke="#C62828" stroke-width="2"/>
+  <text x="70" y="166" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">錯誤路徑</text>
+  <rect x="50" y="175" width="12" height="12" fill="#FFEBEE" stroke="#C62828"/>
+  <text x="70" y="186" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">錯誤處理</text>
+</svg>

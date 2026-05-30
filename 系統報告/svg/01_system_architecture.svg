@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#555">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#4A90D9">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#FF6B6B">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#50C878">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" fill="#9B59B6">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="white" />
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="22" font-weight="bold" fill="#333">Recipe-AI 營養分析系統 — 完整架構圖</text>
+
+  <!-- ============================================================ -->
+  <!-- LAYER 1: User & Browser (y: 50-110) -->
+  <!-- ============================================================ -->
+
+  <!-- User icon -->
+  <g transform="translate(145, 60)">
+    <circle cx="0" cy="10" r="10" fill="#666" />
+    <line x1="0" y1="20" x2="0" y2="40" stroke="#666" stroke-width="2.5" />
+    <line x1="-14" y1="28" x2="14" y2="28" stroke="#666" stroke-width="2.5" />
+    <line x1="0" y1="40" x2="-10" y2="55" stroke="#666" stroke-width="2.5" />
+    <line x1="0" y1="40" x2="10" y2="55" stroke="#666" stroke-width="2.5" />
+  </g>
+  <text x="145" y="130" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#555">使用者</text>
+
+  <!-- Arrow: User -> Browser -->
+  <line x1="175" y1="95" x2="280" y2="95" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)" />
+  <text x="228" y="88" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#777">HTTP</text>
+
+  <!-- Browser box -->
+  <rect x="290" y="62" width="280" height="56" rx="8" fill="#FFD700" fill-opacity="0.2" stroke="#FFD700" stroke-width="2" filter="url(#shadow)" />
+  <text x="430" y="86" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#B8860B">瀏覽器 Browser</text>
+  <text x="430" y="106" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#886A00">React 18 + Vite</text>
+
+  <!-- ============================================================ -->
+  <!-- LAYER 2: Frontend (y: 145-280) -->
+  <!-- ============================================================ -->
+
+  <!-- Arrow: Browser -> Frontend -->
+  <line x1="430" y1="118" x2="430" y2="143" stroke="#B8860B" stroke-width="2" marker-end="url(#arrowhead)" />
+
+  <!-- Frontend outer box -->
+  <rect x="60" y="148" width="820" height="122" rx="10" fill="#FFD700" fill-opacity="0.1" stroke="#FFD700" stroke-width="2" filter="url(#shadow)" />
+  <text x="80" y="170" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#B8860B">Frontend (Port 3001)</text>
+
+  <!-- Page boxes inside frontend -->
+  <rect x="80" y="178" width="145" height="36" rx="5" fill="#FFF8DC" stroke="#DAA520" stroke-width="1.2" />
+  <text x="152" y="201" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#8B6914">AdvisorPage</text>
+
+  <rect x="237" y="178" width="175" height="36" rx="5" fill="#FFF8DC" stroke="#DAA520" stroke-width="1.2" />
+  <text x="324" y="201" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#8B6914">UnifiedAnalysisPage</text>
+
+  <rect x="424" y="178" width="175" height="36" rx="5" fill="#FFF8DC" stroke="#DAA520" stroke-width="1.2" />
+  <text x="511" y="201" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#8B6914">RecipeAnalyzerPage</text>
+
+  <rect x="611" y="178" width="170" height="36" rx="5" fill="#FFF8DC" stroke="#DAA520" stroke-width="1.2" />
+  <text x="696" y="201" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#8B6914">SymptomSearchPage</text>
+
+  <rect x="80" y="224" width="180" height="36" rx="5" fill="#FFF8DC" stroke="#DAA520" stroke-width="1.2" />
+  <text x="170" y="247" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#8B6914">NutrientRankingPage</text>
+
+  <rect x="272" y="224" width="145" height="36" rx="5" fill="#FFF8DC" stroke="#DAA520" stroke-width="1.2" />
+  <text x="344" y="247" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#8B6914">GraphRAGPage</text>
+
+  <!-- Vite Proxy box -->
+  <rect x="520" y="224" width="345" height="36" rx="5" fill="#FFFACD" stroke="#DAA520" stroke-width="1.5" stroke-dasharray="5,3" />
+  <text x="692" y="241" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8B6914">Vite Proxy</text>
+  <text x="615" y="255" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#8B6914">/api → :8000</text>
+  <text x="775" y="255" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#8B6914">/graphrag-api → :8002</text>
+
+  <!-- ============================================================ -->
+  <!-- LAYER 3: Control Service (y: 300-460) -->
+  <!-- ============================================================ -->
+
+  <!-- Arrow: Frontend -> Control -->
+  <line x1="350" y1="270" x2="350" y2="303" stroke="#4A90D9" stroke-width="2" marker-end="url(#arrowhead-blue)" />
+  <text x="360" y="292" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#4A90D9">/api proxy</text>
+
+  <!-- Arrow: Frontend -> GraphRAG API -->
+  <line x1="775" y1="260" x2="1050" y2="680" stroke="#9B59B6" stroke-width="1.8" stroke-dasharray="6,3" marker-end="url(#arrowhead-purple)" />
+  <text x="940" y="480" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#9B59B6" transform="rotate(18, 940, 480)">/graphrag-api proxy</text>
+
+  <!-- Control Service outer box -->
+  <rect x="60" y="308" width="820" height="158" rx="10" fill="#4A90D9" fill-opacity="0.08" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="80" y="330" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C5F9E">Control Service (Port 8000) — FastAPI</text>
+
+  <!-- Routers row -->
+  <text x="80" y="352" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A90D9" font-weight="bold">Routers:</text>
+  <rect x="140" y="338" width="130" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="205" y="357" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">advisor.py (LLM)</text>
+
+  <rect x="280" y="338" width="90" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="325" y="357" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">recipe.py</text>
+
+  <rect x="380" y="338" width="80" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="420" y="357" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">food.py</text>
+
+  <rect x="470" y="338" width="85" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="512" y="357" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">health.py</text>
+
+  <rect x="565" y="338" width="75" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="602" y="357" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">auth.py</text>
+
+  <rect x="650" y="338" width="70" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="685" y="357" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">dri.py</text>
+
+  <!-- Services row -->
+  <text x="80" y="392" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A90D9" font-weight="bold">Services:</text>
+  <rect x="140" y="378" width="115" height="28" rx="4" fill="#E8F0FE" stroke="#4A90D9" stroke-width="1" />
+  <text x="197" y="397" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">ai_service</text>
+
+  <rect x="265" y="378" width="185" height="28" rx="4" fill="#E8F0FE" stroke="#4A90D9" stroke-width="1" />
+  <text x="357" y="397" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">gemma_extraction_service</text>
+
+  <rect x="460" y="378" width="185" height="28" rx="4" fill="#E8F0FE" stroke="#4A90D9" stroke-width="1" />
+  <text x="552" y="397" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">gemma_verification_service</text>
+
+  <rect x="140" y="416" width="120" height="28" rx="4" fill="#E8F0FE" stroke="#4A90D9" stroke-width="1" />
+  <text x="200" y="435" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">stopword_store</text>
+
+  <rect x="270" y="416" width="120" height="28" rx="4" fill="#E8F0FE" stroke="#4A90D9" stroke-width="1" />
+  <text x="330" y="435" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">synonym_store</text>
+
+  <!-- ============================================================ -->
+  <!-- LAYER 4: Backend Service (y: 500-600) -->
+  <!-- ============================================================ -->
+
+  <!-- Arrow: Control -> Backend -->
+  <line x1="350" y1="466" x2="350" y2="513" stroke="#4A90D9" stroke-width="2" marker-end="url(#arrowhead-blue)" />
+  <text x="360" y="496" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#4A90D9">HTTP internal</text>
+
+  <!-- Arrow: Control -> Gemma LLM -->
+  <line x1="750" y1="392" x2="970" y2="690" stroke="#FF6B6B" stroke-width="2" marker-end="url(#arrowhead-red)" />
+  <text x="835" y="550" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FF6B6B" transform="rotate(22, 835, 550)">OpenAI-compatible API</text>
+
+  <!-- Backend Service outer box -->
+  <rect x="60" y="518" width="820" height="100" rx="10" fill="#4A90D9" fill-opacity="0.05" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)" />
+  <text x="80" y="542" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C5F9E">Backend Service (Port 8001) — FastAPI Data Layer</text>
+
+  <!-- Router boxes -->
+  <text x="80" y="570" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A90D9" font-weight="bold">Routers:</text>
+  <rect x="140" y="556" width="70" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="175" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">food</text>
+
+  <rect x="220" y="556" width="80" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="260" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">recipe</text>
+
+  <rect x="310" y="556" width="70" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="345" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">user</text>
+
+  <rect x="390" y="556" width="70" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="425" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">diet</text>
+
+  <rect x="470" y="556" width="75" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="507" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">health</text>
+
+  <rect x="555" y="556" width="90" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="600" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">calendar</text>
+
+  <rect x="655" y="556" width="80" height="28" rx="4" fill="#D6E9FF" stroke="#4A90D9" stroke-width="1" />
+  <text x="695" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2C5F9E">nutrient</text>
+
+  <!-- ============================================================ -->
+  <!-- LAYER 5: Data & LLM (y: 650-870) -->
+  <!-- ============================================================ -->
+
+  <!-- Arrow: Backend -> PostgreSQL -->
+  <line x1="350" y1="618" x2="350" y2="660" stroke="#50C878" stroke-width="2" marker-end="url(#arrowhead-green)" />
+  <text x="360" y="645" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#50C878">asyncpg</text>
+
+  <!-- PostgreSQL box -->
+  <rect x="60" y="665" width="530" height="210" rx="10" fill="#50C878" fill-opacity="0.08" stroke="#50C878" stroke-width="2" filter="url(#shadow)" />
+
+  <!-- DB icon -->
+  <ellipse cx="100" cy="690" rx="18" ry="8" fill="#50C878" fill-opacity="0.3" stroke="#50C878" stroke-width="1.5" />
+  <rect x="82" y="690" width="36" height="16" fill="#50C878" fill-opacity="0.15" stroke="none" />
+  <ellipse cx="100" cy="706" rx="18" ry="8" fill="none" stroke="#50C878" stroke-width="1.5" />
+  <line x1="82" y1="690" x2="82" y2="706" stroke="#50C878" stroke-width="1.5" />
+  <line x1="118" y1="690" x2="118" y2="706" stroke="#50C878" stroke-width="1.5" />
+
+  <text x="145" y="700" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#2E8B57">PostgreSQL (Port 5432)</text>
+
+  <!-- Table boxes -->
+  <rect x="80" y="720" width="155" height="32" rx="5" fill="#E8F8E8" stroke="#50C878" stroke-width="1.2" />
+  <text x="157" y="741" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2E8B57">taiwan_foods (2213)</text>
+
+  <rect x="245" y="720" width="155" height="32" rx="5" fill="#E8F8E8" stroke="#50C878" stroke-width="1.2" />
+  <text x="322" y="741" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2E8B57">foods/foodb (992)</text>
+
+  <rect x="410" y="720" width="110" height="32" rx="5" fill="#E8F8E8" stroke="#50C878" stroke-width="1.2" />
+  <text x="465" y="741" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2E8B57">users</text>
+
+  <rect x="80" y="764" width="110" height="32" rx="5" fill="#E8F8E8" stroke="#50C878" stroke-width="1.2" />
+  <text x="135" y="785" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2E8B57">recipes</text>
+
+  <rect x="200" y="764" width="110" height="32" rx="5" fill="#E8F8E8" stroke="#50C878" stroke-width="1.2" />
+  <text x="255" y="785" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2E8B57">diet_logs</text>
+
+  <rect x="320" y="764" width="110" height="32" rx="5" fill="#E8F8E8" stroke="#50C878" stroke-width="1.2" />
+  <text x="375" y="785" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2E8B57">calendar</text>
+
+  <!-- Docker badge -->
+  <rect x="80" y="810" width="490" height="28" rx="5" fill="#50C878" fill-opacity="0.15" stroke="#50C878" stroke-width="1" stroke-dasharray="4,2" />
+  <text x="325" y="829" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2E8B57">Docker Container: recipe-postgres | Volume: pgdata</text>
+
+  <!-- Gemma LLM box -->
+  <rect x="640" y="665" width="230" height="105" rx="10" fill="#FF6B6B" fill-opacity="0.08" stroke="#FF6B6B" stroke-width="2" filter="url(#shadow)" />
+  <text x="755" y="692" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#CC3333">Gemma LLM</text>
+  <text x="755" y="712" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#CC3333">Port 8080</text>
+  <line x1="660" y1="722" x2="850" y2="722" stroke="#FF6B6B" stroke-opacity="0.3" stroke-width="1" />
+  <text x="755" y="742" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#994444">llama.cpp server</text>
+  <text x="755" y="760" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#994444">Gemma-4-31B (Q5_K_M)</text>
+
+  <!-- GraphRAG API box -->
+  <rect x="920" y="665" width="250" height="145" rx="10" fill="#9B59B6" fill-opacity="0.08" stroke="#9B59B6" stroke-width="2" filter="url(#shadow)" />
+  <text x="1045" y="692" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#7B3FA0">GraphRAG API</text>
+  <text x="1045" y="712" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#7B3FA0">Port 8002</text>
+  <line x1="940" y1="722" x2="1150" y2="722" stroke="#9B59B6" stroke-opacity="0.3" stroke-width="1" />
+  <text x="1045" y="742" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A3580">FastAPI + Uvicorn</text>
+
+  <!-- ChromaDB sub-box -->
+  <rect x="940" y="752" width="105" height="32" rx="5" fill="#E8D5F5" stroke="#9B59B6" stroke-width="1.2" />
+  <text x="992" y="773" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A3580">ChromaDB</text>
+
+  <!-- NetworkX sub-box -->
+  <rect x="1055" y="752" width="100" height="32" rx="5" fill="#E8D5F5" stroke="#9B59B6" stroke-width="1.2" />
+  <text x="1105" y="773" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A3580">NetworkX</text>
+
+  <!-- Snowflake embed sub-box -->
+  <rect x="940" y="792" width="215" height="28" rx="5" fill="#F0E6FA" stroke="#9B59B6" stroke-width="1" stroke-dasharray="4,2" />
+  <text x="1047" y="811" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B3FA0">snowflake-arctic-embed-l-v2.0</text>
+
+  <!-- Arrow: GraphRAG API -> Gemma LLM -->
+  <line x1="920" y1="730" x2="875" y2="730" stroke="#FF6B6B" stroke-width="1.8" marker-end="url(#arrowhead-red)" />
+  <text x="897" y="722" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#FF6B6B">LLM</text>
+
+  <!-- Arrow: GraphRAG API -> ChromaDB (internal, just a label is enough since it's inside) -->
+
+  <!-- ============================================================ -->
+  <!-- LAYER LABELS (right side) -->
+  <!-- ============================================================ -->
+  <g opacity="0.6">
+    <rect x="1100" y="70" width="85" height="24" rx="4" fill="#FFD700" fill-opacity="0.2" stroke="#DAA520" stroke-width="1" />
+    <text x="1142" y="87" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#8B6914">Layer 1</text>
+
+    <rect x="1100" y="195" width="85" height="24" rx="4" fill="#FFD700" fill-opacity="0.2" stroke="#DAA520" stroke-width="1" />
+    <text x="1142" y="212" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#8B6914">Layer 2</text>
+
+    <rect x="1100" y="375" width="85" height="24" rx="4" fill="#4A90D9" fill-opacity="0.15" stroke="#4A90D9" stroke-width="1" />
+    <text x="1142" y="392" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">Layer 3</text>
+
+    <rect x="1100" y="555" width="85" height="24" rx="4" fill="#4A90D9" fill-opacity="0.1" stroke="#4A90D9" stroke-width="1" />
+    <text x="1142" y="572" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2C5F9E">Layer 4</text>
+
+    <rect x="1100" y="845" width="85" height="24" rx="4" fill="#50C878" fill-opacity="0.15" stroke="#50C878" stroke-width="1" />
+    <text x="1142" y="862" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#2E8B57">Layer 5</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- LEGEND -->
+  <!-- ============================================================ -->
+  <rect x="60" y="850" width="530" height="42" rx="6" fill="#F8F8F8" stroke="#DDD" stroke-width="1" />
+  <rect x="75" y="862" width="16" height="16" rx="3" fill="#FFD700" fill-opacity="0.3" stroke="#DAA520" stroke-width="1" />
+  <text x="97" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#666">Frontend</text>
+  <rect x="155" y="862" width="16" height="16" rx="3" fill="#4A90D9" fill-opacity="0.15" stroke="#4A90D9" stroke-width="1" />
+  <text x="177" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#666">API Services</text>
+  <rect x="260" y="862" width="16" height="16" rx="3" fill="#50C878" fill-opacity="0.2" stroke="#50C878" stroke-width="1" />
+  <text x="282" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#666">Database</text>
+  <rect x="345" y="862" width="16" height="16" rx="3" fill="#FF6B6B" fill-opacity="0.2" stroke="#FF6B6B" stroke-width="1" />
+  <text x="367" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#666">LLM</text>
+  <rect x="400" y="862" width="16" height="16" rx="3" fill="#9B59B6" fill-opacity="0.15" stroke="#9B59B6" stroke-width="1" />
+  <text x="422" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#666">GraphRAG</text>
+  <line x1="490" y1="870" x2="520" y2="870" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" />
+  <text x="526" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#666">Proxy</text>
+
+</svg>

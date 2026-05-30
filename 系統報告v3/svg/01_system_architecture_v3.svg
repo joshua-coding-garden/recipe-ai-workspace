@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#F8FAFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="700" y="45" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">RecipeAI v3 系統架構總覽</text>
+  <line x1="200" y1="58" x2="1200" y2="58" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- ===== Docker 區域 ===== -->
+  <rect x="30" y="80" width="870" height="430" rx="12" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="50" y="105" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#64748B">Docker Compose 容器群</text>
+
+  <!-- PostgreSQL -->
+  <rect x="60" y="280" width="220" height="100" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="170" y="315" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1E40AF">PostgreSQL</text>
+  <text x="170" y="340" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">:5432 | recipe_ai_db</text>
+  <text x="170" y="365" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">pgvector + 資料儲存</text>
+
+  <!-- Backend FastAPI -->
+  <rect x="340" y="280" width="240" height="100" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" filter="url(#shadow)"/>
+  <text x="460" y="315" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#92400E">Backend FastAPI</text>
+  <text x="460" y="340" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B45309">:8001 | recipe-backend</text>
+  <text x="460" y="365" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">API + 資料庫操作</text>
+
+  <!-- Control FastAPI -->
+  <rect x="340" y="130" width="240" height="100" rx="10" fill="#DCFCE7" stroke="#22C55E" stroke-width="2" filter="url(#shadow)"/>
+  <text x="460" y="165" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#166534">Control FastAPI</text>
+  <text x="460" y="190" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#16A34A">:8000 | recipe-control</text>
+  <text x="460" y="215" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">LLM 編排 + SSE</text>
+
+  <!-- Frontend React/Vite -->
+  <rect x="640" y="130" width="240" height="100" rx="10" fill="#F3E8FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow)"/>
+  <text x="760" y="165" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#6B21A8">Frontend React/Vite</text>
+  <text x="760" y="190" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#9333EA">:3001 | recipe-frontend</text>
+  <text x="760" y="215" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">使用者介面</text>
+
+  <!-- Arrows: Frontend → Control -->
+  <line x1="640" y1="180" x2="583" y2="180" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="612" y="172" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">Vite proxy</text>
+  <text x="612" y="196" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#888">/api</text>
+
+  <!-- Arrows: Control → Backend -->
+  <line x1="460" y1="230" x2="460" y2="277" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="475" y="258" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">httpx</text>
+
+  <!-- Arrows: Backend → PostgreSQL -->
+  <line x1="340" y1="330" x2="283" y2="330" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="312" y="322" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">asyncpg</text>
+
+  <!-- ===== 非 Docker 服務 ===== -->
+  <rect x="930" y="80" width="440" height="430" rx="12" fill="none" stroke="#F97316" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="950" y="105" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#EA580C">非 Docker 本機服務</text>
+
+  <!-- Gemma LLM -->
+  <rect x="960" y="130" width="220" height="100" rx="10" fill="#FFF1F2" stroke="#F43F5E" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1070" y="165" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#9F1239">Gemma LLM</text>
+  <text x="1070" y="190" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E11D48">:8080 | llama-server</text>
+  <text x="1070" y="215" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">本機推理引擎</text>
+
+  <!-- Health Vector -->
+  <rect x="960" y="260" width="220" height="100" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1070" y="295" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#065F46">Health Vector</text>
+  <text x="1070" y="320" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#059669">:8003 | ChromaDB</text>
+  <text x="1070" y="345" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">健康知識向量搜尋</text>
+
+  <!-- GraphRAG API -->
+  <rect x="960" y="390" width="220" height="100" rx="10" fill="#FFF7ED" stroke="#F97316" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1070" y="425" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#9A3412">GraphRAG API</text>
+  <text x="1070" y="450" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#EA580C">:8002 | ChromaDB+NetworkX</text>
+  <text x="1070" y="475" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#64748B">圖譜檢索問答</text>
+
+  <!-- Arrow: Control → Gemma -->
+  <line x1="580" y1="165" x2="957" y2="165" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="770" y="157" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">LLM calls</text>
+
+  <!-- Arrow: Frontend → GraphRAG (proxy) -->
+  <path d="M 760 230 L 760 440 L 957 440" fill="none" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
+  <text x="850" y="432" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#555">/graphrag-api</text>
+
+  <!-- ===== v3 新增 Dashed Boxes ===== -->
+  <!-- 記憶樹 Memory Tree -->
+  <rect x="60" y="560" width="250" height="90" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow)"/>
+  <text x="185" y="595" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1D4ED8">記憶樹 Memory Tree</text>
+  <text x="185" y="618" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">TiMem 階層記憶系統</text>
+  <rect x="62" y="562" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="80" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- 認知引擎 Cognitive Engine -->
+  <rect x="350" y="560" width="250" height="90" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow)"/>
+  <text x="475" y="595" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1D4ED8">認知引擎 Cognitive</text>
+  <text x="475" y="618" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">事實提取 + 知識圖譜</text>
+  <rect x="352" y="562" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="370" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- 自癒引擎 Recovery -->
+  <rect x="640" y="560" width="250" height="90" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow)"/>
+  <text x="765" y="595" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1D4ED8">自癒引擎 Recovery</text>
+  <text x="765" y="618" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">ReIn 工具錯誤自動修復</text>
+  <rect x="642" y="562" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="660" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- 會話管理 Session -->
+  <rect x="960" y="560" width="250" height="90" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="8,4" filter="url(#shadow)"/>
+  <text x="1085" y="590" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1D4ED8">會話管理</text>
+  <text x="1085" y="612" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1D4ED8">Session / Checkpoint</text>
+  <text x="1085" y="635" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">斷線續接 + 狀態儲存</text>
+  <rect x="962" y="562" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="980" y="575" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- Arrows: v3 boxes → Control / Backend -->
+  <!-- Memory Tree → Control -->
+  <line x1="185" y1="560" x2="400" y2="233" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowBlue)" stroke-dasharray="6,3"/>
+  <!-- Cognitive → Control -->
+  <line x1="475" y1="560" x2="460" y2="233" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowBlue)" stroke-dasharray="6,3"/>
+  <!-- Recovery → Control -->
+  <line x1="765" y1="560" x2="530" y2="233" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowBlue)" stroke-dasharray="6,3"/>
+  <!-- Session → Backend -->
+  <line x1="1085" y1="560" x2="530" y2="383" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowBlue)" stroke-dasharray="6,3"/>
+
+  <!-- Legend -->
+  <rect x="60" y="700" width="500" height="80" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="80" y="725" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">圖例</text>
+  <line x1="80" y1="745" x2="120" y2="745" stroke="#555" stroke-width="2"/>
+  <text x="130" y="750" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">資料流向</text>
+  <line x1="220" y1="745" x2="260" y2="745" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="270" y="750" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">代理轉發</text>
+  <line x1="360" y1="745" x2="400" y2="745" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="410" y="750" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2563EB">v3 新增連線</text>
+
+  <!-- Version badge -->
+  <rect x="1240" y="830" width="130" height="40" rx="8" fill="#1E293B"/>
+  <text x="1305" y="856" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v3 | 2026-05</text>
+</svg>

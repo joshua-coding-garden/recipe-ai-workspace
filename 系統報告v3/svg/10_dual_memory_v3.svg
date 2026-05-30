@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1000" width="1500" height="1000">
+  <defs>
+    <marker id="arrow10" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <linearGradient id="headerGrad10" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9333EA"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+    <linearGradient id="narrativeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#DBEAFE"/>
+      <stop offset="100%" stop-color="#EFF6FF"/>
+    </linearGradient>
+    <linearGradient id="structGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D1FAE5"/>
+      <stop offset="100%" stop-color="#ECFDF5"/>
+    </linearGradient>
+    <filter id="shadow10" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1500" height="1000" rx="12" fill="#FAFAFE"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1500" height="56" rx="12" fill="url(#headerGrad10)"/>
+  <rect x="0" y="30" width="1500" height="26" fill="url(#headerGrad10)"/>
+  <text x="750" y="38" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">v3 雙記憶系統 + 結構化存儲欄位</text>
+
+  <!-- ===== LEFT SIDE: NARRATIVE MEMORY ===== -->
+  <rect x="30" y="75" width="440" height="530" rx="12" fill="url(#narrativeGrad)" stroke="#3B82F6" stroke-width="2.5" filter="url(#shadow10)"/>
+  <rect x="30" y="75" width="440" height="42" rx="12" fill="#2563EB"/>
+  <rect x="30" y="105" width="440" height="12" fill="#2563EB"/>
+  <text x="250" y="103" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">Narrative Memory（敘事記憶）</text>
+
+  <!-- Prompt config -->
+  <rect x="50" y="130" width="400" height="55" rx="8" fill="#BFDBFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="250" y="153" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E3A8A" text-anchor="middle">PROMPT_NARRATIVE_SUMMARY</text>
+  <text x="250" y="173" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1E40AF" text-anchor="middle">temperature = 0.2（低隨機性，穩定摘要）</text>
+
+  <!-- Arrow down -->
+  <line x1="250" y1="185" x2="250" y2="210" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- Input -->
+  <rect x="50" y="215" width="400" height="105" rx="8" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="70" y="238" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E3A8A">輸入 (Input)</text>
+  <line x1="60" y1="246" x2="440" y2="246" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="70" y="268" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1E40AF">1. old_narrative（上一輪的摘要）</text>
+  <text x="70" y="290" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1E40AF">2. user_msg（本輪使用者訊息）</text>
+  <text x="70" y="310" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1E40AF">3. ai_reply（本輪 AI 回覆）</text>
+
+  <!-- Arrow down -->
+  <line x1="250" y1="320" x2="250" y2="345" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- LLM Process -->
+  <rect x="50" y="350" width="400" height="50" rx="8" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.5"/>
+  <text x="250" y="380" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">LLM 摘要生成（每輪呼叫一次）</text>
+
+  <!-- Arrow down -->
+  <line x1="250" y1="400" x2="250" y2="425" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- Output -->
+  <rect x="50" y="430" width="400" height="75" rx="8" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="70" y="453" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E3A8A">輸出 (Output)</text>
+  <line x1="60" y1="461" x2="440" y2="461" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="70" y="483" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1E40AF">對話脈絡摘要</text>
+  <text x="70" y="498" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#3B82F6">分號分段，累積更新，保持簡潔</text>
+
+  <!-- Narrative example -->
+  <rect x="50" y="520" width="400" height="70" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="70" y="540" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" font-weight="bold" fill="#92400E">範例輸出：</text>
+  <text x="70" y="558" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78350F">"使用者25歲男性，對花生過敏；</text>
+  <text x="70" y="573" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78350F"> 查詢過高鈣食物排名；分析了番茄蛋花湯食譜"</text>
+
+  <!-- ===== RIGHT SIDE: STRUCTURED STORE ===== -->
+  <rect x="500" y="75" width="970" height="870" rx="12" fill="url(#structGrad)" stroke="#10B981" stroke-width="2.5" filter="url(#shadow10)"/>
+  <rect x="500" y="75" width="970" height="42" rx="12" fill="#059669"/>
+  <rect x="500" y="105" width="970" height="12" fill="#059669"/>
+  <text x="985" y="103" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">Structured Store（結構化存儲 - 12 類）</text>
+
+  <!-- Category 1: user_facts -->
+  <rect x="520" y="130" width="450" height="110" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="520" y="130" width="450" height="26" rx="8" fill="#34D399"/>
+  <rect x="520" y="148" width="450" height="8" fill="#34D399"/>
+  <text x="530" y="150" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">1. user_facts</text>
+  <text x="530" y="178" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">age, gender, height, weight</text>
+  <text x="530" y="196" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">activity, goal, conditions</text>
+  <text x="530" y="214" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">restrictions, allergies</text>
+  <text x="530" y="232" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#047857" font-style="italic">來源：CRE regex + LLM 提取</text>
+
+  <!-- Category 2: food_context -->
+  <rect x="990" y="130" width="460" height="110" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="990" y="130" width="460" height="26" rx="8" fill="#34D399"/>
+  <rect x="990" y="148" width="460" height="8" fill="#34D399"/>
+  <text x="1000" y="150" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">2. food_context</text>
+  <text x="1000" y="178" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">foods_searched[]</text>
+  <text x="1000" y="196" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">foods_mentioned_today[]</text>
+  <text x="1000" y="214" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">categories_browsed[]</text>
+  <text x="1000" y="232" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#047857" font-style="italic">來源：工具結果 LLM 提取</text>
+
+  <!-- Category 3: recipe_store -->
+  <rect x="520" y="255" width="450" height="120" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="520" y="255" width="450" height="26" rx="8" fill="#D97706"/>
+  <rect x="520" y="273" width="450" height="8" fill="#D97706"/>
+  <text x="530" y="275" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">3. recipe_store[]</text>
+  <rect x="680" y="259" width="82" height="16" rx="3" fill="#FDE68A"/>
+  <text x="721" y="271" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="#92400E" text-anchor="middle">EAGER UPDATE</text>
+  <text x="530" y="300" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">recipe entries with:</text>
+  <text x="530" y="318" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">  name, ingredients[], servings</text>
+  <text x="530" y="336" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">  total_nutrition (110+ 營養素欄位)</text>
+  <text x="530" y="354" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">  dri_gaps[], analyzed_at</text>
+  <text x="530" y="370" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#B45309" font-weight="bold" font-style="italic">直接寫入，不等 LLM 提取</text>
+
+  <!-- Category 4: symptom_history -->
+  <rect x="990" y="255" width="460" height="110" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="990" y="255" width="460" height="26" rx="8" fill="#34D399"/>
+  <rect x="990" y="273" width="460" height="8" fill="#34D399"/>
+  <text x="1000" y="275" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">4. symptom_history[]</text>
+  <text x="1350" y="275" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="white">保留最近 20 筆</text>
+  <text x="1000" y="300" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">symptom_zh (中文症狀名)</text>
+  <text x="1000" y="318" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">parsed_symptoms (解析結果)</text>
+  <text x="1000" y="336" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">effects (功效說明)</text>
+  <text x="1000" y="354" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">key_compounds (關鍵化合物)</text>
+
+  <!-- Category 5: nutrient_ranking_history -->
+  <rect x="520" y="390" width="450" height="85" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="520" y="390" width="450" height="26" rx="8" fill="#34D399"/>
+  <rect x="520" y="408" width="450" height="8" fill="#34D399"/>
+  <text x="530" y="410" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">5. nutrient_ranking_history[]</text>
+  <text x="880" y="410" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="white">保留最近 20 筆</text>
+  <text x="530" y="438" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">nutrient_field (營養素欄位名)</text>
+  <text x="530" y="456" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">top3_foods (前三名食物)</text>
+  <text x="530" y="470" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#047857" font-style="italic">來源：get_nutrient_ranking 工具結果</text>
+
+  <!-- Category 6: calendar_context -->
+  <rect x="990" y="390" width="460" height="85" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="990" y="390" width="460" height="26" rx="8" fill="#34D399"/>
+  <rect x="990" y="408" width="460" height="8" fill="#34D399"/>
+  <text x="1000" y="410" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">6. calendar_context</text>
+  <text x="1355" y="410" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="white">保留最近 10 筆</text>
+  <text x="1000" y="438" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">recent_date_queries[]</text>
+  <text x="1000" y="456" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">（查詢過的日期範圍記錄）</text>
+
+  <!-- Category 7: academic_context -->
+  <rect x="520" y="490" width="450" height="85" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="520" y="490" width="450" height="26" rx="8" fill="#34D399"/>
+  <rect x="520" y="508" width="450" height="8" fill="#34D399"/>
+  <text x="530" y="510" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">7. academic_context</text>
+  <text x="530" y="538" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">queries[] (學術查詢紀錄)</text>
+  <text x="530" y="556" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">papers_referenced[] (引用的論文)</text>
+  <text x="530" y="570" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#047857" font-style="italic">來源：search_graphrag / get_literature_papers</text>
+
+  <!-- Category 8: dri_awareness -->
+  <rect x="990" y="490" width="460" height="85" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="990" y="490" width="460" height="26" rx="8" fill="#34D399"/>
+  <rect x="990" y="508" width="460" height="8" fill="#34D399"/>
+  <text x="1000" y="510" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">8. dri_awareness</text>
+  <text x="1000" y="538" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">deficient_nutrients[] (不足的營養素)</text>
+  <text x="1000" y="556" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">excess_nutrients[] (過量的營養素)</text>
+  <text x="1000" y="570" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#047857" font-style="italic">來源：analyze_recipe DRI gap 結果</text>
+
+  <!-- Category 9: recent_actions -->
+  <rect x="520" y="590" width="450" height="100" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="520" y="590" width="450" height="26" rx="8" fill="#34D399"/>
+  <rect x="520" y="608" width="450" height="8" fill="#34D399"/>
+  <text x="530" y="610" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">9. recent_actions[]</text>
+  <text x="880" y="610" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="white">保留最近 30 筆</text>
+  <text x="530" y="638" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">intent (使用者意圖)</text>
+  <text x="530" y="656" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">tool (呼叫的工具名)</text>
+  <text x="530" y="674" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">params (參數摘要), result_summary</text>
+
+  <!-- Category 10: saved_recipes_summary -->
+  <rect x="990" y="590" width="460" height="100" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="990" y="590" width="460" height="26" rx="8" fill="#34D399"/>
+  <rect x="990" y="608" width="460" height="8" fill="#34D399"/>
+  <text x="1000" y="610" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">10. saved_recipes_summary</text>
+  <text x="1000" y="638" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">已儲存食譜的快取摘要</text>
+  <text x="1000" y="656" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">count, recipe_names[]</text>
+  <text x="1000" y="674" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">last_synced（與 DB 同步時間戳）</text>
+
+  <!-- Categories 11-12 row -->
+  <!-- Category 11 (placeholder for future) -->
+  <rect x="520" y="705" width="450" height="65" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="520" y="705" width="450" height="26" rx="8" fill="#34D399"/>
+  <rect x="520" y="723" width="450" height="8" fill="#34D399"/>
+  <text x="530" y="725" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">11. conversation_preferences</text>
+  <text x="530" y="752" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">language, detail_level, response_style</text>
+
+  <!-- Category 12 -->
+  <rect x="990" y="705" width="460" height="65" rx="8" fill="white" stroke="#6EE7B7" stroke-width="1.5"/>
+  <rect x="990" y="705" width="460" height="26" rx="8" fill="#34D399"/>
+  <rect x="990" y="723" width="460" height="8" fill="#34D399"/>
+  <text x="1000" y="725" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="white">12. session_metadata</text>
+  <text x="1000" y="752" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#065F46">turn_count, started_at, tools_used_count</text>
+
+  <!-- ===== UPDATE MECHANISM ===== -->
+  <rect x="30" y="625" width="440" height="145" rx="10" fill="#FFF7ED" stroke="#F59E0B" stroke-width="2" filter="url(#shadow10)"/>
+  <rect x="30" y="625" width="440" height="36" rx="10" fill="#D97706"/>
+  <rect x="30" y="651" width="440" height="10" fill="#D97706"/>
+  <text x="250" y="649" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">更新機制差異</text>
+
+  <!-- Eager -->
+  <rect x="50" y="675" width="200" height="80" rx="6" fill="#FEF3C7" stroke="#EAB308" stroke-width="1.5"/>
+  <text x="150" y="698" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#854D0E" text-anchor="middle">Eager（即時寫入）</text>
+  <line x1="60" y1="706" x2="240" y2="706" stroke="#FCD34D" stroke-width="1"/>
+  <text x="60" y="724" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78350F">recipe_store</text>
+  <text x="60" y="742" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#92400E">工具回傳後直接結構化</text>
+  <text x="60" y="754" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#92400E">寫入，不等 LLM 提取</text>
+
+  <!-- LLM extract -->
+  <rect x="270" y="675" width="180" height="80" rx="6" fill="#EDE9FE" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="360" y="698" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5B21B6" text-anchor="middle">LLM 提取</text>
+  <line x1="280" y1="706" x2="440" y2="706" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="280" y="724" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#5B21B6">其餘 11 類</text>
+  <text x="280" y="742" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6D28D9">每輪結束由 LLM 從</text>
+  <text x="280" y="754" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6D28D9">對話中提取更新</text>
+
+  <!-- ===== INTEGRATION DIAGRAM ===== -->
+  <rect x="30" y="800" width="1440" height="180" rx="10" fill="#F5F3FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow10)"/>
+  <rect x="30" y="800" width="1440" height="36" rx="10" fill="#7C3AED"/>
+  <rect x="30" y="826" width="1440" height="10" fill="#7C3AED"/>
+  <text x="750" y="824" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="white" text-anchor="middle">雙記憶系統整合流程</text>
+
+  <!-- Flow: Input -->
+  <rect x="50" y="850" width="150" height="50" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="125" y="872" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E3A8A" text-anchor="middle">使用者訊息</text>
+  <text x="125" y="891" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1E40AF" text-anchor="middle">+ 工具結果</text>
+
+  <line x1="200" y1="875" x2="230" y2="875" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- Flow: Process -->
+  <rect x="235" y="850" width="160" height="50" rx="8" fill="#EDE9FE" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="315" y="872" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5B21B6" text-anchor="middle">LLM 回覆生成</text>
+  <text x="315" y="891" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6D28D9" text-anchor="middle">（讀取雙記憶）</text>
+
+  <line x1="395" y1="875" x2="425" y2="875" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- Flow: Fork -->
+  <rect x="430" y="850" width="120" height="50" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="490" y="878" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#92400E" text-anchor="middle">輪末更新</text>
+
+  <!-- Fork to Narrative -->
+  <line x1="550" y1="860" x2="610" y2="860" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow10)"/>
+  <rect x="615" y="845" width="190" height="35" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="710" y="867" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E3A8A" text-anchor="middle">更新 Narrative</text>
+
+  <!-- Fork to Structured -->
+  <line x1="550" y1="890" x2="610" y2="890" stroke="#10B981" stroke-width="2" marker-end="url(#arrow10)"/>
+  <rect x="615" y="880" width="190" height="35" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="710" y="902" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#065F46" text-anchor="middle">更新 Structured Store</text>
+
+  <!-- Merge -->
+  <line x1="805" y1="862" x2="850" y2="875" stroke="#555" stroke-width="1.5"/>
+  <line x1="805" y1="897" x2="850" y2="885" stroke="#555" stroke-width="1.5"/>
+
+  <line x1="850" y1="880" x2="885" y2="880" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- Checkpoint -->
+  <rect x="890" y="855" width="190" height="50" rx="8" fill="#FFF1F2" stroke="#E11D48" stroke-width="1.5"/>
+  <text x="985" y="877" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#9F1239" text-anchor="middle">Checkpoint 儲存</text>
+  <text x="985" y="896" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#BE123C" text-anchor="middle">（雙記憶一起存入 DB）</text>
+
+  <line x1="1080" y1="880" x2="1110" y2="880" stroke="#555" stroke-width="1.5" marker-end="url(#arrow10)"/>
+
+  <!-- Next turn -->
+  <rect x="1115" y="855" width="180" height="50" rx="8" fill="#CCFBF1" stroke="#14B8A6" stroke-width="1.5"/>
+  <text x="1205" y="877" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" font-weight="bold" fill="#0F766E" text-anchor="middle">下一輪 System Prompt</text>
+  <text x="1205" y="896" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#115E59" text-anchor="middle">注入 narrative + key facts</text>
+
+  <!-- Explanation -->
+  <text x="750" y="950" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="bold">Narrative 提供對話連貫性（「你剛才問了...」），Structured Store 提供精確事實查詢（「你的BMI是...」、「上次分析的食譜熱量是...」）</text>
+  <text x="750" y="970" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6D28D9" text-anchor="middle">兩者互補：Narrative 是壓縮的自然語言，Structured 是可程式存取的 JSON — 共同構成 v3 的會話記憶層</text>
+</svg>

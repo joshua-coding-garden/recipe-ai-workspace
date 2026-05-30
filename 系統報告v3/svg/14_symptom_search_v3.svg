@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 850" width="1400" height="850">
+  <defs>
+    <filter id="shadow14" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow14" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrow14b" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1565C0"/>
+    </marker>
+    <linearGradient id="titleBg14" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#AD1457"/>
+      <stop offset="100%" stop-color="#C2185B"/>
+    </linearGradient>
+    <linearGradient id="stageBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FCE4EC"/>
+      <stop offset="100%" stop-color="#F8BBD0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="850" rx="12" fill="#FFF5F7"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1400" height="60" rx="12" fill="url(#titleBg14)"/>
+  <rect x="0" y="30" width="1400" height="30" fill="url(#titleBg14)"/>
+  <text x="700" y="40" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" fill="white" font-weight="bold">v3 症狀搜尋流程（5階段 + 向量語義）</text>
+
+  <!-- Stage 1: User Input -->
+  <rect x="40" y="85" width="250" height="80" rx="12" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="40" y="85" width="250" height="30" rx="12" fill="#1565C0"/>
+  <rect x="40" y="100" width="250" height="15" fill="#1565C0"/>
+  <text x="165" y="105" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="white" font-weight="bold">階段 1：使用者輸入</text>
+  <text x="60" y="140" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#1A237E">輸入中文症狀描述</text>
+  <text x="60" y="158" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1565C0">例："頭痛、失眠、疲勞"</text>
+
+  <!-- Arrow -->
+  <line x1="290" y1="125" x2="330" y2="125" stroke="#555" stroke-width="2" marker-end="url(#arrow14)"/>
+
+  <!-- Stage 2: API Call -->
+  <rect x="340" y="85" width="300" height="80" rx="12" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="340" y="85" width="300" height="30" rx="12" fill="#2E7D32"/>
+  <rect x="340" y="100" width="300" height="15" fill="#2E7D32"/>
+  <text x="490" y="105" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="white" font-weight="bold">階段 2：API 呼叫</text>
+  <rect x="360" y="125" width="260" height="22" rx="4" fill="white" stroke="#A5D6A7" stroke-width="1"/>
+  <text x="370" y="141" font-family="monospace" font-size="11" fill="#2E7D32">POST /health/symptom-search</text>
+  <text x="360" y="160" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4CAF50">Control 層轉發至 Backend</text>
+
+  <!-- Arrow down -->
+  <line x1="490" y1="165" x2="490" y2="195" stroke="#555" stroke-width="2" marker-end="url(#arrow14)"/>
+
+  <!-- Note: no translation -->
+  <rect x="660" y="85" width="240" height="50" rx="8" fill="#FFF9C4" stroke="#F9A825" stroke-width="1.5" filter="url(#shadow14)"/>
+  <text x="780" y="107" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#E65100" font-weight="bold">v3 改進：不再翻譯為英文</text>
+  <text x="780" y="125" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#F57F17">直接使用中文進行語義搜尋</text>
+  <line x1="640" y1="110" x2="660" y2="110" stroke="#F9A825" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Stage 3: 5-Stage Pipeline -->
+  <rect x="40" y="200" width="1320" height="390" rx="12" fill="url(#stageBg)" stroke="#AD1457" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="40" y="200" width="1320" height="35" rx="12" fill="#AD1457"/>
+  <rect x="40" y="220" width="1320" height="15" fill="#AD1457"/>
+  <text x="70" y="223" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" fill="white" font-weight="bold">階段 3：symptom_service.py 5 階段管道</text>
+
+  <!-- 3a: LLM Parse -->
+  <rect x="65" y="250" width="230" height="130" rx="10" fill="white" stroke="#7B1FA2" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="65" y="250" width="230" height="28" rx="10" fill="#7B1FA2"/>
+  <rect x="65" y="265" width="230" height="13" fill="#7B1FA2"/>
+  <text x="180" y="270" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white" font-weight="bold">3a. LLM 結構化解析</text>
+
+  <text x="85" y="302" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#4A148C" font-weight="bold">Gemma LLM 拆解</text>
+  <text x="85" y="322" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A1B9A">輸入: "頭痛、失眠"</text>
+  <text x="85" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#6A1B9A">輸出: ["頭痛", "失眠"]</text>
+  <text x="85" y="358" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9C27B0">拆解為獨立症狀關鍵字</text>
+  <text x="85" y="374" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#AB47BC">結構化 JSON 輸出</text>
+
+  <!-- Arrow -->
+  <line x1="295" y1="315" x2="325" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow14)"/>
+
+  <!-- 3b: Dual Search -->
+  <rect x="330" y="250" width="340" height="130" rx="10" fill="white" stroke="#00695C" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="330" y="250" width="340" height="28" rx="10" fill="#00695C"/>
+  <rect x="330" y="265" width="340" height="13" fill="#00695C"/>
+  <text x="500" y="270" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white" font-weight="bold">3b. 雙路搜尋</text>
+
+  <!-- Track 1 -->
+  <rect x="345" y="290" width="148" height="78" rx="6" fill="#E0F2F1" stroke="#009688" stroke-width="1.5"/>
+  <text x="419" y="310" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#004D40" font-weight="bold">路徑 A：規則匹配</text>
+  <text x="419" y="328" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#00695C">symptom_mapping.json</text>
+  <text x="419" y="345" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#00897B">預定義症狀→化合物</text>
+  <text x="419" y="360" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#00897B">對照表</text>
+
+  <!-- Track 2 -->
+  <rect x="505" y="290" width="152" height="78" rx="6" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="581" y="310" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1A237E" font-weight="bold">路徑 B：語義搜尋</text>
+  <text x="581" y="328" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1565C0">Health Vector (8003)</text>
+  <text x="581" y="345" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1976D2">向量嵌入語義匹配</text>
+  <text x="581" y="360" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#1976D2">相似度排序</text>
+
+  <!-- Merge symbol -->
+  <text x="500" y="380" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" fill="#00695C" font-weight="bold">&#8645; 合併結果</text>
+
+  <!-- Arrow -->
+  <line x1="670" y1="315" x2="700" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow14)"/>
+
+  <!-- 3c: LLM Relevance -->
+  <rect x="705" y="250" width="230" height="130" rx="10" fill="white" stroke="#E65100" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="705" y="250" width="230" height="28" rx="10" fill="#E65100"/>
+  <rect x="705" y="265" width="230" height="13" fill="#E65100"/>
+  <text x="820" y="270" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white" font-weight="bold">3c. LLM 相關性判斷</text>
+
+  <text x="725" y="302" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#BF360C" font-weight="bold">Gemma 篩選評分</text>
+  <text x="725" y="322" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E65100">合併結果送入 LLM</text>
+  <text x="725" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E65100">評估每項的相關性</text>
+  <text x="725" y="358" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#FF8F00">篩選 Top 10 最相關</text>
+  <text x="725" y="374" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FFA000">去除不相關/噪音項目</text>
+
+  <!-- Arrow -->
+  <line x1="935" y1="315" x2="965" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow14)"/>
+
+  <!-- 3d: Compound→Food -->
+  <rect x="970" y="250" width="180" height="130" rx="10" fill="white" stroke="#1565C0" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="970" y="250" width="180" height="28" rx="10" fill="#1565C0"/>
+  <rect x="970" y="265" width="180" height="13" fill="#1565C0"/>
+  <text x="1060" y="270" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white" font-weight="bold">3d. 化合物→食物</text>
+
+  <text x="990" y="302" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1A237E" font-weight="bold">Pipeline 轉換</text>
+  <text x="990" y="322" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1565C0">化合物 → 含該</text>
+  <text x="990" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1565C0">化合物的食物清單</text>
+  <text x="990" y="358" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1976D2">FooDB 資料庫查詢</text>
+  <text x="990" y="374" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#42A5F5">含量排序</text>
+
+  <!-- Arrow -->
+  <line x1="1150" y1="315" x2="1180" y2="315" stroke="#555" stroke-width="2" marker-end="url(#arrow14)"/>
+
+  <!-- 3e: Dedup -->
+  <rect x="1185" y="250" width="155" height="130" rx="10" fill="white" stroke="#C62828" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="1185" y="250" width="155" height="28" rx="10" fill="#C62828"/>
+  <rect x="1185" y="265" width="155" height="13" fill="#C62828"/>
+  <text x="1262" y="270" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white" font-weight="bold">3e. 去重彙總</text>
+
+  <text x="1205" y="302" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#B71C1C" font-weight="bold">最終整理</text>
+  <text x="1205" y="322" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#C62828">合併重複化合物</text>
+  <text x="1205" y="340" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#C62828">合併重複食物</text>
+  <text x="1205" y="358" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E53935">統一格式化輸出</text>
+  <text x="1205" y="374" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#EF5350">排序 + 截斷</text>
+
+  <!-- Pipeline flow arrow bar -->
+  <rect x="65" y="395" width="1275" height="25" rx="6" fill="#AD1457" opacity="0.1"/>
+  <line x1="80" y1="407" x2="1325" y2="407" stroke="#AD1457" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="700" y="412" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#AD1457" font-weight="bold">symptom_service.py 完整管道流程 &#8594;</text>
+
+  <!-- Output box -->
+  <rect x="65" y="430" width="1275" height="80" rx="8" fill="white" stroke="#AD1457" stroke-width="1.5" filter="url(#shadow14)"/>
+  <text x="85" y="455" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#AD1457" font-weight="bold">回傳資料結構：</text>
+
+  <rect x="85" y="465" width="180" height="35" rx="6" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1"/>
+  <text x="175" y="487" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1B5E20" font-weight="bold">parsed_symptoms</text>
+  <text x="175" y="497" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#4CAF50">LLM 解析的症狀列表</text>
+
+  <rect x="285" y="465" width="180" height="35" rx="6" fill="#E3F2FD" stroke="#1565C0" stroke-width="1"/>
+  <text x="375" y="487" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1A237E" font-weight="bold">vector_matches</text>
+  <text x="375" y="497" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#1565C0">語義向量匹配結果</text>
+
+  <rect x="485" y="465" width="180" height="35" rx="6" fill="#FFF3E0" stroke="#E65100" stroke-width="1"/>
+  <text x="575" y="487" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#BF360C" font-weight="bold">effects</text>
+  <text x="575" y="497" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#E65100">化合物功效說明</text>
+
+  <rect x="685" y="465" width="200" height="35" rx="6" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="785" y="487" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#4A148C" font-weight="bold">recommendations</text>
+  <text x="785" y="497" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#7B1FA2">食物推薦清單</text>
+
+  <!-- Stage 4: Return -->
+  <rect x="40" y="530" width="1320" height="55" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="40" y="530" width="1320" height="28" rx="10" fill="#2E7D32"/>
+  <rect x="40" y="543" width="1320" height="15" fill="#2E7D32"/>
+  <text x="70" y="550" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="white" font-weight="bold">階段 4：回傳前端</text>
+  <text x="70" y="578" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1B5E20">JSON 回應包含 parsed_symptoms、vector_matches、effects、recommendations 四大區塊，由前端 ToolResultCard 接收渲染</text>
+
+  <!-- Stage 5: Frontend Rendering -->
+  <rect x="40" y="605" width="1320" height="225" rx="12" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" filter="url(#shadow14)"/>
+  <rect x="40" y="605" width="1320" height="32" rx="12" fill="#1565C0"/>
+  <rect x="40" y="622" width="1320" height="15" fill="#1565C0"/>
+  <text x="70" y="627" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" fill="white" font-weight="bold">階段 5：前端 ToolResultCard 渲染</text>
+
+  <!-- Render block 1 -->
+  <rect x="65" y="650" width="380" height="160" rx="10" fill="white" stroke="#42A5F5" stroke-width="1.5" filter="url(#shadow14)"/>
+  <rect x="65" y="650" width="380" height="28" rx="10" fill="#42A5F5"/>
+  <rect x="65" y="665" width="380" height="13" fill="#42A5F5"/>
+  <text x="255" y="670" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="white" font-weight="bold">LLM 解析標籤區塊</text>
+
+  <text x="85" y="700" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1A237E">顯示 parsed_symptoms 結果：</text>
+  <rect x="85" y="710" width="60" height="24" rx="12" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+  <text x="115" y="726" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2E7D32">頭痛</text>
+  <rect x="155" y="710" width="60" height="24" rx="12" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+  <text x="185" y="726" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2E7D32">失眠</text>
+  <rect x="225" y="710" width="60" height="24" rx="12" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+  <text x="255" y="726" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2E7D32">疲勞</text>
+
+  <text x="85" y="755" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#546E7A">每個症狀以 Chip/Tag 形式呈現</text>
+  <text x="85" y="772" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#546E7A">使用者可確認 LLM 解讀是否正確</text>
+  <text x="85" y="789" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#546E7A">綠色標籤 = 成功解析的症狀</text>
+
+  <!-- Render block 2 -->
+  <rect x="470" y="650" width="350" height="160" rx="10" fill="white" stroke="#42A5F5" stroke-width="1.5" filter="url(#shadow14)"/>
+  <rect x="470" y="650" width="350" height="28" rx="10" fill="#42A5F5"/>
+  <rect x="470" y="665" width="350" height="13" fill="#42A5F5"/>
+  <text x="645" y="670" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="white" font-weight="bold">語義匹配區塊</text>
+
+  <text x="490" y="700" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1A237E">顯示 vector_matches 結果：</text>
+
+  <rect x="490" y="710" width="310" height="25" rx="4" fill="#F3E5F5" stroke="#CE93D8" stroke-width="1"/>
+  <text x="500" y="727" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A148C">Melatonin (褪黑激素)</text>
+  <text x="750" y="727" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B1FA2">92%</text>
+
+  <rect x="490" y="740" width="310" height="25" rx="4" fill="#F3E5F5" stroke="#CE93D8" stroke-width="1"/>
+  <text x="500" y="757" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A148C">Magnesium (鎂)</text>
+  <text x="750" y="757" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B1FA2">87%</text>
+
+  <rect x="490" y="770" width="310" height="25" rx="4" fill="#F3E5F5" stroke="#CE93D8" stroke-width="1"/>
+  <text x="500" y="787" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#4A148C">Vitamin B6 (維生素B6)</text>
+  <text x="750" y="787" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B1FA2">83%</text>
+
+  <!-- Render block 3 -->
+  <rect x="845" y="650" width="490" height="160" rx="10" fill="white" stroke="#42A5F5" stroke-width="1.5" filter="url(#shadow14)"/>
+  <rect x="845" y="650" width="490" height="28" rx="10" fill="#42A5F5"/>
+  <rect x="845" y="665" width="490" height="13" fill="#42A5F5"/>
+  <text x="1090" y="670" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="white" font-weight="bold">效果卡片 + 食物推薦</text>
+
+  <text x="865" y="700" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1A237E">effects + recommendations 整合渲染：</text>
+
+  <!-- Effect card mock -->
+  <rect x="865" y="712" width="220" height="85" rx="6" fill="#FFF3E0" stroke="#FF8F00" stroke-width="1"/>
+  <text x="875" y="730" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E65100" font-weight="bold">褪黑激素</text>
+  <text x="875" y="748" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#F57C00">功效: 調節睡眠-覺醒週期</text>
+  <text x="875" y="764" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#FF8F00">推薦食物：</text>
+  <text x="875" y="780" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#795548">  酸櫻桃、核桃、番茄</text>
+  <text x="875" y="793" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#1565C0" text-decoration="underline">點擊食物名 → FoodbFoodModal</text>
+
+  <rect x="1100" y="712" width="220" height="85" rx="6" fill="#E0F2F1" stroke="#009688" stroke-width="1"/>
+  <text x="1110" y="730" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#00695C" font-weight="bold">鎂</text>
+  <text x="1110" y="748" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#00897B">功效: 放鬆肌肉、助眠</text>
+  <text x="1110" y="764" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#009688">推薦食物：</text>
+  <text x="1110" y="780" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#795548">  菠菜、南瓜籽、黑巧克力</text>
+  <text x="1110" y="793" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#1565C0" text-decoration="underline">點擊食物名 → FoodbFoodModal</text>
+</svg>

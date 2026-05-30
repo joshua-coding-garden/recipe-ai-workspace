@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arrEnd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2a3a"/>
+    </marker>
+    <marker id="arrStart" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M10,0 L0,5 L10,10 z" fill="#1f2a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+
+  <!-- 標題 -->
+  <text x="60" y="62" font-size="32" font-weight="700" fill="#1f2a3a">Recipe-AI 系統架構（三層）</text>
+  <text x="60" y="94" font-size="18" fill="#5c6b80">給營養師 / 醫師參考 ── 使用者看到什麼、系統怎麼想、知識從哪裡來</text>
+
+  <!-- ============ 主架構：三層 ============ -->
+
+  <!-- Layer 1 -->
+  <rect x="60" y="170" width="1040" height="180" rx="16" fill="#f4f7fb" stroke="#1f2a3a" stroke-width="2.5"/>
+  <text x="580" y="210" font-size="26" font-weight="700" fill="#1f2a3a" text-anchor="middle">① 使用者介面層（網頁）</text>
+  <text x="580" y="240" font-size="17" fill="#5c6b80" text-anchor="middle">使用者透過瀏覽器輸入需求、接收分析結果</text>
+
+  <rect x="90"  y="270" width="220" height="62" rx="10" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2"/>
+  <text x="200" y="307" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">食譜輸入</text>
+
+  <rect x="353" y="270" width="220" height="62" rx="10" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2"/>
+  <text x="463" y="307" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">症狀描述</text>
+
+  <rect x="616" y="270" width="220" height="62" rx="10" fill="#fbe6cc" stroke="#d97a25" stroke-width="2"/>
+  <text x="726" y="307" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">個人條件</text>
+
+  <rect x="879" y="270" width="200" height="62" rx="10" fill="#e3e6eb" stroke="#5b6776" stroke-width="2"/>
+  <text x="979" y="307" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">結果顯示</text>
+
+  <!-- Layer 2 -->
+  <rect x="60" y="390" width="1040" height="180" rx="16" fill="#f4f7fb" stroke="#1f2a3a" stroke-width="2.5"/>
+  <text x="580" y="430" font-size="26" font-weight="700" fill="#1f2a3a" text-anchor="middle">② 智能分析層（系統大腦）</text>
+  <text x="580" y="460" font-size="17" fill="#5c6b80" text-anchor="middle">依規則辨識文字、查詢資料庫、計算營養與比對 DRI</text>
+
+  <rect x="90"  y="490" width="220" height="62" rx="10" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2"/>
+  <text x="200" y="527" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">食材辨識</text>
+
+  <rect x="353" y="490" width="220" height="62" rx="10" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2"/>
+  <text x="463" y="527" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">營養計算</text>
+
+  <rect x="616" y="490" width="220" height="62" rx="10" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2"/>
+  <text x="726" y="527" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">症狀對照</text>
+
+  <rect x="879" y="490" width="200" height="62" rx="10" fill="#fbe6cc" stroke="#d97a25" stroke-width="2"/>
+  <text x="979" y="527" font-size="18" font-weight="700" fill="#1f2a3a" text-anchor="middle">DRI 比對</text>
+
+  <!-- Layer 3 -->
+  <rect x="60" y="610" width="1040" height="180" rx="16" fill="#f4f7fb" stroke="#1f2a3a" stroke-width="2.5"/>
+  <text x="580" y="650" font-size="26" font-weight="700" fill="#1f2a3a" text-anchor="middle">③ 知識資料層</text>
+  <text x="580" y="680" font-size="17" fill="#5c6b80" text-anchor="middle">儲存國家級營養資料、國際食品庫、國民攝取建議</text>
+
+  <rect x="90"  y="710" width="320" height="62" rx="10" fill="#ffffff" stroke="#1f2a3a" stroke-width="2"/>
+  <text x="250" y="747" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">台灣食品成分資料庫</text>
+
+  <rect x="435" y="710" width="320" height="62" rx="10" fill="#ffffff" stroke="#1f2a3a" stroke-width="2"/>
+  <text x="595" y="747" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">FooDB 國際食品 / 化合物</text>
+
+  <rect x="780" y="710" width="320" height="62" rx="10" fill="#ffffff" stroke="#1f2a3a" stroke-width="2"/>
+  <text x="940" y="747" font-size="17" font-weight="700" fill="#1f2a3a" text-anchor="middle">DRI 國民攝取建議 v8</text>
+
+  <!-- 雙向箭頭：Layer 1 ↔ Layer 2 -->
+  <line x1="580" y1="354" x2="580" y2="386" stroke="#1f2a3a" stroke-width="2" marker-start="url(#arrStart)" marker-end="url(#arrEnd)"/>
+  <text x="610" y="377" font-size="15" fill="#5c6b80">提問 / 回應</text>
+
+  <!-- 雙向箭頭：Layer 2 ↔ Layer 3 -->
+  <line x1="580" y1="574" x2="580" y2="606" stroke="#1f2a3a" stroke-width="2" marker-start="url(#arrStart)" marker-end="url(#arrEnd)"/>
+  <text x="610" y="597" font-size="15" fill="#5c6b80">查詢 / 取資料</text>
+
+  <!-- ============ 右側：四大功能標籤 ============ -->
+  <text x="1340" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">四大功能（共用上述三層）</text>
+
+  <rect x="1140" y="170" width="400" height="135" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="1340" y="208" font-size="22" font-weight="700" fill="#1f6fb8" text-anchor="middle">整合分析</text>
+  <text x="1340" y="244" font-size="16" fill="#1f2a3a" text-anchor="middle">食譜文字 → 食材清單</text>
+  <text x="1340" y="272" font-size="16" fill="#1f2a3a" text-anchor="middle">營養彙總 + DRI 缺口</text>
+
+  <rect x="1140" y="325" width="400" height="135" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="1340" y="363" font-size="22" font-weight="700" fill="#1f8a5b" text-anchor="middle">症狀搜尋</text>
+  <text x="1340" y="399" font-size="16" fill="#1f2a3a" text-anchor="middle">症狀 → 健康效果</text>
+  <text x="1340" y="427" font-size="16" fill="#1f2a3a" text-anchor="middle">→ 化合物 → 推薦食物</text>
+
+  <rect x="1140" y="480" width="400" height="135" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="1340" y="518" font-size="22" font-weight="700" fill="#d97a25" text-anchor="middle">DRI 缺口分析</text>
+  <text x="1340" y="554" font-size="16" fill="#1f2a3a" text-anchor="middle">年齡 / 性別 → DRI 比對</text>
+  <text x="1340" y="582" font-size="16" fill="#1f2a3a" text-anchor="middle">→ 補充食物推薦</text>
+
+  <rect x="1140" y="635" width="400" height="135" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="1340" y="673" font-size="22" font-weight="700" fill="#5b6776" text-anchor="middle">個人資料</text>
+  <text x="1340" y="709" font-size="16" fill="#1f2a3a" text-anchor="middle">基本資料儲存</text>
+  <text x="1340" y="737" font-size="16" fill="#1f2a3a" text-anchor="middle">供其他功能引用</text>
+
+  <!-- 底部說明 -->
+  <line x1="60" y1="820" x2="1540" y2="820" stroke="#c9d2df" stroke-width="1.5"/>
+  <text x="800" y="855" font-size="16" fill="#5c6b80" text-anchor="middle">※ 任何一個功能都會依序穿過三層：使用者輸入 → 系統處理 → 取用知識資料 → 回到介面顯示結果</text>
+</svg>

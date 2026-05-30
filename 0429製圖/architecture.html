@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Recipe-AI 架構圖</title>
+    <style>
+      :root {
+        --ink: #1f2a3a;
+        --muted: #5c6b80;
+        --line: #4a586d;
+        --accent: #2a6cb0;
+        --accent-2: #2f7a6f;
+        --panel: #f4f7fb;
+        --node: #dbe7f6;
+        --node-2: #d7efe8;
+        --node-3: #e6edf6;
+        --node-4: #f6efe3;
+        --border: #2b3a52;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #e9eef6;
+        font-family: "Noto Sans TC", "Segoe UI", Arial, sans-serif;
+        color: var(--ink);
+      }
+      .frame {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        box-sizing: border-box;
+      }
+      .canvas {
+        position: relative;
+        width: 1600px;
+        height: 900px;
+        background: #ffffff;
+        border: 2px solid #c9d2df;
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(17, 27, 45, 0.12);
+        overflow: hidden;
+      }
+      svg {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+      }
+      .title {
+        position: absolute;
+        left: 40px;
+        top: 24px;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: var(--ink);
+        z-index: 3;
+      }
+      .section-label {
+        position: absolute;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        z-index: 3;
+      }
+      .group {
+        position: absolute;
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        background: var(--panel);
+        padding: 14px 16px;
+        box-sizing: border-box;
+        z-index: 2;
+      }
+      .group-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 8px;
+      }
+      .node {
+        position: absolute;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        box-sizing: border-box;
+        background: var(--node);
+        z-index: 2;
+      }
+      .node.green { background: var(--node-2); }
+      .node.gray { background: var(--node-3); }
+      .node.sand { background: var(--node-4); }
+      .node-title {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .node-sub {
+        margin-top: 6px;
+        font-size: 16px;
+        line-height: 1.25;
+        color: var(--muted);
+      }
+      .note {
+        position: absolute;
+        left: 36px;
+        right: 36px;
+        bottom: 18px;
+        border: 2px solid #b5bfcc;
+        border-radius: 12px;
+        background: #f7f9fc;
+        padding: 12px 16px;
+        font-size: 16px;
+        line-height: 1.35;
+        z-index: 3;
+      }
+      .legend {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-right: 6px;
+        color: #ffffff;
+      }
+      .legend.blue { background: var(--accent); }
+      .legend.green { background: var(--accent-2); }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="canvas">
+        <div class="title">Recipe-AI：規則 + 檢索雙軌制架構</div>
+
+        <div class="section-label" style="left: 60px; top: 86px;">Frontend</div>
+        <div class="section-label" style="left: 628px; top: 86px;">Control / NLP</div>
+        <div class="section-label" style="left: 590px; top: 610px;">Backend</div>
+        <div class="section-label" style="left: 1180px; top: 86px;">Storage / Resources</div>
+
+        <div class="group" style="left: 40px; top: 118px; width: 340px; height: 470px;">
+          <div class="group-title">使用者入口</div>
+          <div class="node" style="left: 20px; top: 64px; width: 296px; height: 86px;">
+            <div class="node-title">整合分析</div>
+            <div class="node-sub">食材擷取、營養彙總、DRI 缺口</div>
+          </div>
+          <div class="node" style="left: 20px; top: 164px; width: 296px; height: 86px;">
+            <div class="node-title">症狀搜尋</div>
+            <div class="node-sub">症狀關鍵字 → 效果與食物</div>
+          </div>
+          <div class="node" style="left: 20px; top: 264px; width: 296px; height: 86px;">
+            <div class="node-title">DRI 分析</div>
+            <div class="node-sub">攝取 vs 建議值差距</div>
+          </div>
+          <div class="node" style="left: 20px; top: 364px; width: 296px; height: 86px;">
+            <div class="node-title">個人資料</div>
+            <div class="node-sub">年齡 / 性別 / 基本資訊</div>
+          </div>
+        </div>
+
+        <div class="group" style="left: 520px; top: 118px; width: 520px; height: 470px;">
+          <div class="group-title">FastAPI Routers + Services</div>
+          <div class="node green" style="left: 20px; top: 64px; width: 220px; height: 80px;">
+            <div class="node-title">FastAPI Routers</div>
+            <div class="node-sub">/recipe /health /dri /profile</div>
+          </div>
+          <div class="node green" style="left: 260px; top: 64px; width: 220px; height: 80px;">
+            <div class="node-title">ai_service</div>
+            <div class="node-sub">規則提取 / 正則匹配</div>
+          </div>
+          <div class="node gray" style="left: 20px; top: 164px; width: 220px; height: 80px;">
+            <div class="node-title">reverse_search_service</div>
+            <div class="node-sub">Direct → Jieba → 模糊比對</div>
+          </div>
+          <div class="node gray" style="left: 260px; top: 164px; width: 220px; height: 80px;">
+            <div class="node-title">symptom_service</div>
+            <div class="node-sub">症狀 mapping → 效果搜尋</div>
+          </div>
+          <div class="node gray" style="left: 20px; top: 264px; width: 220px; height: 80px;">
+            <div class="node-title">dri_gap_service</div>
+            <div class="node-sub">目標選擇 / 缺口計算</div>
+          </div>
+        </div>
+
+        <div class="group" style="left: 520px; top: 620px; width: 520px; height: 210px;">
+          <div class="group-title">Repositories</div>
+          <div class="node sand" style="left: 20px; top: 60px; width: 150px; height: 70px;">
+            <div class="node-title">health_repository</div>
+            <div class="node-sub">effects / nutrients</div>
+          </div>
+          <div class="node sand" style="left: 190px; top: 60px; width: 150px; height: 70px;">
+            <div class="node-title">food_repository</div>
+            <div class="node-sub">相似度搜尋</div>
+          </div>
+          <div class="node sand" style="left: 360px; top: 60px; width: 150px; height: 70px;">
+            <div class="node-title">user_repository</div>
+            <div class="node-sub">profiles</div>
+          </div>
+        </div>
+
+        <div class="group" style="left: 1120px; top: 118px; width: 430px; height: 330px;">
+          <div class="group-title">Postgres Tables</div>
+          <div class="node" style="left: 18px; top: 58px; width: 186px; height: 64px;">
+            <div class="node-title">taiwan_foods</div>
+            <div class="node-sub">台灣營養欄位</div>
+          </div>
+          <div class="node" style="left: 214px; top: 58px; width: 186px; height: 64px;">
+            <div class="node-title">foodb_foods</div>
+            <div class="node-sub">英文食物表</div>
+          </div>
+          <div class="node" style="left: 18px; top: 132px; width: 186px; height: 64px;">
+            <div class="node-title">foodb_health_effects</div>
+            <div class="node-sub">效果名稱</div>
+          </div>
+          <div class="node" style="left: 214px; top: 132px; width: 186px; height: 64px;">
+            <div class="node-title">foodb_compounds</div>
+            <div class="node-sub">化合物</div>
+          </div>
+          <div class="node" style="left: 18px; top: 206px; width: 186px; height: 64px;">
+            <div class="node-title">foodb_contents</div>
+            <div class="node-sub">含量 / 排名</div>
+          </div>
+          <div class="node" style="left: 214px; top: 206px; width: 186px; height: 64px;">
+            <div class="node-title">profiles</div>
+            <div class="node-sub">使用者屬性</div>
+          </div>
+        </div>
+
+        <div class="group" style="left: 1120px; top: 470px; width: 430px; height: 260px;">
+          <div class="group-title">JSON Resources</div>
+          <div class="node" style="left: 18px; top: 58px; width: 394px; height: 56px;">
+            <div class="node-title">hpa_dri_v8.json</div>
+            <div class="node-sub">DRI 欄位 + 建議值</div>
+          </div>
+          <div class="node" style="left: 18px; top: 124px; width: 394px; height: 56px;">
+            <div class="node-title">nutrient_field_map.json</div>
+            <div class="node-sub">營養欄位白名單 / 跨 DB 對照</div>
+          </div>
+          <div class="node" style="left: 18px; top: 190px; width: 394px; height: 56px;">
+            <div class="node-title">symptom_mapping.json</div>
+            <div class="node-sub">症狀 → 效果對照</div>
+          </div>
+        </div>
+
+        <svg width="1600" height="900" aria-hidden="true">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+            </marker>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" />
+            </marker>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-2)" />
+            </marker>
+          </defs>
+
+          <!-- Frontend -> Routers -->
+          <path d="M 380 210 L 520 190" stroke="var(--line)" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+          <path d="M 380 310 L 520 230" stroke="var(--line)" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+          <path d="M 380 410 L 520 270" stroke="var(--line)" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+          <path d="M 380 510 L 520 310" stroke="var(--line)" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+
+          <!-- Routers -> Services -->
+          <path d="M 760 222 L 760 282" stroke="var(--line)" stroke-width="2.2" fill="none" marker-end="url(#arrow)" />
+          <path d="M 760 222 L 860 222" stroke="var(--line)" stroke-width="2.2" fill="none" marker-end="url(#arrow)" />
+
+          <!-- Services -> Backend repositories -->
+          <path d="M 720 432 L 640 620" stroke="var(--accent)" stroke-width="2.6" fill="none" marker-end="url(#arrow-blue)" />
+          <path d="M 850 432 L 760 620" stroke="var(--accent)" stroke-width="2.6" fill="none" marker-end="url(#arrow-blue)" />
+          <path d="M 720 512 L 880 620" stroke="var(--accent)" stroke-width="2.6" fill="none" marker-end="url(#arrow-blue)" />
+
+          <!-- Backend repositories -> Postgres tables -->
+          <path d="M 670 690 L 1120 190" stroke="var(--line)" stroke-width="2.2" fill="none" marker-end="url(#arrow)" />
+          <path d="M 750 690 L 1120 264" stroke="var(--line)" stroke-width="2.2" fill="none" marker-end="url(#arrow)" />
+          <path d="M 890 690 L 1120 320" stroke="var(--line)" stroke-width="2.2" fill="none" marker-end="url(#arrow)" />
+
+          <!-- Services -> JSON resources -->
+          <path d="M 760 352 L 1120 514" stroke="var(--accent-2)" stroke-width="2.4" fill="none" marker-end="url(#arrow-green)" />
+          <path d="M 760 432 L 1120 580" stroke="var(--accent-2)" stroke-width="2.4" fill="none" marker-end="url(#arrow-green)" />
+          <path d="M 860 432 L 1120 646" stroke="var(--accent-2)" stroke-width="2.4" fill="none" marker-end="url(#arrow-green)" />
+        </svg>
+
+        <div class="note">
+          <span class="legend blue">資料流</span>箭頭代表「讀取 / 計算 / 查詢」的方向。<span class="legend green">資源</span>JSON 為規則與白名單來源，不含模型推論。<br />
+          功能與資料對應：整合分析 → ai_service + reverse_search_service → food_repository/health_repository → taiwan_foods + foodb_*；症狀搜尋 → symptom_service → foodb_health_effects + foodb_compounds；DRI 分析 → dri_gap_service → hpa_dri_v8.json + nutrient_field_map.json。
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

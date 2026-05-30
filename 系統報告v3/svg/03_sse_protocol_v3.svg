@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1100" viewBox="0 0 1200 1100">
+  <defs>
+    <marker id="arrowR" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrowL" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="10 0, 0 3.5, 10 7" fill="#555"/>
+    </marker>
+    <filter id="shadow3" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1100" fill="#FAFBFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="600" y="42" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="26" font-weight="bold" fill="#1E293B">v3 SSE 通信協議（15 種事件類型）</text>
+  <line x1="200" y1="55" x2="1000" y2="55" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- Two columns: 前端 and Control -->
+  <!-- 前端 header -->
+  <rect x="80" y="75" width="200" height="50" rx="10" fill="#F3E8FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow3)"/>
+  <text x="180" y="107" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#6B21A8">前端 (Browser)</text>
+
+  <!-- Control header -->
+  <rect x="920" y="75" width="200" height="50" rx="10" fill="#DCFCE7" stroke="#22C55E" stroke-width="2" filter="url(#shadow3)"/>
+  <text x="1020" y="107" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#166534">Control (SSE)</text>
+
+  <!-- Vertical lifelines -->
+  <line x1="180" y1="125" x2="180" y2="1060" stroke="#A855F7" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="1020" y1="125" x2="1020" y2="1060" stroke="#22C55E" stroke-width="2" stroke-dasharray="6,4"/>
+
+  <!-- === SSE Events === -->
+  <!-- Each event row: y increments by 60 -->
+
+  <!-- 1. phase_status -->
+  <line x1="1020" y1="165" x2="185" y2="165" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="147" width="520" height="36" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="330" y="170" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#92400E">1. phase_status</text>
+  <text x="510" y="170" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{phase, label} 流程階段狀態</text>
+
+  <!-- 2. echo -->
+  <line x1="1020" y1="225" x2="185" y2="225" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="207" width="520" height="36" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="330" y="230" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#92400E">2. echo</text>
+  <text x="510" y="230" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{content} 即時確認回覆</text>
+
+  <!-- 3. tool_start -->
+  <line x1="1020" y1="285" x2="185" y2="285" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="267" width="520" height="36" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="330" y="290" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1E40AF">3. tool_start</text>
+  <text x="510" y="290" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{name, args} 工具開始執行</text>
+
+  <!-- 4. tool_result -->
+  <line x1="1020" y1="345" x2="185" y2="345" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="327" width="520" height="36" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="330" y="350" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1E40AF">4. tool_result</text>
+  <text x="510" y="350" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{name, data} 工具返回資料</text>
+
+  <!-- 5. tool_done -->
+  <line x1="1020" y1="405" x2="185" y2="405" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="387" width="520" height="36" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="330" y="410" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1E40AF">5. tool_done</text>
+  <text x="510" y="410" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{name, summary} 工具完成摘要</text>
+
+  <!-- 6. recovery_attempt [NEW] -->
+  <line x1="1020" y1="465" x2="185" y2="465" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowL)"/>
+  <rect x="310" y="447" width="520" height="36" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="330" y="470" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">6. recovery_attempt</text>
+  <text x="540" y="470" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">{tool, strategy, explanation}</text>
+  <rect x="790" y="451" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="808" y="464" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- 7. recovery_result [NEW] -->
+  <line x1="1020" y1="525" x2="185" y2="525" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowL)"/>
+  <rect x="310" y="507" width="520" height="36" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="330" y="530" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">7. recovery_result</text>
+  <text x="540" y="530" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">{tool, success} 自癒結果</text>
+  <rect x="790" y="511" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="808" y="524" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- 8. reply -->
+  <line x1="1020" y1="585" x2="185" y2="585" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="567" width="520" height="36" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="330" y="590" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">8. reply</text>
+  <text x="510" y="590" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{content} 分析回覆內容</text>
+
+  <!-- 9. validation -->
+  <line x1="1020" y1="645" x2="185" y2="645" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="627" width="520" height="36" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="330" y="650" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">9. validation</text>
+  <text x="510" y="650" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{step, corrections} 結果驗證</text>
+
+  <!-- 10. memory -->
+  <line x1="1020" y1="705" x2="185" y2="705" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="687" width="520" height="36" rx="6" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="330" y="710" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#6B21A8">10. memory</text>
+  <text x="510" y="710" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{summary} 記憶摘要（舊版相容）</text>
+
+  <!-- 11. narrative_memory -->
+  <line x1="1020" y1="765" x2="185" y2="765" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="747" width="520" height="36" rx="6" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="330" y="770" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#6B21A8">11. narrative_memory</text>
+  <text x="540" y="770" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{summary} 敘事摘要</text>
+
+  <!-- 12. structured_store -->
+  <line x1="1020" y1="825" x2="185" y2="825" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="807" width="520" height="36" rx="6" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="330" y="830" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#6B21A8">12. structured_store</text>
+  <text x="540" y="830" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{store} 結構化儲存</text>
+
+  <!-- 13. workflow_state -->
+  <line x1="1020" y1="885" x2="185" y2="885" stroke="#555" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <rect x="310" y="867" width="520" height="36" rx="6" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5"/>
+  <text x="330" y="890" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#9A3412">13. workflow_state</text>
+  <text x="540" y="890" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#78716C">{phase, ...} 工作流狀態</text>
+
+  <!-- 14. session_id [NEW] -->
+  <line x1="1020" y1="945" x2="185" y2="945" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowL)"/>
+  <rect x="310" y="927" width="520" height="36" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="330" y="950" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">14. session_id</text>
+  <text x="510" y="950" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">{session_id} 會話識別碼</text>
+  <rect x="790" y="931" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="808" y="944" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- 15. checkpoint_saved [NEW] -->
+  <line x1="1020" y1="1005" x2="185" y2="1005" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowL)"/>
+  <rect x="310" y="987" width="520" height="36" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="330" y="1010" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1D4ED8">15. checkpoint_saved</text>
+  <text x="540" y="1010" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">{session_id, turn_index}</text>
+  <rect x="790" y="991" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="808" y="1004" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- Legend -->
+  <rect x="80" y="1045" width="680" height="40" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="100" y="1071" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">圖例:</text>
+  <rect x="155" y="1055" width="20" height="20" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="185" y="1071" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">流程控制</text>
+  <rect x="260" y="1055" width="20" height="20" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="290" y="1071" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">工具事件</text>
+  <rect x="365" y="1055" width="20" height="20" rx="4" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="395" y="1071" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">回覆事件</text>
+  <rect x="470" y="1055" width="20" height="20" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="500" y="1071" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">記憶事件</text>
+  <rect x="575" y="1055" width="20" height="20" rx="4" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="605" y="1071" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2563EB">v3 新增</text>
+  <rect x="670" y="1057" width="36" height="18" rx="4" fill="#DC2626"/>
+  <text x="688" y="1070" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="white">NEW</text>
+
+  <!-- Version -->
+  <rect x="1040" y="1045" width="130" height="40" rx="8" fill="#1E293B"/>
+  <text x="1105" y="1071" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v3 | 2026-05</text>
+</svg>

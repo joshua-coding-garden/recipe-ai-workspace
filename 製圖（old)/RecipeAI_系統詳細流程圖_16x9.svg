@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .title { font: 700 40px 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 20px 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif; fill: #334155; }
+      .h { font: 700 22px 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif; fill: #0f172a; }
+      .t { font: 500 16px 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif; fill: #0f172a; }
+      .small { font: 500 14px 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif; fill: #334155; }
+      .badge { font: 700 17px 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif; fill: #7f1d1d; }
+      .layerA { fill: #dff2ff; stroke: #0284c7; stroke-width: 2.2; }
+      .layerB { fill: #e8f7fa; stroke: #0e7490; stroke-width: 2.2; }
+      .layerC { fill: #eceffe; stroke: #4f46e5; stroke-width: 2; }
+      .layerD { fill: #e9f9f0; stroke: #16a34a; stroke-width: 2.2; }
+      .layerE { fill: #f4f7fb; stroke: #64748b; stroke-width: 2; }
+      .warn { fill: #fef2f2; stroke: #dc2626; stroke-width: 2.5; }
+      .arrow { stroke: #334155; stroke-width: 4; fill: none; marker-end: url(#arrowHead); }
+      .dashed { stroke-dasharray: 8 6; }
+    </style>
+    <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1920" height="1080" fill="#edf2f7"/>
+
+
+
+  <!-- User + Frontend -->
+  <rect x="60" y="150" rx="14" ry="14" width="310" height="190" class="layerE" filter="url(#shadow)"/>
+  <text x="80" y="186" class="h">① 使用者端</text>
+  <text x="80" y="220" class="t">• Web Browser</text>
+  <text x="80" y="248" class="t">• JWT 存在 localStorage</text>
+  <text x="80" y="276" class="t">• 輸入食譜、查詢營養、症狀</text>
+
+  <rect x="430" y="140" rx="14" ry="14" width="430" height="235" class="layerA" filter="url(#shadow)"/>
+  <text x="450" y="176" class="h">② Frontend（React + Vite）</text>
+  <text x="450" y="210" class="t">• API Client：baseURL = /api</text>
+  <text x="450" y="238" class="t">• Axios 攔截器自動附加 Bearer Token</text>
+  <text x="450" y="266" class="t">• 401 時清 token 並導回 /login</text>
+  <text x="450" y="294" class="t">• Vite proxy：/api → control</text>
+  <text x="450" y="322" class="small">主要頁面：Recipe Analyzer / Diet / Profile</text>
+  <text x="450" y="344" class="small">　　　　　/ Health / Synonym Dict</text>
+
+  <!-- Control -->
+  <rect x="930" y="130" rx="14" ry="14" width="520" height="320" class="layerB" filter="url(#shadow)"/>
+  <text x="950" y="168" class="h">③ Control Service（FastAPI）</text>
+  <text x="950" y="202" class="t">• 路由入口：auth / recipe / food / diet / health</text>
+  <text x="950" y="226" class="t">• 　　　　/ profile / synonym_dict</text>
+  <text x="950" y="250" class="t">• Middleware：請求日誌 + JWT 驗證</text>
+  <text x="950" y="274" class="t">• 服務啟動時預載翻譯語言包</text>
+
+  <rect x="955" y="308" rx="10" ry="10" width="230" height="125" class="layerC"/>
+  <text x="972" y="338" class="t">Recipe Pipeline</text>
+  <text x="972" y="364" class="small">a. 食材抽取（規則）</text>
+  <text x="972" y="388" class="small">b. 同義詞/翻譯展開</text>
+  <text x="972" y="412" class="small">c. 候選比對與重排</text>
+
+  <rect x="1210" y="308" rx="10" ry="10" width="215" height="125" class="layerC"/>
+  <text x="1228" y="338" class="t">Nutrition</text>
+  <text x="1228" y="364" class="small">a. 單位換算→grams</text>
+  <text x="1228" y="388" class="small">b. aggregate-nutrition</text>
+  <text x="1228" y="412" class="small">c. 回傳 total + per-item</text>
+
+
+
+  <!-- Backend -->
+  <rect x="1490" y="140" rx="14" ry="14" width="380" height="230" class="layerD" filter="url(#shadow)"/>
+  <text x="1510" y="176" class="h">④ Backend Service（FastAPI）</text>
+  <text x="1510" y="210" class="t">• 食物搜尋：/foods/search/zh|en|exact</text>
+  <text x="1510" y="238" class="t">• 營養查詢：/foods/{id}/nutrition</text>
+  <text x="1510" y="266" class="t">• 批次結算：/foods/aggregate-nutrition</text>
+  <text x="1510" y="294" class="t">• 食譜 CRUD、飲食紀錄、健康查詢</text>
+  <text x="1510" y="322" class="t">• 記錄候選分數拆解（sim/contains/exact）</text>
+  <text x="1510" y="350" class="small">1MB 請求大小限制 + CORS + request log</text>
+
+  <!-- DB -->
+  <rect x="1490" y="490" rx="14" ry="14" width="380" height="240" class="layerE" filter="url(#shadow)"/>
+  <text x="1510" y="526" class="h">⑤ PostgreSQL</text>
+  <text x="1510" y="556" class="t">• 資料來源：taiwan_foods / foodb</text>
+  <text x="1510" y="580" class="t">• 　　　　/ mapping</text>
+  <text x="1510" y="604" class="t">• migration 初始化（docker-entrypoint）</text>
+  <text x="1510" y="628" class="t">• recipes / users / diet_logs</text>
+  <text x="1510" y="652" class="t">• 　　　　/ health tables</text>
+  <text x="1510" y="676" class="small">索引：含 pg_trgm 相似度檢索</text>
+
+  <!-- Data prep -->
+  <rect x="60" y="420" rx="14" ry="14" width="800" height="350" class="layerE" filter="url(#shadow)"/>
+  <text x="80" y="458" class="h">⑥ 離線資料準備與運維流程（scripts + runbook）</text>
+  <text x="80" y="492" class="t">• scripts/reload_data.py 匯入 foodb.sql 與 taiwan_foods_data.sql</text>
+  <text x="80" y="520" class="t">• scripts/build_* 產生同義詞與 nutrient 映射資源</text>
+  <text x="80" y="548" class="t">• RUNBOOK：docker compose up/down、logs、資料檢查與重建</text>
+  <text x="80" y="576" class="t">• backend/logs 與 control/logs 供調參與錯誤追蹤</text>
+
+  <rect x="85" y="610" rx="10" ry="10" width="355" height="135" class="layerA"/>
+  <text x="104" y="642" class="t">食譜分析主流程（線上）</text>
+  <text x="104" y="668" class="small">1. 提取食材+用量（規則）</text>
+  <text x="104" y="690" class="small">2. lookup 候選（zh/en + exact/sim）</text>
+  <text x="104" y="712" class="small">3. 選最佳匹配 → 計算營養</text>
+
+  <rect x="465" y="610" rx="10" ry="10" width="370" height="135" class="layerA"/>
+  <text x="485" y="642" class="t">健康分析流程（線上）</text>
+  <text x="485" y="668" class="small">1. symptom keyword</text>
+  <text x="485" y="690" class="small">2. backend health lookup</text>
+  <text x="485" y="712" class="small">3. 回傳食物/營養建議</text>
+
+  <!-- arrows -->
+  <path d="M370 245 L430 245" class="arrow"/>
+  <path d="M860 255 L930 255" class="arrow"/>
+  <path d="M1450 330 L1490 330" class="arrow"/>
+  <path d="M1680 370 L1680 490" class="arrow"/>
+
+  <path d="M1490 640 L860 640" class="arrow dashed"/>
+  <path d="M860 660 L930 430" class="arrow dashed"/>
+  <path d="M650 420 L650 375" class="arrow dashed"/>
+
+  <!-- Footer -->
+  <text x="60" y="842" class="small">備註：此圖為實作現況圖（2026-04-09）。</text>
+</svg>

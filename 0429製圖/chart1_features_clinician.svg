@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+
+  <!-- 標題 -->
+  <text x="60" y="62" font-size="32" font-weight="700" fill="#1f2a3a">Recipe-AI 系統功能流程</text>
+  <text x="60" y="94" font-size="18" fill="#5c6b80">給營養師 / 醫師參考 ── 系統如何把使用者輸入變成飲食建議</text>
+
+  <!-- 欄位標題 -->
+  <text x="205" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">使用者輸入</text>
+  <text x="670" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">系統處理</text>
+  <text x="1220" y="148" font-size="22" font-weight="700" fill="#1f2a3a" text-anchor="middle">產出建議</text>
+
+  <!-- 標題分隔線 -->
+  <line x1="60" y1="166" x2="1540" y2="166" stroke="#c9d2df" stroke-width="1.5"/>
+
+  <!-- ========================= 流程 1：整合分析（藍） ========================= -->
+  <rect x="60" y="190" width="290" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="205" y="226" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">食譜 / 食材</text>
+  <text x="205" y="262" font-size="16" fill="#1f2a3a" text-anchor="middle">文字描述（中文）</text>
+
+  <rect x="430" y="190" width="480" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="670" y="226" font-size="22" font-weight="700" fill="#1f6fb8" text-anchor="middle">整合分析</text>
+  <text x="670" y="258" font-size="16" fill="#1f2a3a" text-anchor="middle">食材識別 → 營養計算</text>
+  <text x="670" y="286" font-size="14" fill="#5c6b80" text-anchor="middle">（比對台灣食品 + FooDB 資料庫）</text>
+
+  <rect x="980" y="190" width="480" height="120" rx="14" fill="#dbeaf7" stroke="#1f6fb8" stroke-width="2.5"/>
+  <text x="1220" y="226" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">分析結果</text>
+  <text x="1220" y="258" font-size="16" fill="#1f2a3a" text-anchor="middle">食材清單 + 營養彙總</text>
+  <text x="1220" y="286" font-size="14" fill="#5c6b80" text-anchor="middle">＋ DRI 缺口提示</text>
+
+  <line x1="358" y1="250" x2="422" y2="250" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="918" y1="250" x2="972" y2="250" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ========================= 流程 2：症狀搜尋（綠） ========================= -->
+  <rect x="60" y="335" width="290" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="205" y="371" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">症狀描述</text>
+  <text x="205" y="407" font-size="16" fill="#1f2a3a" text-anchor="middle">如：頭痛、便秘</text>
+
+  <rect x="430" y="335" width="480" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="670" y="371" font-size="22" font-weight="700" fill="#1f8a5b" text-anchor="middle">症狀搜尋</text>
+  <text x="670" y="403" font-size="16" fill="#1f2a3a" text-anchor="middle">症狀 → 健康效果 → 食物</text>
+  <text x="670" y="431" font-size="14" fill="#5c6b80" text-anchor="middle">（FooDB 健康效果與化合物對照）</text>
+
+  <rect x="980" y="335" width="480" height="120" rx="14" fill="#d4ecde" stroke="#1f8a5b" stroke-width="2.5"/>
+  <text x="1220" y="371" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">飲食建議</text>
+  <text x="1220" y="403" font-size="16" fill="#1f2a3a" text-anchor="middle">相關化合物</text>
+  <text x="1220" y="431" font-size="14" fill="#5c6b80" text-anchor="middle">＋ 推薦食物清單</text>
+
+  <line x1="358" y1="395" x2="422" y2="395" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="918" y1="395" x2="972" y2="395" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ========================= 流程 3：DRI 缺口（橘） ========================= -->
+  <rect x="60" y="480" width="290" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="205" y="516" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">個人條件</text>
+  <text x="205" y="552" font-size="16" fill="#1f2a3a" text-anchor="middle">年齡 / 性別</text>
+
+  <rect x="430" y="480" width="480" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="670" y="516" font-size="22" font-weight="700" fill="#d97a25" text-anchor="middle">DRI 缺口分析</text>
+  <text x="670" y="548" font-size="16" fill="#1f2a3a" text-anchor="middle">對照國民攝取建議</text>
+  <text x="670" y="576" font-size="14" fill="#5c6b80" text-anchor="middle">（依衛福部 DRI v8）</text>
+
+  <rect x="980" y="480" width="480" height="120" rx="14" fill="#fbe6cc" stroke="#d97a25" stroke-width="2.5"/>
+  <text x="1220" y="516" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">補充建議</text>
+  <text x="1220" y="548" font-size="16" fill="#1f2a3a" text-anchor="middle">不足項目</text>
+  <text x="1220" y="576" font-size="14" fill="#5c6b80" text-anchor="middle">＋ 補充食物推薦</text>
+
+  <line x1="358" y1="540" x2="422" y2="540" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="918" y1="540" x2="972" y2="540" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ========================= 流程 4：個人資料（灰） ========================= -->
+  <rect x="60" y="625" width="290" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="205" y="661" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">使用者資料</text>
+  <text x="205" y="697" font-size="16" fill="#1f2a3a" text-anchor="middle">基本資料填寫</text>
+
+  <rect x="430" y="625" width="480" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="670" y="661" font-size="22" font-weight="700" fill="#5b6776" text-anchor="middle">個人化檔案</text>
+  <text x="670" y="693" font-size="16" fill="#1f2a3a" text-anchor="middle">儲存個人指標</text>
+  <text x="670" y="721" font-size="14" fill="#5c6b80" text-anchor="middle">（年齡 / 性別 / 身高體重）</text>
+
+  <rect x="980" y="625" width="480" height="120" rx="14" fill="#e3e6eb" stroke="#5b6776" stroke-width="2.5"/>
+  <text x="1220" y="661" font-size="20" font-weight="700" fill="#1f2a3a" text-anchor="middle">個人化基準</text>
+  <text x="1220" y="697" font-size="16" fill="#1f2a3a" text-anchor="middle">供 DRI / 整合分析引用</text>
+
+  <line x1="358" y1="685" x2="422" y2="685" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="918" y1="685" x2="972" y2="685" stroke="#1f2a3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- 底部說明 -->
+  <line x1="60" y1="785" x2="1540" y2="785" stroke="#c9d2df" stroke-width="1.5"/>
+  <text x="800" y="820" font-size="16" fill="#5c6b80" text-anchor="middle">※ 系統採規則 + 檢索雙軌制，所有功能均查詢公開營養 / 食品 / 健康資料庫，不依賴模型推論</text>
+  <text x="800" y="850" font-size="15" fill="#5c6b80" text-anchor="middle">資料來源：台灣食品成分資料庫（衛福部）｜FooDB 國際食品資料庫｜DRI 國民攝取建議 v8</text>
+</svg>

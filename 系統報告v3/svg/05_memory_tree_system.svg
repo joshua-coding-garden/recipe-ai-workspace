@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <marker id="aR" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="aD" markerWidth="10" markerHeight="7" refX="5" refY="0" orient="auto">
+      <polygon points="0 0, 10 0, 5 7" fill="#555"/>
+    </marker>
+    <marker id="aU" markerWidth="10" markerHeight="7" refX="5" refY="7" orient="auto">
+      <polygon points="0 7, 10 7, 5 0" fill="#555"/>
+    </marker>
+    <marker id="aBR" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <filter id="shadow5" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+    <!-- Gradient for hierarchy -->
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DCFCE7"/>
+      <stop offset="100%" stop-color="#BBF7D0"/>
+    </linearGradient>
+    <linearGradient id="sessionGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DBEAFE"/>
+      <stop offset="100%" stop-color="#BFDBFE"/>
+    </linearGradient>
+    <linearGradient id="dailyGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F3E8FF"/>
+      <stop offset="100%" stop-color="#E9D5FF"/>
+    </linearGradient>
+    <linearGradient id="weeklyGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+    <linearGradient id="profileGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFF1F2"/>
+      <stop offset="100%" stop-color="#FECDD3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#FAFBFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="700" y="42" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="26" font-weight="bold" fill="#1E293B">v3 記憶樹（TiMem）階層記憶系統</text>
+  <line x1="300" y1="55" x2="1100" y2="55" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- ===== Left side: Hierarchy pyramid ===== -->
+  <text x="350" y="90" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#334155">記憶樹層級結構</text>
+
+  <!-- Level 4: Profile (top, narrowest) -->
+  <rect x="230" y="110" width="240" height="70" rx="10" fill="url(#profileGrad)" stroke="#F43F5E" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="350" y="140" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#9F1239">Level 4: Profile</text>
+  <text x="350" y="165" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#E11D48">長期人物畫像</text>
+
+  <!-- Arrow up -->
+  <line x1="350" y1="190" x2="350" y2="210" stroke="#555" stroke-width="1.5"/>
+
+  <!-- Level 3: Weekly -->
+  <rect x="195" y="210" width="310" height="70" rx="10" fill="url(#weeklyGrad)" stroke="#F59E0B" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="350" y="240" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#92400E">Level 3: Weekly</text>
+  <text x="350" y="265" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#B45309">每週摘要</text>
+
+  <!-- Arrow up -->
+  <line x1="350" y1="290" x2="350" y2="310" stroke="#555" stroke-width="1.5"/>
+
+  <!-- Level 2: Daily -->
+  <rect x="160" y="310" width="380" height="70" rx="10" fill="url(#dailyGrad)" stroke="#A855F7" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="350" y="340" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#6B21A8">Level 2: Daily</text>
+  <text x="350" y="365" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#9333EA">每日摘要</text>
+
+  <!-- Arrow up -->
+  <line x1="350" y1="390" x2="350" y2="410" stroke="#555" stroke-width="1.5"/>
+
+  <!-- Level 1: Session -->
+  <rect x="125" y="410" width="450" height="70" rx="10" fill="url(#sessionGrad)" stroke="#3B82F6" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="350" y="440" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1E40AF">Level 1: Session</text>
+  <text x="350" y="465" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#3B82F6">會話摘要 - 每 10 輪自動合併</text>
+
+  <!-- Arrow up -->
+  <line x1="350" y1="490" x2="350" y2="510" stroke="#555" stroke-width="1.5"/>
+
+  <!-- Level 0: Leaf (bottom, widest) -->
+  <rect x="90" y="510" width="520" height="70" rx="10" fill="url(#leafGrad)" stroke="#22C55E" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="350" y="540" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#166534">Level 0: Leaf</text>
+  <text x="350" y="565" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#16A34A">單輪摘要 - 每輪對話產生</text>
+
+  <!-- Consolidate arrows (curved, showing merge direction) -->
+  <text x="580" y="470" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748B">consolidate</text>
+  <path d="M 575 480 C 600 460, 600 440, 575 430" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#aU)"/>
+  <text x="580" y="370" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748B">consolidate</text>
+  <path d="M 540 380 C 565 360, 565 340, 540 330" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#aU)"/>
+  <text x="545" y="270" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748B">consolidate</text>
+  <path d="M 505 280 C 530 260, 530 240, 505 230" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#aU)"/>
+  <text x="510" y="170" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748B">consolidate</text>
+  <path d="M 470 180 C 495 160, 495 140, 470 130" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#aU)"/>
+
+
+  <!-- ===== Right side: Data flow ===== -->
+  <text x="1000" y="90" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#334155">資料流程</text>
+
+  <!-- Input: 對話 -->
+  <rect x="720" y="110" width="180" height="60" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="810" y="147" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#334155">使用者對話</text>
+
+  <line x1="810" y1="170" x2="810" y2="200" stroke="#555" stroke-width="2" marker-end="url(#aD)"/>
+
+  <!-- Leaf creation -->
+  <rect x="720" y="205" width="180" height="60" rx="10" fill="#DCFCE7" stroke="#22C55E" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="810" y="237" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#166534">建立 Leaf</text>
+  <text x="810" y="257" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#16A34A">DualMemory 摘要</text>
+
+  <line x1="810" y1="265" x2="810" y2="295" stroke="#555" stroke-width="2" marker-end="url(#aD)"/>
+
+  <!-- Embedding -->
+  <rect x="720" y="300" width="180" height="60" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="810" y="332" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1E40AF">嵌入向量</text>
+  <text x="810" y="352" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">vector(1024)</text>
+
+  <line x1="810" y1="360" x2="810" y2="390" stroke="#555" stroke-width="2" marker-end="url(#aD)"/>
+
+  <!-- Store to DB -->
+  <rect x="720" y="395" width="180" height="60" rx="10" fill="#F3E8FF" stroke="#A855F7" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="810" y="427" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#6B21A8">儲存至 DB</text>
+  <text x="810" y="447" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#9333EA">memory_tree_nodes</text>
+
+  <line x1="810" y1="455" x2="810" y2="485" stroke="#555" stroke-width="2" marker-end="url(#aD)"/>
+
+  <!-- Consolidate -->
+  <rect x="720" y="490" width="180" height="60" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="810" y="522" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#92400E">合併晉升</text>
+  <text x="810" y="542" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#B45309">leaf → session → ...</text>
+
+  <!-- ===== Retrieval path (right column) ===== -->
+  <rect x="1000" y="205" width="220" height="60" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="1110" y="232" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1D4ED8">語意搜尋</text>
+  <text x="1110" y="255" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">pgvector cosine 相似度</text>
+
+  <line x1="900" y1="330" x2="997" y2="260" stroke="#2563EB" stroke-width="1.5" marker-end="url(#aBR)" stroke-dasharray="5,3"/>
+  <text x="970" y="290" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#2563EB">查詢</text>
+
+  <rect x="1000" y="300" width="220" height="60" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="1110" y="325" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1D4ED8">Token 預算控制</text>
+  <text x="1110" y="348" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">budget-aware retrieval</text>
+
+  <line x1="1110" y1="265" x2="1110" y2="297" stroke="#2563EB" stroke-width="1.5" marker-end="url(#aD)"/>
+
+  <rect x="1000" y="395" width="220" height="60" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" filter="url(#shadow5)"/>
+  <text x="1110" y="422" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1D4ED8">注入 Prompt</text>
+  <text x="1110" y="445" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#3B82F6">system_prompt 長期記憶段</text>
+
+  <line x1="1110" y1="360" x2="1110" y2="392" stroke="#2563EB" stroke-width="1.5" marker-end="url(#aD)"/>
+
+  <!-- ===== Backend table info ===== -->
+  <rect x="90" y="620" width="1220" height="150" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="110" y="650" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">Backend 資料表: memory_tree_nodes</text>
+
+  <!-- Table columns -->
+  <rect x="110" y="665" width="170" height="40" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="195" y="690" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF">id (PK)</text>
+
+  <rect x="300" y="665" width="170" height="40" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="385" y="690" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF">user_id</text>
+
+  <rect x="490" y="665" width="170" height="40" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="575" y="690" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF">level (0-4)</text>
+
+  <rect x="680" y="665" width="170" height="40" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="765" y="690" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF">summary</text>
+
+  <rect x="870" y="665" width="170" height="40" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="955" y="690" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#92400E">embedding</text>
+
+  <rect x="1060" y="665" width="170" height="40" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="1145" y="690" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF">parent_id</text>
+
+  <!-- Column descriptions -->
+  <text x="955" y="730" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#B45309">vector(1024)</text>
+  <text x="110" y="750" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" fill="#64748B">其他欄位: session_id, created_at, metadata (JSONB), child_ids (INTEGER[]), token_count</text>
+
+  <!-- Legend -->
+  <rect x="90" y="800" width="700" height="50" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="110" y="831" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">圖例:</text>
+  <line x1="160" y1="825" x2="190" y2="825" stroke="#555" stroke-width="2"/>
+  <text x="200" y="831" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">資料寫入流程</text>
+  <line x1="290" y1="825" x2="320" y2="825" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="330" y="831" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#2563EB">語意檢索流程</text>
+  <path d="M 440 825 C 450 815, 460 835, 470 825" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="480" y="831" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#94A3B8">合併晉升</text>
+  <rect x="570" y="815" width="50" height="22" rx="4" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="630" y="831" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">Leaf</text>
+  <rect x="665" y="815" width="50" height="22" rx="4" fill="#FFF1F2" stroke="#F43F5E" stroke-width="1"/>
+  <text x="725" y="831" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#555">Profile</text>
+
+  <!-- Version -->
+  <rect x="1240" y="830" width="130" height="40" rx="8" fill="#1E293B"/>
+  <text x="1305" y="856" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v3 | 2026-05</text>
+</svg>

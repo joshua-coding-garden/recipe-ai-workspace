@@ -1,0 +1,305 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1400" viewBox="0 0 1100 1400">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#546E7A"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E53935"/>
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7B1FA2"/>
+    </marker>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="1400" fill="white"/>
+
+  <!-- Title -->
+  <text x="550" y="40" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="24" font-weight="bold" fill="#263238">AI Advisor LLM Pipeline (advisor.py)</text>
+  <text x="550" y="62" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" fill="#78909C">每次使用者訊息觸發的 6 步驟流程</text>
+
+  <!-- ============================================================ -->
+  <!-- Step 1: ECHO -->
+  <!-- ============================================================ -->
+  <rect x="100" y="82" width="700" height="120" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="100" y="82" width="700" height="28" rx="10" fill="#1565C0"/>
+  <rect x="100" y="100" width="700" height="10" fill="#1565C0"/>
+  <text x="120" y="101" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Step 1: ECHO (即時確認)</text>
+  <text x="780" y="101" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white">SSE: "echo"</text>
+
+  <text x="120" y="132" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Prompt:</tspan> PROMPT_ECHO (L43-77)
+    <tspan dx="30" font-weight="bold">Function:</tspan> _step_echo()
+    <tspan dx="30" font-weight="bold">Temp:</tspan> 0.5
+    <tspan dx="15" font-weight="bold">Tokens:</tspan> 16384
+  </text>
+  <text x="120" y="152" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Input:</tspan> message + history + memory
+  </text>
+  <text x="120" y="172" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> 簡短確認文字 (e.g., "收到，正在處理...")
+  </text>
+  <text x="120" y="192" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78909C" font-style="italic">讓使用者立刻知道系統已收到訊息</text>
+
+  <!-- Arrow 1->2 -->
+  <line x1="450" y1="202" x2="450" y2="232" stroke="#546E7A" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ============================================================ -->
+  <!-- Step 2: PHASE 1 - Intent Detection -->
+  <!-- ============================================================ -->
+  <rect x="100" y="237" width="700" height="140" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="100" y="237" width="700" height="28" rx="10" fill="#2E7D32"/>
+  <rect x="100" y="255" width="700" height="10" fill="#2E7D32"/>
+  <text x="120" y="256" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Step 2: PHASE 1 - Intent Detection (意圖偵測)</text>
+  <text x="780" y="256" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white">SSE: "phase_status: intent"</text>
+
+  <text x="120" y="288" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Prompt:</tspan> PROMPT_PHASE1 (L84-166) + system_manual.md (548行)
+    <tspan dx="20" font-weight="bold">Function:</tspan> _step_phase1()
+  </text>
+  <text x="120" y="308" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Temp:</tspan> 0.1
+    <tspan dx="15" font-weight="bold">Tokens:</tspan> 16384
+    <tspan dx="15" font-weight="bold">Retry:</tspan> 2次
+  </text>
+  <text x="120" y="328" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Input:</tspan> message + history + narrative_memory + system_manual
+  </text>
+  <text x="120" y="348" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> JSON {intents, entities, needs_profile, reasoning}
+  </text>
+  <text x="120" y="368" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78909C" font-style="italic">支援 12 種 intent types，低溫確保穩定分類</text>
+
+  <!-- Arrow 2->3 -->
+  <line x1="450" y1="377" x2="450" y2="407" stroke="#546E7A" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ============================================================ -->
+  <!-- Step 3: PHASE 2 - Tool Call Generation -->
+  <!-- ============================================================ -->
+  <rect x="100" y="412" width="700" height="150" rx="10" fill="#FFF9C4" stroke="#F9A825" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="100" y="412" width="700" height="28" rx="10" fill="#F9A825"/>
+  <rect x="100" y="430" width="700" height="10" fill="#F9A825"/>
+  <text x="120" y="431" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Step 3: PHASE 2 - Tool Call Generation (工具指令生成)</text>
+  <text x="780" y="431" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white">SSE: "phase_status: toolcall"</text>
+
+  <text x="120" y="462" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Prompt:</tspan> PROMPT_PHASE2 (L173-227)
+    <tspan dx="20" font-weight="bold">Function:</tspan> _step_phase2()
+  </text>
+  <text x="120" y="482" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Temp:</tspan> 0.1
+    <tspan dx="15" font-weight="bold">Tokens:</tspan> 16384
+  </text>
+  <text x="120" y="502" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Input:</tspan> phase1_json + structured_store + narrative_memory + message
+  </text>
+  <text x="120" y="522" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> JSON {tool_calls, params_from_store, still_missing, ask_user}
+  </text>
+  <text x="120" y="548" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#E53935" font-weight="bold">Fallback: _system_generate_toolcalls() (deterministic, no LLM)</text>
+
+  <!-- Fallback branch arrow from Step 3 -->
+  <path d="M 800 487 L 850 487 L 850 540 L 800 540" fill="none" stroke="#E53935" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead-red)"/>
+  <text x="860" y="518" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#E53935" transform="rotate(0)">LLM 失敗時</text>
+  <text x="860" y="530" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#E53935">走確定性路徑</text>
+
+  <!-- Arrow 3->4 -->
+  <line x1="450" y1="562" x2="450" y2="592" stroke="#546E7A" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ============================================================ -->
+  <!-- Step 4: EXECUTE -->
+  <!-- ============================================================ -->
+  <rect x="100" y="597" width="700" height="130" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="100" y="597" width="700" height="28" rx="10" fill="#E65100"/>
+  <rect x="100" y="615" width="700" height="10" fill="#E65100"/>
+  <text x="120" y="616" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Step 4: EXECUTE (工具執行)</text>
+  <text x="780" y="616" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white">SSE: "tool_start" / "tool_result" / "tool_done"</text>
+
+  <text x="120" y="648" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold" fill="#E65100">No LLM call</tspan> - 直接函式調度
+    <tspan dx="30" font-weight="bold">Function:</tspan> _TOOL_DISPATCH table (11 tools)
+  </text>
+  <text x="120" y="668" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Input:</tspan> tool_calls from Step 3
+  </text>
+  <text x="120" y="688" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> tool results (JSON) - 各工具回傳的結構化數據
+  </text>
+  <text x="120" y="715" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#78909C" font-style="italic">純程式邏輯執行，不消耗 LLM token</text>
+
+  <!-- Arrow 4->5 -->
+  <line x1="450" y1="727" x2="450" y2="757" stroke="#546E7A" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ============================================================ -->
+  <!-- Step 5: ANALYSIS -->
+  <!-- ============================================================ -->
+  <rect x="100" y="762" width="700" height="150" rx="10" fill="#F3E5F5" stroke="#6A1B9A" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="100" y="762" width="700" height="28" rx="10" fill="#6A1B9A"/>
+  <rect x="100" y="780" width="700" height="10" fill="#6A1B9A"/>
+  <text x="120" y="781" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Step 5: ANALYSIS (綜合分析回覆)</text>
+  <text x="780" y="781" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white">SSE: "reply"</text>
+
+  <text x="120" y="812" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Prompt:</tspan> PROMPT_ANALYSIS (L234-274)
+    <tspan dx="20" font-weight="bold">Function:</tspan> _step_analysis()
+  </text>
+  <text x="120" y="832" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Temp:</tspan> 0.3
+    <tspan dx="15" font-weight="bold">Tokens:</tspan> 16384
+    <tspan dx="15" font-weight="bold">Retry:</tspan> 2次
+  </text>
+  <text x="120" y="852" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Input:</tspan> message + memory + tool_results
+  </text>
+  <text x="120" y="872" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> 繁體中文分析文字 (完整回覆使用者)
+  </text>
+  <text x="120" y="900" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#7B1FA2" font-weight="bold">Special: GraphRAG 結果直接透傳，不經 LLM 重新生成</text>
+
+  <!-- GraphRAG bypass arrow -->
+  <path d="M 800 832 L 870 832 L 870 880 L 800 880" fill="none" stroke="#7B1FA2" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead-purple)"/>
+  <text x="880" y="852" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B1FA2">GraphRAG</text>
+  <text x="880" y="864" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#7B1FA2">bypass LLM</text>
+
+  <!-- Arrow 5->6 -->
+  <line x1="450" y1="912" x2="450" y2="942" stroke="#546E7A" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ============================================================ -->
+  <!-- Step 6: DUAL MEMORY -->
+  <!-- ============================================================ -->
+  <rect x="100" y="947" width="700" height="38" rx="10" fill="#C2185B"/>
+  <rect x="100" y="975" width="700" height="10" fill="#C2185B"/>
+  <text x="120" y="972" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Step 6: DUAL MEMORY (雙記憶更新)</text>
+  <text x="780" y="972" text-anchor="end" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="white">兩條平行子步驟</text>
+
+  <!-- 6a: Narrative Summary -->
+  <rect x="100" y="985" width="340" height="175" rx="0 0 10 10" fill="#FCE4EC" stroke="#C2185B" stroke-width="1.5"/>
+  <text x="120" y="1008" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#880E4F">6a: Narrative Summary</text>
+  <text x="120" y="1030" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">Prompt:</tspan> PROMPT_NARRATIVE_SUMMARY
+  </text>
+  <text x="120" y="1048" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">(L281-303)</text>
+  <text x="120" y="1070" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">Temp:</tspan> 0.2
+    <tspan dx="10" font-weight="bold">Tokens:</tspan> 16384
+  </text>
+  <text x="120" y="1092" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> 對話脈絡摘要文字
+  </text>
+  <text x="120" y="1114" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">SSE:</tspan> "narrative_memory"
+  </text>
+  <text x="120" y="1142" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78909C" font-style="italic">壓縮對話歷史為自然語言摘要</text>
+  <text x="120" y="1155" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78909C" font-style="italic">供後續對話的 context window</text>
+
+  <!-- Parallel indicator -->
+  <text x="455" y="1070" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="22" fill="#C2185B" font-weight="bold">||</text>
+  <text x="455" y="1090" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#C2185B">parallel</text>
+
+  <!-- 6b: Structured Extract -->
+  <rect x="460" y="985" width="340" height="175" rx="0 0 10 10" fill="#FCE4EC" stroke="#C2185B" stroke-width="1.5"/>
+  <text x="480" y="1008" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#880E4F">6b: Structured Extract</text>
+  <text x="480" y="1030" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">Prompt:</tspan> PROMPT_STRUCTURED_EXTRACT
+  </text>
+  <text x="480" y="1048" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">(L305-362)</text>
+  <text x="480" y="1070" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">Temp:</tspan> 0.1
+    <tspan dx="10" font-weight="bold">Tokens:</tspan> 16384
+  </text>
+  <text x="480" y="1092" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">Output:</tspan> JSON 結構化事實
+  </text>
+  <text x="480" y="1114" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan font-weight="bold">SSE:</tspan> "structured_store"
+  </text>
+  <text x="480" y="1142" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78909C" font-style="italic">提取結構化事實 (年齡、過敏原、</text>
+  <text x="480" y="1155" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78909C" font-style="italic">偏好等) 存入 structured_store</text>
+
+  <!-- Step 6 outer border (bottom corners) -->
+  <rect x="100" y="947" width="700" height="213" rx="10" fill="none" stroke="#C2185B" stroke-width="1.5"/>
+
+  <!-- Fork arrows from main line to 6a and 6b -->
+  <line x1="450" y1="942" x2="270" y2="942" stroke="#546E7A" stroke-width="1.5"/>
+  <line x1="270" y1="942" x2="270" y2="947" stroke="#546E7A" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="450" y1="942" x2="630" y2="942" stroke="#546E7A" stroke-width="1.5"/>
+  <line x1="630" y1="942" x2="630" y2="947" stroke="#546E7A" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- ============================================================ -->
+  <!-- Side Annotation: Total LLM Calls -->
+  <!-- ============================================================ -->
+  <rect x="830" y="82" width="245" height="270" rx="8" fill="#ECEFF1" stroke="#90A4AE" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="952" y="107" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#37474F">每則訊息 LLM 呼叫數</text>
+
+  <rect x="850" y="118" width="205" height="32" rx="5" fill="#1565C0"/>
+  <text x="952" y="139" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="18" font-weight="bold" fill="white">5 ~ 6 calls</text>
+
+  <text x="852" y="170" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan fill="#1565C0" font-weight="bold">1.</tspan> Echo
+  </text>
+  <text x="852" y="190" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan fill="#2E7D32" font-weight="bold">2.</tspan> Phase 1 (Intent)
+  </text>
+  <text x="852" y="210" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan fill="#F9A825" font-weight="bold">3.</tspan> Phase 2 (Tool Gen)
+  </text>
+  <text x="852" y="230" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#546E7A">
+    <tspan fill="#E65100" font-weight="bold">4.</tspan> Execute
+    <tspan fill="#90A4AE" font-size="10">(no LLM)</tspan>
+  </text>
+  <text x="852" y="250" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan fill="#6A1B9A" font-weight="bold">5.</tspan> Analysis
+  </text>
+  <text x="852" y="270" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan fill="#C2185B" font-weight="bold">6a.</tspan> Narrative Summary
+  </text>
+  <text x="852" y="290" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#37474F">
+    <tspan fill="#C2185B" font-weight="bold">6b.</tspan> Structured Extract
+  </text>
+
+  <line x1="848" y1="305" x2="1058" y2="305" stroke="#B0BEC5" stroke-width="0.8"/>
+  <text x="952" y="322" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78909C">Step 4 不呼叫 LLM</text>
+  <text x="952" y="337" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#78909C">Step 3 失敗走 fallback 也不呼叫</text>
+
+  <!-- ============================================================ -->
+  <!-- Legend / Footer -->
+  <!-- ============================================================ -->
+  <rect x="100" y="1195" width="900" height="180" rx="10" fill="#FAFAFA" stroke="#CFD8DC" stroke-width="1"/>
+
+  <text x="130" y="1222" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="14" font-weight="bold" fill="#37474F">Pipeline 特徵</text>
+
+  <!-- Column 1 -->
+  <text x="130" y="1250" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold" fill="#546E7A">Data Flow:</tspan> message 貫穿全程；memory 隨步驟累積
+  </text>
+  <text x="130" y="1275" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold" fill="#546E7A">Error Handling:</tspan> Phase 1, 2 有 retry (2次)；Phase 2 有 deterministic fallback
+  </text>
+  <text x="130" y="1300" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold" fill="#546E7A">Streaming:</tspan> 全程透過 SSE 即時推送事件至前端 (EventSource)
+  </text>
+  <text x="130" y="1325" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold" fill="#546E7A">Memory Model:</tspan> 雙軌制 - narrative (自然語言摘要) + structured (JSON 事實庫)
+  </text>
+  <text x="130" y="1350" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#37474F">
+    <tspan font-weight="bold" fill="#546E7A">Temperature:</tspan> Echo 0.5 (活潑) > Analysis 0.3 (平衡) > Phase1/2 0.1 (精準) > Structured 0.1 (嚴格)
+  </text>
+
+  <!-- Color legend -->
+  <rect x="840" y="1208" width="14" height="14" rx="3" fill="#E3F2FD" stroke="#1565C0" stroke-width="1"/>
+  <text x="860" y="1220" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#546E7A">LLM 呼叫</text>
+
+  <rect x="930" y="1208" width="14" height="14" rx="3" fill="#FFF3E0" stroke="#E65100" stroke-width="1"/>
+  <text x="950" y="1220" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#546E7A">程式調度</text>
+
+  <!-- Dashed line legend -->
+  <line x1="840" y1="1240" x2="870" y2="1240" stroke="#E53935" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="878" y="1244" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#546E7A">Fallback 路徑</text>
+
+  <line x1="840" y1="1258" x2="870" y2="1258" stroke="#7B1FA2" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="878" y="1262" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#546E7A">Bypass 路徑</text>
+
+</svg>

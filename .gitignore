@@ -1,0 +1,120 @@
+# ============================================================
+# RecipeAI + GraphRAG Workspace — .gitignore
+# ============================================================
+
+# ──────────────────────────────────────────
+#  Python
+# ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# Virtual environments（全部層級）
+.venv/
+venv/
+recipe-ai/control/venv/
+recipe-ai/backend/venv/
+graph/.venv/
+
+# ──────────────────────────────────────────
+#  Node.js
+# ──────────────────────────────────────────
+node_modules/
+recipe-ai/node_modules/
+recipe-ai/frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# ──────────────────────────────────────────
+#  HuggingFace / ML Model Cache
+# ──────────────────────────────────────────
+.cache/
+graph/.cache/
+recipe-ai/health-vector/.cache/
+
+# ──────────────────────────────────────────
+#  ChromaDB 向量資料庫（可由嵌入模型重建）
+# ──────────────────────────────────────────
+**/chroma_db/
+
+# ──────────────────────────────────────────
+#  大型資料檔（超出 GitHub 限制 / 可從外部來源重建）
+# ──────────────────────────────────────────
+# FooDB 完整 SQL dump（2.3GB），從 https://foodb.ca/downloads 取得
+recipe-ai/backend/database/foodb.sql
+
+# ──────────────────────────────────────────
+#  環境變數（含密鑰，只保留 .env.example）
+# ──────────────────────────────────────────
+.env
+!.env.example
+
+# ──────────────────────────────────────────
+#  Log 檔
+# ──────────────────────────────────────────
+*.log
+recipe-ai/control/logs/
+recipe-ai/backend/logs/
+
+# ──────────────────────────────────────────
+#  備份檔（有 git 版控後不需要）
+# ──────────────────────────────────────────
+recipe-ai/control/resources/backups/
+
+# ──────────────────────────────────────────
+#  IDE / 工具
+# ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Claude Code / Codex / Agents 本地設定
+.agents/
+.codex/
+.claude/
+
+# ──────────────────────────────────────────
+#  第三方 skill（可從 GitHub 重新 clone）
+# ──────────────────────────────────────────
+ui-ux-pro-max-skill/
+
+# ──────────────────────────────────────────
+#  Docker volumes（不會出現在檔案系統但以防萬一）
+# ──────────────────────────────────────────
+postgres_data/
+
+# ──────────────────────────────────────────
+#  產出 / 生成的二進位檔
+# ──────────────────────────────────────────
+# 大型評估產出（85MB，可由 scripts 重新產生）
+recipe-ai/scripts/output/
+
+# 論文圖片擷取（117MB，可由 PDF 重新擷取）
+graph/data/figures/
+
+# 可由 PDF 轉換重建
+graph/corpus_text/
+
+# graph 中間批次檔（有 merged 版本即可）
+graph/data/entities_batch_*.jsonl
+graph/data/entities_pilot.jsonl
+graph/data/entities.jsonl.bak
+graph/data/relations.jsonl.bak
+
+# ──────────────────────────────────────────
+#  學術論文 PDF（版權考量，存於獨立 Private repo）
+#  → https://github.com/joshua-coding-garden/recipe-ai-papers
+# ──────────────────────────────────────────
+graph/論文50/

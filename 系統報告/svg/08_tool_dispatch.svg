@@ -1,0 +1,240 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16a34a"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#dc2626"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ea580c"/>
+    </marker>
+    <marker id="arr-yellow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ca8a04"/>
+    </marker>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1000" fill="white"/>
+
+  <!-- Title -->
+  <rect x="15" y="15" width="1170" height="50" rx="8" fill="url(#titleGrad)"/>
+  <text x="600" y="47" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="22" font-weight="bold" fill="white">08 — _TOOL_DISPATCH 分發表 (11 Tools)</text>
+
+  <!-- Category Legend -->
+  <rect x="15" y="75" width="1170" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="30" y="82" width="14" height="14" rx="3" fill="#16a34a"/>
+  <text x="50" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#166534">營養查詢</text>
+  <rect x="125" y="82" width="14" height="14" rx="3" fill="#2563eb"/>
+  <text x="145" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#1e40ad">食譜</text>
+  <rect x="195" y="82" width="14" height="14" rx="3" fill="#7c3aed"/>
+  <text x="215" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#5b21b6">健康</text>
+  <rect x="270" y="82" width="14" height="14" rx="3" fill="#dc2626"/>
+  <text x="290" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#991b1b">學術</text>
+  <rect x="340" y="82" width="14" height="14" rx="3" fill="#ea580c"/>
+  <text x="360" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#9a3412">用戶</text>
+  <rect x="410" y="82" width="14" height="14" rx="3" fill="#ca8a04"/>
+  <text x="430" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#854d0e">行事曆</text>
+
+  <text x="600" y="95" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748b">Tool Name</text>
+  <text x="750" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748b">───────→</text>
+  <text x="870" y="95" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#64748b">Backend Endpoint</text>
+  <text x="1100" y="95" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#94a3b8">Params</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- 營養查詢 tools (GREEN)               -->
+  <!-- ════════════════════════════════════ -->
+
+  <!-- Tool 1: get_nutrient_ranking -->
+  <rect x="15" y="122" width="1170" height="58" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="122" width="8" height="58" rx="4" fill="#16a34a"/>
+  <text x="35" y="146" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">get_nutrient_ranking</text>
+  <line x1="240" y1="143" x2="510" y2="143" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-green)"/>
+  <rect x="520" y="130" width="350" height="26" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="0.8"/>
+  <text x="695" y="148" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#166534" font-weight="bold">GET /health/nutrients/{field}/top-foods</text>
+  <text x="900" y="148" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">nutrient_field, top_n</text>
+  <text x="35" y="170" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">依指定營養素欄位查詢台灣食品排名 (110+ 欄位)</text>
+
+  <!-- Tool 2: search_food -->
+  <rect x="15" y="190" width="1170" height="58" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="190" width="8" height="58" rx="4" fill="#16a34a"/>
+  <text x="35" y="214" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">search_food</text>
+  <line x1="160" y1="211" x2="510" y2="211" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-green)"/>
+  <rect x="520" y="198" width="350" height="26" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="0.8"/>
+  <text x="695" y="216" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#166534" font-weight="bold">GET /food/search?q={name}&amp;lang=auto</text>
+  <text x="900" y="216" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">food_name</text>
+  <text x="35" y="238" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">模糊搜尋食物名稱 (中/英自動偵測)</text>
+
+  <!-- Tool 3: browse_taiwan_food -->
+  <rect x="15" y="258" width="1170" height="58" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="258" width="8" height="58" rx="4" fill="#16a34a"/>
+  <text x="35" y="282" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">browse_taiwan_food</text>
+  <line x1="225" y1="279" x2="510" y2="279" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-green)"/>
+  <rect x="520" y="266" width="350" height="26" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="0.8"/>
+  <text x="695" y="284" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#166534" font-weight="bold">GET /food/taiwan/browse</text>
+  <text x="900" y="284" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">search, category</text>
+  <text x="35" y="306" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">瀏覽台灣食品資料庫 (2,213 筆, 分類篩選)</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- 食譜 tools (BLUE)                    -->
+  <!-- ════════════════════════════════════ -->
+
+  <!-- Tool 4: analyze_recipe (COMPLEX!) -->
+  <rect x="15" y="330" width="1170" height="90" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="15" y="330" width="8" height="90" rx="4" fill="#2563eb"/>
+  <!-- Star badge for complexity -->
+  <rect x="1095" y="335" width="80" height="20" rx="10" fill="#dc2626"/>
+  <text x="1135" y="349" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" font-weight="bold" fill="white">4-step chain</text>
+  <text x="35" y="354" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e40ad">analyze_recipe</text>
+  <text x="35" y="374" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">Params: recipe_text</text>
+
+  <!-- 4-step chain visualization -->
+  <rect x="35" y="382" width="185" height="26" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="0.8"/>
+  <text x="127" y="399" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#1e40ad" font-weight="bold">1. POST /recipe/extract-with-amounts</text>
+
+  <line x1="225" y1="395" x2="245" y2="395" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <rect x="250" y="382" width="175" height="26" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="0.8"/>
+  <text x="337" y="399" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#1e40ad" font-weight="bold">2. POST /recipe/lookup</text>
+
+  <line x1="430" y1="395" x2="450" y2="395" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <rect x="455" y="382" width="235" height="26" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="0.8"/>
+  <text x="572" y="399" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#1e40ad" font-weight="bold">3. POST /recipe/calculate-nutrition</text>
+
+  <line x1="695" y1="395" x2="715" y2="395" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <rect x="720" y="382" width="175" height="26" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="0.8"/>
+  <text x="807" y="399" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#1e40ad" font-weight="bold">4. POST /health/dri-gap</text>
+
+  <text x="935" y="399" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9" fill="#dc2626" font-weight="bold">最複雜的 tool</text>
+
+  <!-- Tool 5: get_saved_recipes -->
+  <rect x="15" y="432" width="1170" height="58" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="432" width="8" height="58" rx="4" fill="#2563eb"/>
+  <text x="35" y="456" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e40ad">get_saved_recipes</text>
+  <line x1="215" y1="453" x2="510" y2="453" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+  <rect x="520" y="440" width="350" height="26" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="0.8"/>
+  <text x="695" y="458" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#1e40ad" font-weight="bold">GET /recipe/list</text>
+  <text x="900" y="458" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">(none)</text>
+  <text x="35" y="480" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">取得使用者已儲存的食譜清單</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- 健康 tools (PURPLE)                  -->
+  <!-- ════════════════════════════════════ -->
+
+  <!-- Tool 6: search_symptom -->
+  <rect x="15" y="502" width="1170" height="58" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="502" width="8" height="58" rx="4" fill="#7c3aed"/>
+  <text x="35" y="526" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#5b21b6">search_symptom</text>
+  <line x1="195" y1="523" x2="510" y2="523" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <rect x="520" y="510" width="350" height="26" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="695" y="528" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#5b21b6" font-weight="bold">POST /health/symptom-search</text>
+  <text x="900" y="528" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">symptom (English)</text>
+  <text x="35" y="550" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">依症狀搜尋相關化合物與食物 (FooDB)</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- 學術 tools (RED)                     -->
+  <!-- ════════════════════════════════════ -->
+
+  <!-- Tool 7: search_graphrag -->
+  <rect x="15" y="572" width="1170" height="58" rx="6" fill="#fef2f2" stroke="#fecaca" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="572" width="8" height="58" rx="4" fill="#dc2626"/>
+  <text x="35" y="596" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#991b1b">search_graphrag</text>
+  <line x1="200" y1="593" x2="510" y2="593" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <rect x="520" y="580" width="350" height="26" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="0.8"/>
+  <text x="695" y="598" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#991b1b" font-weight="bold">POST /graphrag-api/query-sync</text>
+  <text x="900" y="598" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">query (English)</text>
+  <text x="35" y="620" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">GraphRAG 學術論文搜尋 (同步, 180s timeout)</text>
+
+  <!-- Tool 8: get_literature_papers -->
+  <rect x="15" y="642" width="1170" height="58" rx="6" fill="#fef2f2" stroke="#fecaca" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="642" width="8" height="58" rx="4" fill="#dc2626"/>
+  <text x="35" y="666" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#991b1b">get_literature_papers</text>
+  <line x1="230" y1="663" x2="510" y2="663" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <rect x="520" y="650" width="350" height="26" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="0.8"/>
+  <text x="695" y="668" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#991b1b" font-weight="bold">GET /graphrag-api/papers/enriched</text>
+  <text x="900" y="668" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">search</text>
+  <text x="35" y="690" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">取得論文元數據 (IF/SJR/DOI 等)</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- 用戶 tools (ORANGE)                  -->
+  <!-- ════════════════════════════════════ -->
+
+  <!-- Tool 9: get_user_profile -->
+  <rect x="15" y="712" width="1170" height="58" rx="6" fill="#fff7ed" stroke="#fed7aa" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="712" width="8" height="58" rx="4" fill="#ea580c"/>
+  <text x="35" y="736" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#9a3412">get_user_profile</text>
+  <line x1="200" y1="733" x2="510" y2="733" stroke="#ea580c" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <rect x="520" y="720" width="350" height="26" rx="4" fill="#ffedd5" stroke="#ea580c" stroke-width="0.8"/>
+  <text x="695" y="738" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#9a3412" font-weight="bold">GET /profile</text>
+  <text x="900" y="738" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">(none)</text>
+  <text x="35" y="760" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">取得使用者個人資料 (年齡/性別/身高/體重等)</text>
+
+  <!-- Tool 10: update_user_profile -->
+  <rect x="15" y="782" width="1170" height="58" rx="6" fill="#fff7ed" stroke="#fed7aa" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="782" width="8" height="58" rx="4" fill="#ea580c"/>
+  <text x="35" y="806" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#9a3412">update_user_profile</text>
+  <line x1="225" y1="803" x2="510" y2="803" stroke="#ea580c" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <rect x="520" y="790" width="350" height="26" rx="4" fill="#ffedd5" stroke="#ea580c" stroke-width="0.8"/>
+  <text x="695" y="808" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#9a3412" font-weight="bold">PUT /profile</text>
+  <text x="900" y="808" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#6b7280">age, gender, height_cm, ...</text>
+  <text x="35" y="830" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">更新使用者個人資料</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- 行事曆 tools (YELLOW)                -->
+  <!-- ════════════════════════════════════ -->
+
+  <!-- Tool 11: get_calendar_entries -->
+  <rect x="15" y="852" width="565" height="58" rx="6" fill="#fefce8" stroke="#fef08a" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="15" y="852" width="8" height="58" rx="4" fill="#ca8a04"/>
+  <text x="35" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#854d0e">get_calendar_entries</text>
+  <line x1="230" y1="873" x2="310" y2="873" stroke="#ca8a04" stroke-width="1.5" marker-end="url(#arr-yellow)"/>
+  <rect x="320" y="860" width="250" height="26" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+  <text x="445" y="878" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="12" fill="#854d0e" font-weight="bold">GET /calendar/entries</text>
+  <text x="35" y="900" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">Params: start_date, end_date</text>
+
+  <!-- Tool 12: add_to_calendar -->
+  <rect x="600" y="852" width="585" height="58" rx="6" fill="#fefce8" stroke="#fef08a" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="600" y="852" width="8" height="58" rx="4" fill="#ca8a04"/>
+  <text x="620" y="876" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#854d0e">add_to_calendar</text>
+  <line x1="790" y1="873" x2="850" y2="873" stroke="#ca8a04" stroke-width="1.5" marker-end="url(#arr-yellow)"/>
+  <rect x="860" y="860" width="145" height="26" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+  <text x="932" y="878" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#854d0e" font-weight="bold">POST /recipe/save</text>
+  <text x="1010" y="878" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#854d0e">+</text>
+  <rect x="1020" y="860" width="155" height="26" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+  <text x="1097" y="878" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="11" fill="#854d0e" font-weight="bold">POST /calendar/entries</text>
+  <text x="620" y="900" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#6b7280">Params: entry_date, recipe_id (2-step: save then schedule)</text>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- Architecture summary box             -->
+  <!-- ════════════════════════════════════ -->
+  <rect x="15" y="925" width="1170" height="60" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="600" y="948" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">分發架構</text>
+
+  <text x="30" y="970" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10.5" fill="#475569">Phase 1 (Intent Detection) 解析使用者意圖 → _TOOL_DISPATCH 依 intent 分發到對應 tool function → 每個 tool 組裝 HTTP request 呼叫 backend/GraphRAG API → 回傳結構化 result 供 PROMPT_ANALYSIS 整合回答</text>
+
+  <!-- Complexity callout -->
+  <rect x="820" y="932" width="350" height="46" rx="5" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="995" y="950" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" font-weight="bold" fill="#dc2626">analyze_recipe = 最複雜 tool (4 chained calls)</text>
+  <text x="995" y="967" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="9.5" fill="#b91c1c">extract → lookup → calculate → DRI gap analysis</text>
+
+  <!-- Footer -->
+  <text x="600" y="995" text-anchor="middle" font-family="Microsoft JhengHei, Arial, sans-serif" font-size="10" fill="#94a3b8">RecipeAI _TOOL_DISPATCH Table — 11 Tools, 6 Categories — 2026-05-13</text>
+</svg>
