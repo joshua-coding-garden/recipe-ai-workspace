@@ -14,6 +14,7 @@
 - [快速開始](#快速開始)
 - [各服務詳細依賴](#各服務詳細依賴)
 - [外部資料來源](#外部資料來源)
+- [開發歷程](#開發歷程)
 - [.gitignore 排除說明](#gitignore-排除說明)
 - [關聯 Repo](#關聯-repo)
 
@@ -412,6 +413,71 @@ python3 -m venv .venv
 # 4. 存取 GraphRAG 頁面
 # http://localhost:3001/graphrag
 ```
+
+---
+
+## 開發歷程
+
+本專案從 2026 年 3 月開始，經歷約 3 個月的迭代開發。以下是各階段的重點里程碑與解決的核心問題：
+
+### Phase 1 — 專案骨架（2026-03-06）
+建立 Docker 化的三層架構（PostgreSQL + FastAPI Backend + FastAPI Control + React Frontend）。5 個初始 DB migration 建立台灣食品表（2,213 筆 × 110 營養素欄位）、食物匹配表、pg_trgm 模糊搜尋索引。
+
+### Phase 2 — 食譜抽取與營養分析核心（2026-03-25）
+實作雙模式食材提取（AI JSON + 逐行規則），兩條 pipeline 互相驗證防止 AI 幻覺。建立單位換算引擎，支援 `20g*4顆`、unicode 分數（¼½¾）、中英文單位。
+
+**踩過的坑**：`380克）` 因單位尾巴 `)` 查表失敗，fallback 到 `amount × 100g` → 輸出 `38000g`。修復方式：`unit_raw` 先做標點清洗再查表。
+
+### Phase 3 — 中英雙向同義詞 Pipeline（2026-04-01）
+5 階段同義詞擴展：jieba 斷詞 → MoeDict 查詢 → Argos 離線翻譯 → WordNet 同義詞 → 嵌入向量語意匹配。最終建立 3,172 個 canonical 食材、8,646 條同義詞映射。
+
+**技術挑戰**：Argos 翻譯依賴 pydantic v1，主服務用 v2 → 在 Dockerfile 內建隔離 venv `/opt/argos_venv` 解決衝突。
+
+### Phase 4 — FooDB 雙資料庫匹配（2026-04-02）
+整合 FooDB（foods/compounds/nutrients/flavors/contents 五張表），實現台灣食品 + FooDB 雙源候選排序。引入 `richnessBonus`（營養欄位非零數量）+ `sourceBonus`（台灣來源小幅加權）解決「全落 FooDB」的偏差問題。
+
+### Phase 5 — 資料品質治理（2026-04-22）
+建立動態停用詞字典（97 筆 seed + UI 管理）與審計日誌系統。修復重大 bug：使用者在 UI 拖曳食材到停用詞後，`ai_service.py` 因未接 `stopword_store` 導致停用詞完全失效。
+
+### Phase 6 — 整合營養分析 + DRI 缺口（2026-04-30）
+實作 6 步驟整合分析流程、HPA 第八版 DRI 缺口分析（含推薦補充食物與原因說明）、110+ 營養素排名頁面。同日匯入台灣食品成分資料庫 2024 UPDATE2（idempotent upsert by `integration_code`）。
+
+### Phase 7 — GraphRAG 從零自刻（2026-05-05 ~ 05-08）
+**獨立子專案**：10 個 Phase 完整實作 GraphRAG pipeline：
+1. PDF → 純文字（pypdf + pdfplumber fallback）
+2. Chunking（tiktoken cl100k_base, 1200 token / 100 overlap → 1,668 chunks）
+3. Entity 抽取（Claude Agent → 10,172 entities）
+4. Relation 合併（4,585 relations → NetworkX 圖）
+5. 嵌入（Snowflake Arctic Embed L v2.0）
+6. 社群偵測（Louvain vs Leiden 比較）
+7. Community reports（Claude Agent → 20 份摘要）
+8. 4 種檢索策略（Vector / Local / Global / Drift）+ grounding
+
+**設計決策**：建構階段走 Claude Agent（200K context），查詢階段走本機 Gemma（節省 API 成本）。
+
+### Phase 8 — AI 營養顧問（2026-05-12）
+13 個工具的 LLM Pipeline：4 步驟流程（意圖理解 → 工具選擇 → 執行 → 回應生成），SSE 串流 6 顆燈號 phase_status 協定，階層式記憶系統（短期/長期/事實記憶），對話斷線恢復（checkpoint + replay）。4 個 DB migration 支援 conversation_checkpoints、memory_tree、memory_vectors、cognitive_facts。
+
+### Phase 9 — 症狀搜尋 + 健康向量（2026-05-19）
+症狀 → 化合物 → 食物 多層查詢鏈，FooDB 化合物營養詳情，本機 Gemma LLM 交叉驗證推薦結果。Health Vector 服務使用 ChromaDB + Snowflake Arctic Embed L v2.0 提供向量搜尋。
+
+### Phase 10 — 行事曆 + 效能優化（2026-05-27）
+每日營養攝取追蹤行事曆、份數覆寫、缺口推薦細節化。引入 LLM 輔助食材匹配（取代純字串比對），gemma_client 統一客戶端。
+
+### Phase 11 — 文件化（2026-05-30）
+完整技術教學文件（Tool Calling Agent、SSE Bug 深入淺出）、系統報告 v1/v3（14 張架構圖）、684 行完整變更紀錄、依賴來源 README。
+
+---
+
+### 詳細變更紀錄
+
+| 文件 | 說明 |
+|---|---|
+| [變更紀錄_RecipeAI_從起始到目前.md](變更紀錄_RecipeAI_從起始到目前.md) | 684 行完整改動史（~2026-03-25 為止），含 bug 復現、根因分析、修復驗證 |
+| [0520_optimizer/](0520_optimizer/) | 2026-05-20/05-27 兩輪優化紀錄 |
+| [食譜偵測/0429小優化.md](食譜偵測/0429小優化.md) | 2026-04-29 整合分析 + 缺口分析優化決策 |
+| [graph/notes/](graph/notes/) | GraphRAG 各 Phase 實作筆記 |
+| [graph/計畫.md](graph/計畫.md) | GraphRAG 10-Phase 完整計畫（含環境隔離原則） |
 
 ---
 
