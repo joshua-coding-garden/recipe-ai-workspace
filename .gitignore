@@ -112,6 +112,9 @@ graph/data/entities_batch_*.jsonl
 graph/data/entities_pilot.jsonl
 graph/data/entities.jsonl.bak
 graph/data/relations.jsonl.bak
+graph/data/relations_batch_*.jsonl
+graph/data/relations_pilot.jsonl
+graph/data/reports_c*_c*.jsonl
 
 # ──────────────────────────────────────────
 #  學術論文 PDF（版權考量，存於獨立 Private repo）

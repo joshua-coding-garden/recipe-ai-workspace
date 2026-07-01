@@ -1,0 +1,81 @@
+檢查 65 個 PDF
+
+  [  1/65] 24299050_Schoenfeld_2013_protein_timing.pdf  → J Int Soc Sports Nutr
+  [  2/65] 25361786_Burden_2015_IDNA_iron.pdf  → Br J Sports Med
+  [  3/65] 26069301_Racinais_2015_IOC_heat.pdf  → Br J Sports Med
+  [  4/65] 26891166_Thomas_2016_ACSM_joint.pdf  → Med Sci Sports Exerc
+  [  5/65] 27600147_McMahon_2017_nitrate_endurance.pdf  → Sports Med
+  [  6/65] 28332115_Jeukendrup_2017_periodized.pdf  → Sports Med
+  [  7/65] 28332116_Baker_2017_sweat_sodium.pdf  → Sports Med
+  [  8/65] 28465675_McLeay_2017_thiols_oxidative.pdf  → J Int Soc Sports Nutr
+  [  9/65] 28642676_Jager_2017_ISSN_protein.pdf  → J Int Soc Sports Nutr
+  [ 10/65] 28919842_Kerksick_2017_ISSN_timing.pdf  → J Int Soc Sports Nutr
+  [ 11/65] 28985128_McDermott_2017_NATA_fluid.pdf  → J Athl Train
+  [ 12/65] 29098657_McCartney_2018_post_exercise.pdf  → Sports Med
+  [ 13/65] 29473893_Alghannam_2018_glycogen_recovery.pdf  → Nutrients
+  [ 14/65] 29589768_Maughan_2018_IOC_supplements.pdf  → Int J Sport Nutr Exerc Metab
+  [ 15/65] 30632423_Desbrow_2019_special_populations.pdf  → Int J Sport Nutr Exerc Metab
+  [ 16/65] 30755234_Born_2019_chocolate_milk.pdf  → J Int Soc Sports Nutr
+  [ 17/65] 31699159_Tiller_2019_ISSN_ultra.pdf  → J Int Soc Sports Nutr
+  [ 18/65] 31864419_Jager_2019_ISSN_probiotics.pdf  → J Int Soc Sports Nutr
+  [ 19/65] 32245088_Logue_2020_LEA_prevalence.pdf  → Nutrients
+  [ 20/65] 33203106_Higgins_2020_antioxidant.pdf  → Int J Environ Res Public Health
+  [ 21/65] 33388079_Guest_2021_ISSN_caffeine.pdf  → J Int Soc Sports Nutr
+  [ 22/65] 33440334_Hill_2021_tart_cherry.pdf  → Int J Sport Nutr Exerc Metab
+  [ 23/65] 33481001_Lagowska_2021_probiotic_URI.pdf  → J Athl Train
+  [ 24/65] 34445035_Hunt_2021_blackcurrant.pdf  → Nutrients
+  [ 25/65] 34662692_Beck_2021_micronutrients.pdf  → Food Chem Toxicol
+  [ 26/65] 34673936_Kirwan_2022_protein_resistance.pdf  → Am J Clin Nutr
+  [ 27/65] 34959776_Bourdas_2021_carb_solution.pdf  → Nutrients
+  [ 28/65] 35187864_Nunes_2022_protein_muscle.pdf  → J Cachexia Sarcopenia Muscle
+  [ 29/65] 35937777_Hijlkema_2022_tendon_nutrition.pdf  → J Int Soc Sports Nutr
+  [ 30/65] 37127187_West_2023_vegan_athlete.pdf  → Adv Nutr
+  [ 31/65] 37196876_Nasimi_2023_whey_VitD_sarcopenia.pdf  → Adv Nutr
+  [ 32/65] 37752002_Stellingwerff_2023_REDs_CAT2.pdf  → Br J Sports Med
+  [ 33/65] 37752011_Mountjoy_2023_IOC_REDs.pdf  → Br J Sports Med
+  [ 34/65] 37800468_Ferrando_2023_ISSN_EAA.pdf  → J Int Soc Sports Nutr
+  [ 35/65] 38188620_Wyatt_2024_elite_VitD.pdf  → Orthop J Sports Med
+  [ 36/65] 38556251_Cohen_2024_adolescent_iron.pdf  → Adv Nutr
+  [ 37/65] 38612975_Liao_2024_protein_compare.pdf  → Nutrients
+  [ 38/65] 38742477_Baumert_2024_hypertrophy_glucose.pdf  → J Cachexia Sarcopenia Muscle
+  [ 39/65] 38970118_Tarsitano_2024_magnesium.pdf  → J Transl Med
+  [ 40/65] 38995599_Ihalainen_2024_LEA_endocrine.pdf  → Sports Med
+  [ 41/65] 38999792_FernandezLazaro_2024_omega3_inflam.pdf  → Nutrients
+  [ 42/65] 39032921_Georgiou_2024_beta_alanine.pdf  → Int J Sport Nutr Exerc Metab
+  [ 43/65] 39203900_Tan_2024_nitrate_cycle.pdf  → Nutrients
+  [ 44/65] 39287777_Jeukendrup_2024_REDs_critique.pdf  → Sports Med
+  [ 45/65] 39485653_Gallant_2025_LEA_REDs.pdf  → Sports Med
+  [ 46/65] 39536912_Pengelly_2025_female_iron.pdf  → J Sport Health Sci
+  [ 47/65] 39623590_DanielVasile_2024_curcumin.pdf  → J Int Soc Sports Nutr
+  [ 48/65] 39699070_Rathmacher_2025_ISSN_HMB.pdf  → J Int Soc Sports Nutr
+  [ 49/65] 39792347_PerezCastillo_2025_lifelong_inflammation.pdf  → Sports Med
+  [ 50/65] 39810703_Jager_2025_ISSN_omega3.pdf  → J Int Soc Sports Nutr
+  [ 51/65] 39853659_SmithMJ_2025_ACL_quadriceps.pdf  → Sports Med
+  [ 52/65] 40117058_Witard_2025_endurance_protein.pdf  → Sports Med
+  [ 53/65] 40221559_Naderi_2025_post_exercise_recovery.pdf  → Sports Med
+  [ 54/65] 40371844_SmithRyan_2025_creatine_women.pdf  → J Int Soc Sports Nutr
+  [ 55/65] 40539747_Jeppesen_2025_LEA_molecular.pdf  → Scand J Med Sci Sports
+  [ 56/65] 40641114_Jang_2025_adipose_sarcopenia.pdf  → J Cachexia Sarcopenia Muscle
+  [ 57/65] 40781883_Bangsbo_2025_elite_consensus.pdf  → Scand J Med Sci Sports
+  [ 58/65] 40806155_Govindasamy_2025_plant_protein.pdf  → Nutrients
+  [ 59/65] 40944139_Kazeminasab_2025_creatine_strength.pdf  → Nutrients
+  [ 60/65] 40963202_Stankiewicz_2025_VitD_ultramarathon.pdf  → J Int Soc Sports Nutr
+  [ 61/65] 41685663_Rowland_2026_ergogenic_review.pdf  → J Int Soc Sports Nutr
+  [ 62/65] 41701327_Gonzalez_2026_ISSN_antioxidant.pdf  → J Int Soc Sports Nutr
+  [ 63/65] 41992072_Reina_2026_short_LEA_protein.pdf  → Eur J Sport Sci
+  [ 64/65] 41992745_Shimizu_2026_EPA_MCT.pdf  → J Int Soc Sports Nutr
+  [ 65/65] 42015544_Rezaei_2026_pomegranate.pdf  → J Int Soc Sports Nutr
+
+⚠️  發現 12 個問題：
+  [TITLE_MISMATCH] 25361786_Burden_2015_IDNA_iron.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Is iron treatment beneficial i...'
+  [TITLE_MISMATCH] 28985128_McDermott_2017_NATA_fluid.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'National Athletic Trainers' As...'
+  [TITLE_MISMATCH] 38970118_Tarsitano_2024_magnesium.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Effects of magnesium supplemen...'
+  [TITLE_MISMATCH] 39485653_Gallant_2025_LEA_REDs.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Low Energy Availability and Re...'
+  [TITLE_MISMATCH] 39536912_Pengelly_2025_female_iron.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Iron deficiency, supplementati...'
+  [TITLE_MISMATCH] 39853659_SmithMJ_2025_ACL_quadriceps.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Nutritional Interventions to A...'
+  [TITLE_MISMATCH] 40117058_Witard_2025_endurance_protein.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Protein Nutrition for Enduranc...'
+  [TITLE_MISMATCH] 40221559_Naderi_2025_post_exercise_recovery.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Nutritional Strategies to Impr...'
+  [TITLE_MISMATCH] 40371844_SmithRyan_2025_creatine_women.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Creatine in women's health: br...'
+  [TITLE_MISMATCH] 40539747_Jeppesen_2025_LEA_molecular.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Short-Term Severe Low Energy A...'
+  [TITLE_MISMATCH] 40781883_Bangsbo_2025_elite_consensus.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'Consensus Statements-Optimizin...'
+  [TITLE_MISMATCH] 41992072_Reina_2026_short_LEA_protein.pdf: PDF 第一頁不含 PubMed 標題前 30 字 'The Influence of Short-Term, S...'

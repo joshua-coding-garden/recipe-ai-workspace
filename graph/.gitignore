@@ -1,8 +1,11 @@
 .venv/
 .cache/
 chroma_db/
-data/
-viz/
-corpus_text/
 __pycache__/
 *.pyc
+
+# 以下由 root .gitignore 控制：
+# data/figures/ — 排除（可由 PDF 重新擷取）
+# data/entities_batch_*.jsonl — 排除（有 merged 版本）
+# corpus_text/ — 排除（可由 PDF 重新轉換）
+# viz/ — 保留（互動式視覺化 HTML）

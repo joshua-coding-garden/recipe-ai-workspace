@@ -1,0 +1,2794 @@
+{
+  "doc_03": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Evidence analysis questions included in the position statement. Evidence grades: Grade I: Good, Grade II: Fair, Grade III: Limited, Grade IV: Expert opinion only; and Grade V: Not assignable. Refer to http://www.andevidencelibrary.com/ for a complete list of evidence analysis citations. FROM THE ACADEMY 502 JOURNAL OF THE ACADEMY OF NUTRITION AND DIETETICS March 2016 Volume 116 Number 3",
+      "page": 2,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_03_chunk_000",
+        "doc_03_chunk_001",
+        "doc_03_chunk_002",
+        "doc_03_chunk_007",
+        "doc_03_chunk_010",
+        "doc_03_chunk_011",
+        "doc_03_chunk_012",
+        "doc_03_chunk_019",
+        "doc_03_chunk_020",
+        "doc_03_chunk_021"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Dietary supplements and sports foods with evidence-based uses in sports nutrition. These supplements may perform as claimed but inclusion does not imply endorsement by this position stand. FROM THE ACADEMY 518 JOURNAL OF THE ACADEMY OF NUTRITION AND DIETETICS March 2016 Volume 116 Number 3 substances in testing facilities (ISO",
+      "page": 18,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_03_chunk_022",
+        "doc_03_chunk_023"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Sports dietitian roles and responsibilities. FROM THE ACADEMY 522 JOURNAL OF THE ACADEMY OF NUTRITION AND DIETETICS March 2016 Volume 116 Number 3 maximizing the functional and metabolic adaptations to a perio-",
+      "page": 21,
+      "images": {
+        "page_render": "Figure_3_page.png"
+      },
+      "referenced_by": [
+        "doc_03_chunk_025",
+        "doc_03_chunk_026"
+      ]
+    }
+  },
+  "doc_04": {
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2: Effect size forest plot for the effect of dietary NO3- supplementation on time trial performance (means ± 95% confidence intervals). ES effect size, SD standard deviation, CI confidence interval, SMD standardised mean difference, ergo ergometer, kcal kilo calorie",
+      "page": 22,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1050,
+        567
+      ],
+      "referenced_by": [
+        "doc_04_chunk_012"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3: Effect size forest plot for the effect of dietary NO3- supplementation on time to exhaustion performance (means ± 95% confidence intervals). ES effect size, SD standard deviation, CI confidence interval, SMD standardised mean difference, ergo ergometer, PV peak velocity, HIIST high-intensity interval sprint training, SI severe-intensity, HI high-intensity, PP peak power",
+      "page": 22,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1050,
+        567
+      ],
+      "referenced_by": [
+        "doc_04_chunk_012",
+        "doc_04_chunk_013"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4: Effect size forest plot for the effect of dietary NO3- supplementation on graded-exercise test performance (means ± 95% confidence intervals). ES effect size, SD standard deviation, CI confidence interval, SMD standardised mean difference, ergo ergometer, rpm revolutions per minute, IR1 intermittent recovery test level 1",
+      "page": 23,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        974,
+        468
+      ],
+      "referenced_by": [
+        "doc_04_chunk_013"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5: Funnel plot of Hedges’ g effect size versus study standard error - outcome: time trial.",
+      "page": 26,
+      "images": {
+        "xobject": "Figure_5_xobj.png",
+        "page_render": "Figure_5_page.png"
+      },
+      "xobj_size": [
+        585,
+        395
+      ],
+      "referenced_by": [
+        "doc_04_chunk_013",
+        "doc_04_chunk_014"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6: Funnel plot of Hedges’ g effect size versus study standard error - outcome: time to exhaustion.",
+      "page": 26,
+      "images": {
+        "xobject": "Figure_6_xobj.png",
+        "page_render": "Figure_6_page.png"
+      },
+      "xobj_size": [
+        585,
+        395
+      ],
+      "referenced_by": [
+        "doc_04_chunk_013",
+        "doc_04_chunk_014"
+      ]
+    }
+  },
+  "doc_10": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Signs and Symptoms of Hypohydration and Hyponatremia Hypohydration (Decreased Total Body Water) Hyponatremia (Low Blood",
+      "page": 3,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_10_chunk_002",
+        "doc_10_chunk_003",
+        "doc_10_chunk_012",
+        "doc_10_chunk_013"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Sweat-Rate Equation a Sweat loss (L) ¼ Body mass before exercise (kg) – Body mass after exercise (kg) þ (Volume of fluid consumed during exercise [L]) – (Urine volume, if any [L]) Sweat rate (L/h) ¼ Sweat loss (L) / Exercise duration (h)",
+      "page": 7,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_10_chunk_007",
+        "doc_10_chunk_008"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Sample Sweat-Rate Calculations Modifying Factor Individual A (Recreational Tennis Player, Female, 85 kg) Individual B (Recreational",
+      "page": 8,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_10_chunk_009"
+      ]
+    }
+  },
+  "doc_12": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Reported rates of muscle glycogen resynthesis across 18 different investigations that have measured muscle glycogen concentrations during sh ort-term (2–6 h) recovery with varied rates of carbohydrate with or without protein in huma ns [19,20,22,24,33–40,75,76,124,126,130,132]. The trend lines denote the suggested patterns of muscle glycogen resynthesis with each treatment (solid trend line represents carbohydrate ingestion while broken trend lines represent carbohydrate-protein ingestion).",
+      "page": 9,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        2578,
+        1971
+      ],
+      "referenced_by": [
+        "doc_12_chunk_007",
+        "doc_12_chunk_008"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Reported rates of muscle glycogen resynthesis across 18 different investigations that have measured muscle glycogen concentr ations during short-term (2–6 h)  recovery with varied amounts of protein added to carbohydrates in humans  [19,20,22,24,33–40,75,76,124,126,130,132]. The trend lines denote suggested carbohydrate intake (solid trend line) and protein intake (broken trend line) upon muscle glycogen resynthesis.",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        2463,
+        1812
+      ],
+      "referenced_by": [
+        "doc_12_chunk_009",
+        "doc_12_chunk_010"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Effects of carbohydrate ingestion during short-term recovery on repeated exercise capacity. Study Carbohydrate Intake (g·kg BM−1·h−1) Recovery Time (h)",
+      "page": 13,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_12_chunk_010",
+        "doc_12_chunk_011",
+        "doc_12_chunk_012"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Effects of carbohydrate-protein ingestion during short-term recovery on repeated exercise capacity. Study Carbohydrate Intake (g·kg BM−1·h−1) Protein Intake (g·kg BM−1·h−1)",
+      "page": 14,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_12_chunk_012",
+        "doc_12_chunk_013",
+        "doc_12_chunk_015",
+        "doc_12_chunk_016"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Reported carbohydrate intakes during 4 h re covery and repeated running [21–23]. Values are mean ± SD. Values with similar lower cases are different (p < 0.05). The co-ingestion of protein may further accele rate muscle glycogen content relative to carbohydrate alone under circumstances when the carbohydrate-protein solution provides more calories than a carbohydrate-only solution and/or  when carbohydrate ingestion during short-term",
+      "page": 17,
+      "images": {
+        "page_render": "Figure_3_page.png"
+      },
+      "referenced_by": [
+        "doc_12_chunk_015"
+      ]
+    }
+  },
+  "doc_18": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Estimated prevalence of low energy availability in various sport groups (Jan 2017–May 2019). Year Author Sex Sample Size Athletes Mean Age (y) Mean± SD EA Subjects with Comments (kcal/kg FFM/Day)* Low EA* (%) Observational Studies",
+      "page": 4,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_18_chunk_001"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Methods used to assess energy intake and exercise energy expenditure as part of an assessment of energy availability, disordered eating, reproductive function, bone mineral density, body composition and biochemical variables (Jan 2017–May 2019). Year Author Participants Energy Exercise DE Reproductive BMD Body Biochemical Other Parameters (n) Intake Energy Health Composition Parameters Assessed",
+      "page": 6,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_18_chunk_001",
+        "doc_18_chunk_003"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Estimated risk of low energy availability and associated health and performance outcomes. Year Author Sex Sample Size Athletes Mean % at Risk of Low % Reporting Health % Reporting Comments age EA /Triad/RED- Outcomes of RED- Performance (y) S a S/Triad Outcomes of",
+      "page": 9,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_18_chunk_001",
+        "doc_18_chunk_004",
+        "doc_18_chunk_006"
+      ]
+    },
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Adapted from the relative energy deficiency in sport health model [1,2] with the inclusion of the male and female athlete triad and the exercise-hypogonadal male condition [6]. Abbreviations: EHMC: exercise-hypogonadal male condition; RED-S: relative energy deficiency in sport *the exact physiological mechanism inducing the reduction of testosterone in men is currently unclear; it is postulated to be a dysfunction within the hypothalamic-pituitary-testicular regulatory axis.",
+      "page": 13,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1312,
+        768
+      ],
+      "referenced_by": [
+        "doc_18_chunk_007",
+        "doc_18_chunk_008"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. male and female hypothalamic-pituitary-gonadal axes. Reprinted with permission: Artori a2e5 [CC BY 4.0 (https://creativeco mmons.org/licenses/by/4.0/) *the reproductive components of the neuroendocrine system in the body are extremely sensitive to Low Energy Availability (LEA) in females [1,2] and the stress of exercise in males [6]. 4. Within-Day Energy Deficiency in Athletes",
+      "page": 13,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1312,
+        768
+      ],
+      "referenced_by": [
+        "doc_18_chunk_007",
+        "doc_18_chunk_008"
+      ]
+    }
+  },
+  "doc_19": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Vitamin C acting as a reducing agent to recycle vitamin E to protect against lipid peroxidation. As vitamin E and C work closely together, and this interrelation has been shown previously [65,66], therefore, both vitamin C and E will also be explored throughout this paper. In a study by Morrison et al. [9], healthy young men were randomly allocated to take a placebo or antioxidant (vitamin C (2 × 500 mg/day) and E (400 IU/day)) for 4 weeks. Following acute exercise,",
+      "page": 8,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_19_chunk_006",
+        "doc_19_chunk_007"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Eﬀects of vitamin E supplementation, with or without vitamin C, on exercise performance. Study Participants Exercise Timing Supplementation Result Morrison et al. 2015 [9] Healthy, young men (n = 11) Ten, 4 min intervals at 90%",
+      "page": 9,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_19_chunk_007",
+        "doc_19_chunk_008",
+        "doc_19_chunk_009"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Eﬀects of vitamin E supplementation, with or without vitamin C, on exercise performance and oxidative stress markers in animals. Study Participants Exercise Supplementation Result Hoene et al. 2018 [34] Male mice One hour of treadmill running Diet supplemented with 100 mg/kg vitamin C and 2000 IU/kg vitamin E",
+      "page": 12,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_19_chunk_009"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Eﬀects of vitamin C supplementation on exercise performance outcomes. Study Participants Exercise Timing Supplementation Result Gomez-Cabrera et al. 2008 [11] Human (15 men) and",
+      "page": 15,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_19_chunk_011",
+        "doc_19_chunk_012"
+      ]
+    }
+  },
+  "doc_21": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1 — (a) Risk of bias percentile chart, in accordance with the Cochrane Collaboration ( Higgins & Altman, 2008 ). (b) Risk of bias summary for each included study. (Ahead of Print) Tart Cherry Juice and Recovery 3 Table 2 Summary of Literature Included in the Meta-Analysis",
+      "page": 3,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        2163,
+        1964
+      ],
+      "referenced_by": [
+        "doc_21_chunk_002",
+        "doc_21_chunk_003",
+        "doc_21_chunk_005"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2 — Study selection from initial identi ﬁcation to inclusion. (Ahead of Print) 6 Hill et al.",
+      "page": 6,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1321,
+        892
+      ],
+      "referenced_by": [
+        "doc_21_chunk_005",
+        "doc_21_chunk_006"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for measures of delayed-onset muscle soreness. The time point of measurement postexercise is displayed in brackets on the ﬁrst column. a, b, and c displayed in column 1 refer to soreness measured in different locations within the same study. (Ahead of Print) 7 Z = 5.62, ES = −0.84, 95% CI [ −1.13, −0.54]). Contrasting this, the",
+      "page": 7,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        2611,
+        3054
+      ],
+      "referenced_by": [
+        "doc_21_chunk_005",
+        "doc_21_chunk_006"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for measures of strength. The time point of assessment postexercise is displayed in brackets on the ﬁrst column. (Ahead of Print) 8 Hill et al. the literature, with the exception of CK for which no between-",
+      "page": 8,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        2615,
+        2441
+      ],
+      "referenced_by": [
+        "doc_21_chunk_005",
+        "doc_21_chunk_006",
+        "doc_21_chunk_007"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for measures of power. The time point of assessment postexercise is displayed in brackets on the ﬁrst column. (Ahead of Print) Tart Cherry Juice and Recovery 9 function that are observed following strenuous exercise ( Bell et al.,",
+      "page": 9,
+      "images": {
+        "xobject": "Figure_5_xobj.png",
+        "page_render": "Figure_5_page.png"
+      },
+      "xobj_size": [
+        2615,
+        1687
+      ],
+      "referenced_by": [
+        "doc_21_chunk_006",
+        "doc_21_chunk_007"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for creatine kinase. The time point of assessment postexercise is displayed in brackets on the ﬁrst column. (Ahead of Print) 10 Hill et al.",
+      "page": 10,
+      "images": {
+        "xobject": "Figure_6_xobj.png",
+        "page_render": "Figure_6_page.png"
+      },
+      "xobj_size": [
+        2626,
+        2095
+      ],
+      "referenced_by": [
+        "doc_21_chunk_006",
+        "doc_21_chunk_008"
+      ]
+    },
+    "Figure_8": {
+      "type": "Figure",
+      "number": "8",
+      "caption": "Figure 8 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for IL-6. The time point of assessment postexercise is displayed in brackets on the ﬁrst column. IL-6 = interleukin 6.",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_8_xobj.png",
+        "page_render": "Figure_8_page.png"
+      },
+      "xobj_size": [
+        2615,
+        1631
+      ],
+      "referenced_by": [
+        "doc_21_chunk_006",
+        "doc_21_chunk_008"
+      ]
+    },
+    "Figure_7": {
+      "type": "Figure",
+      "number": "7",
+      "caption": "Figure 7 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for C-reactive protein. The time point of assessment postexercise is displayed in brackets on the ﬁrst column. (Ahead of Print) 11 that is mechanical in nature. Soreness following damaging exercise has been attributed to increased oxidative stress and in ﬂammation",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_7_xobj.png",
+        "page_render": "Figure_7_page.png"
+      },
+      "xobj_size": [
+        2615,
+        1631
+      ],
+      "referenced_by": [
+        "doc_21_chunk_006",
+        "doc_21_chunk_008"
+      ]
+    },
+    "Figure_9": {
+      "type": "Figure",
+      "number": "9",
+      "caption": "Figure 9 — Forest plot demonstrating a comparison between the consumption of a tart cherry supplement or a placebo for TNF α. The time point of assessment postexercise is displayed in brackets on the ﬁrst column. TNF α = tumor necrosis factor alpha. (Ahead of Print) 12 Hill et al. in the meta-analysis if three stu dies had measured and reported",
+      "page": 12,
+      "images": {
+        "xobject": "Figure_9_xobj.png",
+        "page_render": "Figure_9_page.png"
+      },
+      "xobj_size": [
+        2573,
+        1162
+      ],
+      "referenced_by": [
+        "doc_21_chunk_006",
+        "doc_21_chunk_009"
+      ]
+    }
+  },
+  "doc_22": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Study selection process. Journal of Athletic Training 1215",
+      "page": 2,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_22_chunk_001",
+        "doc_22_chunk_002"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Summary of Studies of Probiotics for Upper Respiratory Tract Infection and Cytokines Concentrations in Athletes Compared With Control Part icipants (N ¼ 1309) Continued on Next Page Study, Type Population Intervention Control Main Outcome Measure",
+      "page": 2,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_22_chunk_001",
+        "doc_22_chunk_002",
+        "doc_22_chunk_003",
+        "doc_22_chunk_004",
+        "doc_22_chunk_005",
+        "doc_22_chunk_006"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Effects of probiotic supplementation on total symptom severity score in athletes with upper respiratory tract infections.",
+      "page": 7,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_22_chunk_006"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Effect of Probiotic Supplementation on Upper Respiratory Tract Infections Variable Meta-Analysis, Mean Difference (95% CI) Value, %",
+      "page": 7,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "table_data": "Table_2_data.json",
+      "referenced_by": [
+        "doc_22_chunk_006"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Effects of probiotic supplementation (single-strain probiotics only) on total symptom severity score in athletes with upper respiratory tract infections.",
+      "page": 8,
+      "images": {
+        "page_render": "Figure_3_page.png"
+      },
+      "referenced_by": [
+        "doc_22_chunk_006",
+        "doc_22_chunk_008"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. The effect of probiotic supplementation on interleukin-6 (pg/mL). 1220 Volume 56 /C15 Number 11 /C15 November 2021 We observed similar results in our meta-analysis, that elite athletes had lower levels of TNF- a and IL-6 after probiotic supplementation; yet unlike Milajerdi et al, 40 we noted no",
+      "page": 8,
+      "images": {
+        "page_render": "Figure_4_page.png"
+      },
+      "referenced_by": [
+        "doc_22_chunk_008"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Effect of Probiotic Supplementation on Cytokine Levels Variable Meta-Analysis, Mean Difference (95% CI) Value, %",
+      "page": 9,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "table_data": "Table_3_data.json",
+      "referenced_by": [
+        "doc_22_chunk_006",
+        "doc_22_chunk_008",
+        "doc_22_chunk_009"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5. The effect of probiotic supplementation on tumor necrosis factor- a(pg/mL). Journal of Athletic Training 1221 supplementation may decrease TNF- a and IL-6 levels. More studies with larger groups are needed to better estimate this effect. Moreover, the optimal timing, duration,",
+      "page": 9,
+      "images": {
+        "page_render": "Figure_5_page.png"
+      },
+      "referenced_by": [
+        "doc_22_chunk_009"
+      ]
+    }
+  },
+  "doc_23": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Participant characteristics and descriptive statistics between the NZBC ( n = 14) and PLA groups (n = 13). NZBC Placebo p Value Gender 10 women, 4 men 9 women, 4 men Age (yrs) 24 ± 2 23 ± 2 0.272",
+      "page": 3,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_23_chunk_002",
+        "doc_23_chunk_004"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Dietary analysis for NZBC (n = 14) and PLA groups (n = 13). NZBC Placebo p Value Energy (kcal day−1) 1880 ± 905 1617 ± 408 1.000 * Carbohydrate (g day−1) 221 ± 110 182 ± 53 0.305 Protein (g day−1) 78 ± 22 69 ± 22 0.484",
+      "page": 5,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_23_chunk_004"
+      ]
+    },
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Change in maximal voluntary contraction of the elbow flexor muscles following eccentric exercise (percentage of pre-exercise strength) in the PLA and NZBC groups. Values are means ± SEM. 3.3. Creatine Kinase Figure 2 displays the changes in serum CK concentration over the course of the ex-",
+      "page": 6,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_23_chunk_004",
+        "doc_23_chunk_005"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Creatine Kinase (CK) before and after eccentric exercise in the PLA and NZBC groups. Values are means ± SEM, * significant difference between groups (p < 0.05). 3.4. Muscle Soreness Participants in both groups reported a significant change in muscle soreness over time (Friedman Tests, p < 0.001, Figure 3). An increase in muscle soreness was observed",
+      "page": 7,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_23_chunk_005",
+        "doc_23_chunk_006"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Muscle soreness before and after eccentric exercise in the PLA and NZBC groups. Values are means ± SEM, * significant difference between groups (p < 0.05). 3.5. Range of Motion Participants in both groups experienced a significant change in their elbow ROM over time (Friedman Tests, p < 0.01). A decrease in elbo w ROM was evident from 24 h",
+      "page": 7,
+      "images": {
+        "page_render": "Figure_3_page.png"
+      },
+      "referenced_by": [
+        "doc_23_chunk_005",
+        "doc_23_chunk_006",
+        "doc_23_chunk_007"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Elbow range of motion (ROM) and mid arm circumference (MAC) in NZBC and Placebo groups before and after muscle damage protocol. Variable Group 0 h 24 h 48 h 72 h 96 h ROM (◦) NZBC 150 ± 21 139 ± 34 * 139 ± 31 * 140 ± 25 * 142 ± 26 PLA 147 ± 20 134 ± 26 * 134 ± 26 * 136 ± 22 * 136 ± 20 *",
+      "page": 7,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_23_chunk_006",
+        "doc_23_chunk_007"
+      ]
+    }
+  },
+  "doc_24": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Fig. 1. Diagrammatic representation of iron intake and recycling within the body and the role of hepcidin in iron homeostasis. K.L. Beck et al. Food and Chemical Toxicology 158 (2021) 112618 5 2015 ; Cheng et al., 2020 ). This same stimulus however, also ensures the",
+      "page": 4,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1717,
+        808
+      ],
+      "referenced_by": [
+        "doc_24_chunk_003",
+        "doc_24_chunk_005"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Fig. 2. A: The structure of vitamin D 3 and its numbering system. Fig. 2 B: Ultra violet- β radiation cleaves 7-dehydrocholesterol between carbon 9 and 10, forming previtamin D 3",
+      "page": 7,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1628,
+        998
+      ],
+      "referenced_by": [
+        "doc_24_chunk_009",
+        "doc_24_chunk_010",
+        "doc_24_chunk_011"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Fig. 3. The metabolic activation of vitamin D 3 to the bioactive metabolite 1,25-dihydroxyvitamin D 3 or calcitriol involves the hydroxylation of carbon 25, then",
+      "page": 8,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1777,
+        736
+      ],
+      "referenced_by": [
+        "doc_24_chunk_010",
+        "doc_24_chunk_011"
+      ]
+    }
+  },
+  "doc_26": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Prisma flowchart of the study selection process [16]. Only papers of controlled interventions, where the authors reported that they used a specific experimental method, were chosen. When an article contained more than one re‐ search arm that qualified for inclusion, they were regarded as separate ‘interventions’ de‐ noted as ‘trials’. In particular, studies or trials that did not involve a comparison group in",
+      "page": 3,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        760,
+        888
+      ],
+      "referenced_by": [
+        "doc_26_chunk_002",
+        "doc_26_chunk_003"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Overview of the reviewed articles and the effect of experimental carbohydrate supplementation as compared to a control on an exercise task in SMD with 95% CI. Data presented as mean or range or otherwise stated. Where not reported in the articles, sufﬁcient averaged data per sex subgroups and averaged pooled values for mixed sample groups are referred to, respectively. Study/Trial † Study Design N/ Gender Age",
+      "page": 7,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_26_chunk_005",
+        "doc_26_chunk_006",
+        "doc_26_chunk_007",
+        "doc_26_chunk_008",
+        "doc_26_chunk_009",
+        "doc_26_chunk_010",
+        "doc_26_chunk_011",
+        "doc_26_chunk_012",
+        "doc_26_chunk_013",
+        "doc_26_chunk_014",
+        "doc_26_chunk_015",
+        "doc_26_chunk_016",
+        "doc_26_chunk_017",
+        "doc_26_chunk_018",
+        "doc_26_chunk_019",
+        "doc_26_chunk_020",
+        "doc_26_chunk_021",
+        "doc_26_chunk_022",
+        "doc_26_chunk_023",
+        "doc_26_chunk_024",
+        "doc_26_chunk_025"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Overview of the authors’ judgments for each risk‐of‐bias item as a percentage in 142 trials. 3.2. Effect of Carbohydrate Supplementation Subgroup analysis showed that there were no significant differences between the age classes and subjects’ gender in the effect measurement (Figures S2 and S3). However, it is worth mentioning that although there is a tendency of the effect size to be reduced as the",
+      "page": 7,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_26_chunk_005",
+        "doc_26_chunk_025",
+        "doc_26_chunk_026",
+        "doc_26_chunk_031",
+        "doc_26_chunk_032"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Cont. Nutrients 2021, 13, 4223 32 of 62 Nutrients 2021, 13, x FOR PEER REVIEW  31  of  61",
+      "page": 31,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        729,
+        1267
+      ],
+      "referenced_by": [
+        "doc_26_chunk_025",
+        "doc_26_chunk_026",
+        "doc_26_chunk_027",
+        "doc_26_chunk_034",
+        "doc_26_chunk_037"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. Cont. Nutrients 2021, 13, 4223 34 of 62 Nutrients 2021, 13, x FOR PEER REVIEW  33  of  61",
+      "page": 33,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        729,
+        1395
+      ],
+      "referenced_by": [
+        "doc_26_chunk_026",
+        "doc_26_chunk_027",
+        "doc_26_chunk_034"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5. Cont. Nutrients 2021, 13, 4223 36 of 62 Nutrients 2021, 13, x FOR PEER REVIEW  35  of  61",
+      "page": 35,
+      "images": {
+        "xobject": "Figure_5_xobj.png",
+        "page_render": "Figure_5_page.png"
+      },
+      "xobj_size": [
+        735,
+        978
+      ],
+      "referenced_by": [
+        "doc_26_chunk_027",
+        "doc_26_chunk_028",
+        "doc_26_chunk_029",
+        "doc_26_chunk_035"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6. Forest plot shows the effects (red square symbol) of experimental carbohydrate supple‐ mentation  as  compared  to  a  control  on  exercise  outcome  for  50  interventions [49,52,53,58,63,67,74,75,82,84,86,87,89,90,99–104,106,114–116,119–122,132–135,139–141].  Subgroup analyses show the results with regards to supplementation in two carbohydrate formulation groups (double‐source CHO solution, triple‐or‐more‐source CHO solution). The black diamond symbol at",
+      "page": 37,
+      "images": {
+        "xobject": "Figure_6_xobj.png",
+        "page_render": "Figure_6_page.png"
+      },
+      "xobj_size": [
+        721,
+        1056
+      ],
+      "referenced_by": [
+        "doc_26_chunk_028",
+        "doc_26_chunk_029",
+        "doc_26_chunk_030",
+        "doc_26_chunk_035"
+      ]
+    },
+    "Figure_7": {
+      "type": "Figure",
+      "number": "7",
+      "caption": "Figure 7. Forest plot shows the effects (red square symbol) of experimental carbohydrate supple‐ mentation as compared to a control on exercise outcome for 8 interventions [89,90,107,119,122]. Sub‐ group analyses show the results with regards to supplementation in two carbohydrate dose groups (80 g∙h−1 < CHO dose ≤ 100 g∙h−1, CHO dose > 100 g∙h−1). The black diamond symbol at the subgroups and at the bottom of the figure represents the standardized mean difference with the 95% confidence",
+      "page": 38,
+      "images": {
+        "xobject": "Figure_7_xobj.png",
+        "page_render": "Figure_7_page.png"
+      },
+      "xobj_size": [
+        852,
+        1075
+      ],
+      "referenced_by": [
+        "doc_26_chunk_028",
+        "doc_26_chunk_030",
+        "doc_26_chunk_031",
+        "doc_26_chunk_036"
+      ]
+    },
+    "Figure_8": {
+      "type": "Figure",
+      "number": "8",
+      "caption": "Figure 8. Cont. Nutrients 2021, 13, 4223 39 of 62 Nutrients 2021, 13, x FOR PEER REVIEW  38  of  61",
+      "page": 38,
+      "images": {
+        "xobject": "Figure_8_xobj.png",
+        "page_render": "Figure_8_page.png"
+      },
+      "xobj_size": [
+        852,
+        1075
+      ],
+      "referenced_by": [
+        "doc_26_chunk_028",
+        "doc_26_chunk_031",
+        "doc_26_chunk_035",
+        "doc_26_chunk_036"
+      ]
+    },
+    "Figure_9": {
+      "type": "Figure",
+      "number": "9",
+      "caption": "Figure  9.  (a)  Suggested  key  guidelines  for  carbohydrate  supplementation  during  prolonged  exercise  and  effect  size  of CHO supplementation as a function of exercise duration, referenced in the present study. (b) Idealized various intensities for constant exercise as a function of exercise time and endogenous glycogen energy stores reduction [169–172]. (c) Ideal‐ ized fuels used as a function of exercise effort [169–172]. Abbreviations: CHO, carbohydrate; FRU, fructose; GL, glucose; MD, maltodextrin; SMD, standardized mean difference; T, exercise time.",
+      "page": 49,
+      "images": {
+        "xobject": "Figure_9_xobj.png",
+        "page_render": "Figure_9_page.png"
+      },
+      "xobj_size": [
+        1043,
+        1383
+      ],
+      "referenced_by": [
+        "doc_26_chunk_040"
+      ]
+    }
+  },
+  "doc_28": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. PRISMA flow diagram of the study selection process. 478 A. HIJLKEMA ET AL.",
+      "page": 5,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_28_chunk_002",
+        "doc_28_chunk_003"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Details of the studies examining exposure to the habitual diet (n = 5). Study Design Aim Population Nutritional exposure Outcome measure(s) Results Conclusion Hjerrild",
+      "page": 6,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_28_chunk_002",
+        "doc_28_chunk_003",
+        "doc_28_chunk_016"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Details of the studies examining exposure to dietary supplements (n = 14). Study Design Aim Population Nutritional exposure Concurrent exposure Comparator Outcome",
+      "page": 8,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_28_chunk_002",
+        "doc_28_chunk_003",
+        "doc_28_chunk_004",
+        "doc_28_chunk_005",
+        "doc_28_chunk_006",
+        "doc_28_chunk_007",
+        "doc_28_chunk_008",
+        "doc_28_chunk_009",
+        "doc_28_chunk_016"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Overall quality judgment of each study assessed by the RoB 2 tool. Author Overall Risk of Bias Judgment* Main Sources of Bias Balius et al. [ 36 ] Some concerns No placebo treatment",
+      "page": 21,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_28_chunk_010",
+        "doc_28_chunk_017"
+      ]
+    },
+    "Table_4": {
+      "type": "Table",
+      "number": "4",
+      "caption": "Table 4. Overall quality judgment of each study assessed by the ROBINS-I tool. Author Overall Risk of Bias Judgment* Main Sources of Bias Arquer et al. [ 44 ] Serious No control group High drop-out rate Limited participant information",
+      "page": 21,
+      "images": {
+        "page_render": "Table_4_page.png"
+      },
+      "referenced_by": [
+        "doc_28_chunk_010",
+        "doc_28_chunk_011",
+        "doc_28_chunk_017"
+      ]
+    }
+  },
+  "doc_29": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "FIGURE 1. Schematic of the nutritional considerations of the vegan athlete. The graphic illustrates the key considerations when adopting a vegan diet with the relative importance (measured as impact on adaptation, performance, and recovery) increasing from outside to in. Each section follows the key theme of the review; that is, is there a risk of suboptimal nutrition when following an ad libitum vegan diet? Can this be made optimal through strategic nutritional planning alone? Is supplementation necessary to mitigate any de ﬁciency?. N/A, not applicable. S. West et al. Advances in Nutrition 14 (2023) 774 –795",
+      "page": 13,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1895,
+        1895
+      ],
+      "referenced_by": [
+        "doc_29_chunk_017"
+      ]
+    }
+  },
+  "doc_30": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "FIGURE 1. Preferred Reporting Items for Systematic Reviews and Meta-Analysis (PRISMA) ﬂow chart of the study selection process. N. Nasimi et al. Advances in Nutrition 14 (2023) 762 –773 765 0.426; n ¼ 15 ( Supplemental Figure S5 ). However, the analysis showed a signi ﬁcant increase in ALM in the sarcopenic or frail",
+      "page": 3,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_30_chunk_003",
+        "doc_30_chunk_004",
+        "doc_30_chunk_005"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "FIGURE 2. Forest plot of the randomized clinical trials (RCTs) examining the effect of whey protein supplementation on lean mass (LM; subgroups for total and appendicular lean mass). Data are expressed as standardized mean differences (SMDs) between the intervention and control groups with 95% CI. Estimates were pooled using the random-effects Hedges model. Letters between parentheses represent the following: a, TLM; b, ALM; c, with exercise training; and d, without exercise training. Abbreviations: ALM, appendicular lean mass; CI, con ﬁdence interval; SMD, standard mean difference; TLM, total lean mass.",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1946,
+        1203
+      ],
+      "referenced_by": [
+        "doc_30_chunk_004",
+        "doc_30_chunk_005"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "FIGURE 3. Forest plot of the randomized clinical trials (RCTs) examining the effect of whey protein supplementation on physical function [subgrouping SPPB (score), gait speed (GS; m/s), and other physical tests (s)]. Data are expressed as SMDs between the intervention and control groups with 95% CI. Estimates were pooled using the random-effects Hedges model. Letters between parentheses represent the following: c, with exercise training; d, without exercise training; e, control (CHO); f, control (collagen), j, timed stand; k, TUG; l, walking time (s); m, sit-to-stan d; n, chair stand; o, chair rise; p, stair climb; q, GS; and r, SPPB. Abbreviations: CI, con ﬁdence interval; GS, gait speed; SMD, standard mean difference;",
+      "page": 7,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1954,
+        1047
+      ],
+      "referenced_by": [
+        "doc_30_chunk_006",
+        "doc_30_chunk_008"
+      ]
+    }
+  },
+  "doc_33": {
+    "Figure_1a": {
+      "type": "Figure",
+      "number": "1a",
+      "caption": "Figure 1a. Protein synthesis: transcriptional initiation, elongation, and termination leading to the production of mRNA in the nucleus, then exported to the cytosol to undergo translational initiation, elongation, and termination; producing a polypeptide which is folded into a protein. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 841",
+      "page": 6,
+      "images": {
+        "xobject": "Figure_1a_xobj.png",
+        "page_render": "Figure_1a_page.png"
+      },
+      "xobj_size": [
+        1546,
+        1390
+      ],
+      "referenced_by": [
+        "doc_33_chunk_002",
+        "doc_33_chunk_003"
+      ]
+    },
+    "Figure_1b": {
+      "type": "Figure",
+      "number": "1b",
+      "caption": "Figure 1b. mTOR signaling: regulation of mTORC1 by upstream stimuli; insulin, exercise (resistance, endurance), glucose, and amino acids (Aa’s). Exercise leads to an energy deficit (increased AMP) stimulating AMPK, inhibiting mTORC1 whereas glucose consumption raises ATP, inhibiting AMPK. Insulin and resistance exercise activate the PI3K pathway, positively regulating mTORC1, while endurance exercise activates CaMK, mostly promoting mitochondrial biogenesis. AA’s primarily",
+      "page": 7,
+      "images": {
+        "xobject": "Figure_1b_xobj.png",
+        "page_render": "Figure_1b_page.png"
+      },
+      "xobj_size": [
+        1546,
+        1492
+      ],
+      "referenced_by": [
+        "doc_33_chunk_003"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Dietary requirements of essential amino acids and safe upper limit of consumption for adults. Amino Acid Requirement (mg.kg/day) 1 Safe upper limit mg/kg/day",
+      "page": 9,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_33_chunk_005"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. The effect of 15 g of free-form EAA vs 70 g of lean beef protein and mixed meal ingestion on plasma EAA kinetics. Adapted from references [ 50 , 51 ]. 846 A. A. FERRANDO ET AL. the impact of different EAA profiles on MPS will not be discussed in this document.",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1243,
+        793
+      ],
+      "referenced_by": [
+        "doc_33_chunk_006"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Muscle net balance of phenylalanine (umol/kg/min) during fasting, resistance exercise alone (RE), complete amino acid administration/infusion alone (AA), and with combined AA and RE. An interactive effect between RE and AA administration is demonstrated. Data derived from references [ 9 , 66 ]. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION",
+      "page": 14,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1066,
+        460
+      ],
+      "referenced_by": [
+        "doc_33_chunk_008"
+      ]
+    }
+  },
+  "doc_34": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. PRISMA flow diagram of study inclusion in the review. PRISMA, Preferred Reporting Items for Systematic Reviews and Meta-Analyses. {References 1, 7, 8, 13, 21, 30, 31, 33, 43, 55, 63. #References 1, 7, 8, 11, 13, 21, 29-31, 33, 39, 43, 55, 63. **References 1, 7, 8, 11, 13, 21, 33, 39, 43, 55, 63. The Orthopaedic Journal of Sports Medicine Vitamin D Supplementation in Athletes 3",
+      "page": 2,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_34_chunk_001",
+        "doc_34_chunk_002"
+      ]
+    }
+  },
+  "doc_36": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. RRISMA flow diagram of study selection. PRISMA, Preferred Reporting Items for System- atic Reviews and Meta-Analyses.",
+      "page": 6,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_36_chunk_004",
+        "doc_36_chunk_005"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Participant characteristics and study summary. Study Arm Combined Treatment Resistance Training (Combined with or without Placebo Supplement) Protein Supplementation Alone Control (Placebo Supplement or Regular Care) Item Trials (Groups), n a Sample (n) Mean (Range) b Trials",
+      "page": 8,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_36_chunk_004",
+        "doc_36_chunk_005",
+        "doc_36_chunk_006",
+        "doc_36_chunk_007"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Risk of bias graph crossing trials. 3.6. Treatment Efficacy for Muscle Mass Figure 3 presents the network connections among all treatment arms for muscle mass outcome. A total of 11 treatment options were identified in this NMA, included 6 com- bined treatments namely WP plus RT (W P + RT), MP plus RT (M P + RT), casein plus RT",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1124,
+        867
+      ],
+      "referenced_by": [
+        "doc_36_chunk_007",
+        "doc_36_chunk_008"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Network diagram illustrating the interconnections among different treatment arms for muscle mass. Each node represents a treatment arm, and the size of the node is proportional to the number of participants assigned to the specific treatment. The thickness of each line is proportional to the number of direct comparisons between arms denoted on the line. RT, resistance training.",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1124,
+        867
+      ],
+      "referenced_by": [
+        "doc_36_chunk_008",
+        "doc_36_chunk_009"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. Relative efficacy of treatment regimens on muscle mass gain during an overall follow -up duration. Each point estimate (square) presents the network combined effect (SMD) on the outcome measure relative to RC, with the 95% CI (horizontal line). SMD, standardized mean difference; CI, confidence interval; SUCRA, surface under the cumulative ranking curve; RT, resistance training; RC, regular care.",
+      "page": 12,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        1173,
+        731
+      ],
+      "referenced_by": [
+        "doc_36_chunk_009",
+        "doc_36_chunk_010",
+        "doc_36_chunk_021"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5. Network diagram illustrating the interconnections among different treatment arms for muscle strength. Each node represents a treatment arm, and the size of the node is proportional to the number of participants assigned to the specific treatment. The thickness of each lin e is propor- tional to the number of direct comparisons between arms denoted on the line. RT, resistance training. 3.7.1. Conventional Pairwise Meta-Analysis",
+      "page": 13,
+      "images": {
+        "xobject": "Figure_5_xobj.png",
+        "page_render": "Figure_5_page.png"
+      },
+      "xobj_size": [
+        1579,
+        583
+      ],
+      "referenced_by": [
+        "doc_36_chunk_010",
+        "doc_36_chunk_011"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6. Relative efficacy of treatment regimens on  muscle strength during an overall follow -up duration. Each point estimate (square) presents the network combined effect (SMD) on the outcome measure relative to RC, with the 95% CI (horizontal line). SMD, standardized mean difference; CI, confidence interval; SUCRA, surface under the cumulative ranking curve; RT, resistance training; RC, regular care.",
+      "page": 14,
+      "images": {
+        "xobject": "Figure_6_xobj.png",
+        "page_render": "Figure_6_page.png"
+      },
+      "xobj_size": [
+        1775,
+        572
+      ],
+      "referenced_by": [
+        "doc_36_chunk_012"
+      ]
+    },
+    "Figure_7": {
+      "type": "Figure",
+      "number": "7",
+      "caption": "Figure 7. Network diagram illustrating the interconnections among different treatment arms for physical mobility. Each node represents a treatment arm, and the size of the node is proportional to the number of participants assigned to the specific treatment. The thickness of each line is propor- tional to the number of direct comparisons between arms denoted on the line. RT, resistance train- ing; SPPB, Short Physical Performance Battery.",
+      "page": 15,
+      "images": {
+        "xobject": "Figure_7_xobj.png",
+        "page_render": "Figure_7_page.png"
+      },
+      "xobj_size": [
+        1431,
+        1103
+      ],
+      "referenced_by": [
+        "doc_36_chunk_013"
+      ]
+    },
+    "Figure_8": {
+      "type": "Figure",
+      "number": "8",
+      "caption": "Figure 8. Relative efficacy among treatment regimens on changes in physical mobility scores during an overall study time. Each point estimate (square) presents the network combined effect on the specific outcome measure, with the 95% CI (horizontal line). The positive results indicate favorable efficacy of the treatment regimen compared to RC. The blue -colored point represents the highest probability of effects among all treatment regimens.  Std, standardized; CI, confidence interval; RT,",
+      "page": 16,
+      "images": {
+        "xobject": "Figure_8_xobj.png",
+        "page_render": "Figure_8_page.png"
+      },
+      "xobj_size": [
+        1424,
+        428
+      ],
+      "referenced_by": [
+        "doc_36_chunk_014",
+        "doc_36_chunk_015"
+      ]
+    },
+    "Figure_9": {
+      "type": "Figure",
+      "number": "9",
+      "caption": "Figure 9. Participant compliance and side effects of treatment regimens. Data concerning treatment- related (A) withdrawals and (B) adverse events were pooled using inverse variance weighting meth- ods. Each point estimate (square) presents the network combined effect (OR) of the indicated treat- ment arm relative to RC, with the 95% CI (horizontal line) . OR, odds ratio; CI, confidence interval; RT, resistance training.",
+      "page": 18,
+      "images": {
+        "xobject": "Figure_9_xobj.png",
+        "page_render": "Figure_9_page.png"
+      },
+      "xobj_size": [
+        1567,
+        550
+      ],
+      "referenced_by": [
+        "doc_36_chunk_017",
+        "doc_36_chunk_018"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. GRADE certainty rating of treatment options in all main outcomes. Treatment (Common Com- parator: Regular Care) GRADE Certainty of Evidence a Muscle Mass Muscle Strength Physical Mobility",
+      "page": 18,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_36_chunk_017",
+        "doc_36_chunk_018",
+        "doc_36_chunk_020"
+      ]
+    }
+  },
+  "doc_40": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Flow diagram depicting the identification and selection processes of relevant studies ac- cording to PRISMA guidelines. 3.2. Quality Assessment Five studies [16,17,35,37,38] were considered “excellent quality” and 8 [33,34,36,39–43] as “very good quality” according to McMaster [30] (Table 1). Also, according to the PEDro",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        3371,
+        3516
+      ],
+      "referenced_by": [
+        "doc_40_chunk_003",
+        "doc_40_chunk_004"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Results of the methodological quality assessment of included studies—McMaster Critical Review Form for Quantitative Studies [30]. Study Items Total % Quality",
+      "page": 6,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_40_chunk_004"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Methodological quality according to the PEDro Scale [31]. Study Items Total % Quality Score1 2 3 4 5 6 7 8 9 10 11",
+      "page": 6,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_40_chunk_004",
+        "doc_40_chunk_005"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Cochrane Risk of Bias Assessment [32]. random sequence generation (selection bias) allocation concealment (selection bias)",
+      "page": 7,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "table_data": "Table_3_data.json",
+      "referenced_by": [
+        "doc_40_chunk_005",
+        "doc_40_chunk_006",
+        "doc_40_chunk_007",
+        "doc_40_chunk_008",
+        "doc_40_chunk_009",
+        "doc_40_chunk_010",
+        "doc_40_chunk_011",
+        "doc_40_chunk_012",
+        "doc_40_chunk_013",
+        "doc_40_chunk_014",
+        "doc_40_chunk_015",
+        "doc_40_chunk_016",
+        "doc_40_chunk_017",
+        "doc_40_chunk_018",
+        "doc_40_chunk_019",
+        "doc_40_chunk_020",
+        "doc_40_chunk_021",
+        "doc_40_chunk_022",
+        "doc_40_chunk_023",
+        "doc_40_chunk_024",
+        "doc_40_chunk_025",
+        "doc_40_chunk_026",
+        "doc_40_chunk_027",
+        "doc_40_chunk_028",
+        "doc_40_chunk_029",
+        "doc_40_chunk_030",
+        "doc_40_chunk_031",
+        "doc_40_chunk_032",
+        "doc_40_chunk_033",
+        "doc_40_chunk_034",
+        "doc_40_chunk_035",
+        "doc_40_chunk_036",
+        "doc_40_chunk_037",
+        "doc_40_chunk_038",
+        "doc_40_chunk_039",
+        "doc_40_chunk_040",
+        "doc_40_chunk_041",
+        "doc_40_chunk_042",
+        "doc_40_chunk_043"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. The most common problems found in the risk of bias in selected studies.",
+      "page": 8,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_40_chunk_005",
+        "doc_40_chunk_043"
+      ]
+    },
+    "Table_4": {
+      "type": "Table",
+      "number": "4",
+      "caption": "Table 4. Characteristics of participants and supplementation protocols of the selected studies. Characteristics Types Reference Level of participants Amateur competitive [36,42,43] Amateur [33]",
+      "page": 7,
+      "images": {
+        "page_render": "Table_4_page.png"
+      },
+      "table_data": "Table_4_data.json",
+      "referenced_by": [
+        "doc_40_chunk_006",
+        "doc_40_chunk_007",
+        "doc_40_chunk_008",
+        "doc_40_chunk_009",
+        "doc_40_chunk_010",
+        "doc_40_chunk_011",
+        "doc_40_chunk_012",
+        "doc_40_chunk_013",
+        "doc_40_chunk_014",
+        "doc_40_chunk_015",
+        "doc_40_chunk_016",
+        "doc_40_chunk_017",
+        "doc_40_chunk_018",
+        "doc_40_chunk_019",
+        "doc_40_chunk_020",
+        "doc_40_chunk_021",
+        "doc_40_chunk_022",
+        "doc_40_chunk_023",
+        "doc_40_chunk_024",
+        "doc_40_chunk_025",
+        "doc_40_chunk_026",
+        "doc_40_chunk_027",
+        "doc_40_chunk_028",
+        "doc_40_chunk_029",
+        "doc_40_chunk_030",
+        "doc_40_chunk_031",
+        "doc_40_chunk_032",
+        "doc_40_chunk_033",
+        "doc_40_chunk_034",
+        "doc_40_chunk_035",
+        "doc_40_chunk_036",
+        "doc_40_chunk_037",
+        "doc_40_chunk_038",
+        "doc_40_chunk_039",
+        "doc_40_chunk_040",
+        "doc_40_chunk_041",
+        "doc_40_chunk_042",
+        "doc_40_chunk_043",
+        "doc_40_chunk_044"
+      ]
+    },
+    "Table_5": {
+      "type": "Table",
+      "number": "5",
+      "caption": "Table 5. Studies included in the systematic review of the effect of Omega-3 on inflammatory markers, oxidant response, muscle damage, and physical performance in healthy and physically active adults. First Author, Year of Publication, and Country",
+      "page": 9,
+      "images": {
+        "page_render": "Table_5_page.png"
+      },
+      "referenced_by": [
+        "doc_40_chunk_006",
+        "doc_40_chunk_007",
+        "doc_40_chunk_008",
+        "doc_40_chunk_009",
+        "doc_40_chunk_010",
+        "doc_40_chunk_011",
+        "doc_40_chunk_012",
+        "doc_40_chunk_013",
+        "doc_40_chunk_014",
+        "doc_40_chunk_015",
+        "doc_40_chunk_016",
+        "doc_40_chunk_017",
+        "doc_40_chunk_018",
+        "doc_40_chunk_019",
+        "doc_40_chunk_020",
+        "doc_40_chunk_021",
+        "doc_40_chunk_022",
+        "doc_40_chunk_023",
+        "doc_40_chunk_024",
+        "doc_40_chunk_025",
+        "doc_40_chunk_026",
+        "doc_40_chunk_027",
+        "doc_40_chunk_028",
+        "doc_40_chunk_029",
+        "doc_40_chunk_030",
+        "doc_40_chunk_031",
+        "doc_40_chunk_032",
+        "doc_40_chunk_033",
+        "doc_40_chunk_034",
+        "doc_40_chunk_035",
+        "doc_40_chunk_036",
+        "doc_40_chunk_037",
+        "doc_40_chunk_038",
+        "doc_40_chunk_039",
+        "doc_40_chunk_040",
+        "doc_40_chunk_041",
+        "doc_40_chunk_042",
+        "doc_40_chunk_043",
+        "doc_40_chunk_044",
+        "doc_40_chunk_045",
+        "doc_40_chunk_046",
+        "doc_40_chunk_048",
+        "doc_40_chunk_049"
+      ]
+    }
+  },
+  "doc_41": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1 — Preferred Reporting Items for Systematic Reviews and Meta-Analysis ﬂow diagram. BETA-ALANINE AND EXERCISE PERFORMANCE 399 IJSNEM Vol. 34, No. 6, 2024 Unauthenticated | Downloaded 05/05/26 10:53 AM UTC",
+      "page": 3,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_41_chunk_003"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2 — Forest plot comparing the effects of beta-alanine supplementation on maximum intensity exercise. 404 GEORGIOU ET AL. IJSNEM Vol. 34, No. 6, 2024 Unauthenticated | Downloaded 05/05/26 10:53 AM UTC",
+      "page": 8,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        3736,
+        1758
+      ],
+      "referenced_by": [
+        "doc_41_chunk_008",
+        "doc_41_chunk_009"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4 — Forest plot comparing the effects of beta-alanine supplementation duration on maximum intensity exercise.",
+      "page": 9,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        3737,
+        2342
+      ],
+      "referenced_by": [
+        "doc_41_chunk_008",
+        "doc_41_chunk_009"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3 — Forest plot comparing the effects of beta-alanine supplementation on maximum intensity exercise assuming r to be .5. IJSNEM Vol. 34, No. 6, 2024 405 Unauthenticated | Downloaded 05/05/26 10:53 AM UTC",
+      "page": 9,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        3737,
+        2342
+      ],
+      "referenced_by": [
+        "doc_41_chunk_008",
+        "doc_41_chunk_009"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5 — Forest plot comparing the effects of beta-alanine supplementation on exercise test duration. 406 GEORGIOU ET AL. IJSNEM Vol. 34, No. 6, 2024 Unauthenticated | Downloaded 05/05/26 10:53 AM UTC",
+      "page": 10,
+      "images": {
+        "xobject": "Figure_5_xobj.png",
+        "page_render": "Figure_5_page.png"
+      },
+      "xobj_size": [
+        3736,
+        2676
+      ],
+      "referenced_by": [
+        "doc_41_chunk_009"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6 — Forest plot comparing the effects of beta-alanine supplementation dosages on maximum intensity exercise. BETA-ALANINE AND EXERCISE PERFORMANCE 407 IJSNEM Vol. 34, No. 6, 2024 Unauthenticated | Downloaded 05/05/26 10:53 AM UTC",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_6_xobj.png",
+        "page_render": "Figure_6_page.png"
+      },
+      "xobj_size": [
+        3736,
+        2686
+      ],
+      "referenced_by": [
+        "doc_41_chunk_009",
+        "doc_41_chunk_010"
+      ]
+    },
+    "Figure_7": {
+      "type": "Figure",
+      "number": "7",
+      "caption": "Figure 7 — Assessment of bias of the randomized studies according to RoB 2 tool: (a) traf ﬁc light plot and (b) summary plot. 408 IJSNEM Vol. 34, No. 6, 2024 Unauthenticated | Downloaded 05/05/26 10:53 AM UTC",
+      "page": 11,
+      "images": {
+        "xobject": "Figure_7_xobj.png",
+        "page_render": "Figure_7_page.png"
+      },
+      "xobj_size": [
+        3736,
+        2686
+      ],
+      "referenced_by": [
+        "doc_41_chunk_010"
+      ]
+    }
+  },
+  "doc_42": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. PICOS criteria. Parameter Inclusion Criteria Participant Recreationally active, healthy adult males and females, aged 18–65 years. Intervention",
+      "page": 3,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_42_chunk_001",
+        "doc_42_chunk_002"
+      ]
+    },
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Literature search strategy. Nutrients 2024, 16, 2764 6 of 15 3.2. Study Characteristics A table summary of the six included studies is shown in Table 2. In the included studies, the sample size had a range of 10 to 20 participants, and the mean age range for",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1308,
+        1182
+      ],
+      "referenced_by": [
+        "doc_42_chunk_003",
+        "doc_42_chunk_004"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Studies assessing the effects of dietary NO3− supplementation on cycling sprint performance in males. Author Subjects Supplementation Exercise Protocol Findings Cuenca et al. (2018) [46]",
+      "page": 6,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_42_chunk_003",
+        "doc_42_chunk_004",
+        "doc_42_chunk_005"
+      ]
+    }
+  },
+  "doc_45": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Fig. 1. PRISMA ﬂow chart presenting the full search strategy for all 5 databases used for the systematic review on the effects of iron deﬁciency and iron supple- mentation. PRISMA = preferred reporting items for systematic reviews and meta-analyses. sFer = serum ferritin; ID = iron deﬁciency. 4 J Sport Health Sci 2025;14:101009M. Pengelly et al. (/C21 80%) and the remaining 13 studies 23,24,26,29/C0 31,35/C0 39,43,44",
+      "page": 3,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_45_chunk_003",
+        "doc_45_chunk_004"
+      ]
+    }
+  },
+  "doc_46": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Eligibility criteria. Variable Characteristics Population Healthy adults participating in sports regularly, without diagnosed diseases. Intervention Regular curcumin intake before, during, or after exercise. Comparator Sports participants not ingesting curcumin.",
+      "page": 5,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_46_chunk_003"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Inclusion and exclusion criteria. Evaluation of curcumin intake to reduce sports-induced muscle damage in athletes INFORMATION YES NO Study participants are healthy adults. They must be over 18 years old and have no diagnosed disease. X Participants practice sports regularly (minimum 3 times per week). X",
+      "page": 7,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_46_chunk_003",
+        "doc_46_chunk_004"
+      ]
+    },
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Full search strategy carried out in this systematic review. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 9",
+      "page": 9,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_46_chunk_004",
+        "doc_46_chunk_005"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Quality analysis of the articles according to PEDro scale. For every criterion met the study receives a score of 1 or 0 when the criterion is not met. Reference Criteria 1 Criteria 2 Criteria 3 Criteria 4 Criteria 5 Criteria 6 Criteria 7 Criteria 8 Criteria 9 Criteria 10 Criteria 11 PEDro Score Takahashi et al . (2014) [ 64 ] 0 1 1 1 1 0 0 1 1 1 1 8 Drobnic et al . (2014) [ 65 ] 0 1 1 1 1 0 0 1 1 1 1 8 Sciberras et al . (2015) [ 66 ] 0 1 1 1 1 1 0 1 1 1 1 9",
+      "page": 10,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_46_chunk_004",
+        "doc_46_chunk_005"
+      ]
+    },
+    "Table_4": {
+      "type": "Table",
+      "number": "4",
+      "caption": "Table 4. Main characteristics of the studies/articles included in the review. Where appropriate; VO2 max: maximal oxygen consumption; IL-1-RA: interleukin- 1-receptor antagonist; IL-2: interleukin-2; IL-6: interleukin-6; IL-8: interleukin-8; IL-10: interleukin-10; INF: interferon; tnf-α: tumor necrosis factor - α; HIIT: high- intensity interval training; MDA: malondialdehyde; GSH: glutathione; RM: maximum repetition. Author Year Type of Study",
+      "page": 13,
+      "images": {
+        "page_render": "Table_4_page.png"
+      },
+      "referenced_by": [
+        "doc_46_chunk_006",
+        "doc_46_chunk_007",
+        "doc_46_chunk_008"
+      ]
+    }
+  },
+  "doc_47": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. HMB (β-hydroxy-β-methylbutyrate) is the active metabolite of leucine, a branched chain amino acid. HMB is naturally occurring in humans and animals. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 3 HMB-FA may provide a more efficient HMB delivery option. To date, three studies have",
+      "page": 3,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1547,
+        810
+      ],
+      "referenced_by": [
+        "doc_47_chunk_001",
+        "doc_47_chunk_002"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Summary of placebo-controlled studies evaluating the effects of HMB and exercise on body composition. Study Design Subjects Exercise Training Diet control or assessment HMB duration, dose,",
+      "page": 11,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_47_chunk_006",
+        "doc_47_chunk_007",
+        "doc_47_chunk_008",
+        "doc_47_chunk_009",
+        "doc_47_chunk_010"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Studies combining HMB with resistance training on exercise performance in untrained, mixed train/untrained and trained subjects. ⇓ = no change compared to placebo, ⇔ = numerical but not statistically significant change compared to placebo, ⇑ = significant increase compared to placebo (* p < 0.05 vs placebo). Author Subjects Exercise Supplementation and",
+      "page": 19,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_47_chunk_012",
+        "doc_47_chunk_013"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Summary of studies that investigated the effects of HMB plus creatine (CrM) on athletic performance in young adults. Author Subjects Supplementation and Study Length Results HMB CrM HMB+CrM Kreider et al. [ 170 ] 41 NCAA Division I football",
+      "page": 26,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_47_chunk_017",
+        "doc_47_chunk_018"
+      ]
+    }
+  },
+  "doc_48": {
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table  2. A total of three reports documented the same study protocol identification number [37– 39], and overlapping was suspected for two further records [40, 41]. Therefore, authors were contacted, and the populations of the studies were confirmed to be identical. Accordingly, these records",
+      "page": 6,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_48_chunk_004",
+        "doc_48_chunk_005",
+        "doc_48_chunk_006",
+        "doc_48_chunk_007",
+        "doc_48_chunk_008",
+        "doc_48_chunk_013"
+      ]
+    }
+  },
+  "doc_49": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Potential health benefits of ω-3 PUFA supplementation in athletes (illustration by Stephen Somers, Milwaukee, WI, USA). JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 3 3. Sources of ω-3 PUFA",
+      "page": 3,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1547,
+        730
+      ],
+      "referenced_by": [
+        "doc_49_chunk_001",
+        "doc_49_chunk_002"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Summary of studies investigating the effect of ω-3 PUFA supplementation on endurance exercise. Author (Year) Athletes Protocol/Season Diet Control EPA/DHA (mg/d) Dose and Duration Timing Outcome Leaf and Rauch",
+      "page": 6,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_49_chunk_003",
+        "doc_49_chunk_004",
+        "doc_49_chunk_005"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Summary of studies investigating the effect of ω-3 PUFA supplementation on body composition, strength and power. First Author (year) Participants Exercise Protocol Dose & Duration LC ω-3 PUFA Tissue Measure",
+      "page": 13,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_49_chunk_007",
+        "doc_49_chunk_008",
+        "doc_49_chunk_009"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. ω-3 PUFA effects on Athlete’s immune health. Author Athletes Protocol/Season Diet Control Duration/Dose Timing Outcome Andrade et al.",
+      "page": 19,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_49_chunk_012",
+        "doc_49_chunk_013"
+      ]
+    },
+    "Table_4": {
+      "type": "Table",
+      "number": "4",
+      "caption": "Table 4. ω-3 PUFAs studies on cognition and psychological health in athletes. Author Athletes Protocol/Season Diet Control Duration/Dose Timing Outcome Fontani et al.",
+      "page": 22,
+      "images": {
+        "page_render": "Table_4_page.png"
+      },
+      "referenced_by": [
+        "doc_49_chunk_015"
+      ]
+    },
+    "Table_5": {
+      "type": "Table",
+      "number": "5",
+      "caption": "Table 5. The effect of prophylactic ω-3 PUFA supplementation on traumatic brain injury in American football players. Author Athletes Protocol/Season Diet Control Duration/Dose Timing Outcome Oliver et al. [ 204 ] NCAA DI football In-season competition and training Yes 27 wks/2g DHA, 4g DHA or 6g DHA Daily ↑ plasma DHA; ↓ Nf-L",
+      "page": 25,
+      "images": {
+        "page_render": "Table_5_page.png"
+      },
+      "referenced_by": [
+        "doc_49_chunk_017"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Prolonged maximal exercise can induce leaky gut (adapted from Dr. Jeremy Townsend). 28 R. JÄGER ET AL. 4.8.1. Key findings for gut health ● ω-3 PUFA are prebiotics and supplementation may improve the composition of the",
+      "page": 28,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1547,
+        831
+      ],
+      "referenced_by": [
+        "doc_49_chunk_019"
+      ]
+    }
+  },
+  "doc_53": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Theoretical model for the implications for creatine supplementation in females specifically. 2 A. E. SMITH-RYAN ET AL. function, and metabolic wellness, making creatine supplements potentially beneficial for women at various life stages [ 2 ]. The current brief review aims to highlight the historical",
+      "page": 2,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1547,
+        1374
+      ],
+      "referenced_by": [
+        "doc_53_chunk_000"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Creatine supplementation may have various targeted effects, dependent upon life stage. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 3 metabolite of pregnancy,” describing the role of creatine metabolism for placental health and fetal growth and metabolism. Ellery and fellow authors also highlighted the",
+      "page": 3,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        945,
+        1113
+      ],
+      "referenced_by": [
+        "doc_53_chunk_001"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Timeline of key peer-reviewed manuscripts highlighting the benefits of creatine in females for strength, sport performance, and/or health. Narrative review manuscripts are depicted by outlined circles and were not considered for menstrual cycle control. Notably, to our knowledge, there have been no studies examining creatine in perimenopausal women. In Chilibeck’s study focusing on post- menopause, the average age was 57 ± 6 years, which overlaps with the upper range of perimeno -",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1547,
+        857
+      ],
+      "referenced_by": [
+        "doc_53_chunk_001",
+        "doc_53_chunk_002"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. Theoretical model for impact of creatine intake during pregnancy. 8 A. E. SMITH-RYAN ET AL. It is now understood that the pregnant human endometrium, myometrium [ 44 ] and placenta [ 45 ] can synthesize creatine during pregnancy and are likely significant con -",
+      "page": 8,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        945,
+        936
+      ],
+      "referenced_by": [
+        "doc_53_chunk_003",
+        "doc_53_chunk_004"
+      ]
+    }
+  },
+  "doc_57": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Studies screened and included in the final analysis. 3.2. Baseline Characteristics of the Included Studies The majority of the studies (n = 23/25, 92%) were randomized controlled trials, while two studies were of non-randomized designs [5,18]. Most of the trials were assessor and participant blinded [ 11,19–30], while two studies employed cross over designs. These",
+      "page": 6,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        1422,
+        454
+      ],
+      "referenced_by": [
+        "doc_57_chunk_003"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Trends in original research exploring the plant-based proteins on muscle recovery after resistance exercise training. Nutrients 2025, 17, 2571 7 of 21 Almost all the studies originated from Western countries (the United States, Canada, Europe, and the United Kingdom), with only one study conducted in India [29]. Figure 3",
+      "page": 6,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1422,
+        454
+      ],
+      "referenced_by": [
+        "doc_57_chunk_003"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Countrywide publication trends. United States of America ( n = 9), Canada ( n = 3), Netherlands (n = 2), United Kingdom (n = 2), Mexico (n = 1), Australia (n = 1), Ireland (n = 1), Poland (n = 1), Finland (n = 1), Germany (n = 1), India (n = 1), South Korea (n = 1). Table 1 depicts the study demographics, participants, intervention, outcomes and the key findings.",
+      "page": 7,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        1604,
+        825
+      ],
+      "referenced_by": [
+        "doc_57_chunk_003"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Study characteristics and findings. Author Year Country Study Design Participants Sample Size Plant Protein",
+      "page": 8,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_57_chunk_003",
+        "doc_57_chunk_004",
+        "doc_57_chunk_005",
+        "doc_57_chunk_006",
+        "doc_57_chunk_007"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. Risk of bias of randomized controlled trials (RCTs) included in the review. (a) showing the risk of bias of individual studies; (b) showing the summary of risk of bias in the RCT studies[11,19–35]. Nutrients 2025, 17, 2571 17 of 21",
+      "page": 16,
+      "images": {
+        "xobject": "Figure_4_xobj.png",
+        "page_render": "Figure_4_page.png"
+      },
+      "xobj_size": [
+        1054,
+        1783
+      ],
+      "referenced_by": [
+        "doc_57_chunk_010"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5. Risk of bias of non-randomized trial included in the review. Only study by Isenmann, 2024 was included for the analysis [18]. 4. Discussion Overall, current evidence remains inconclusive regarding the efficacy of individual plant-based proteins isolates as direct alternatives to animal-based proteins for muscle",
+      "page": 17,
+      "images": {
+        "xobject": "Figure_5_xobj.png",
+        "page_render": "Figure_5_page.png"
+      },
+      "xobj_size": [
+        2637,
+        164
+      ],
+      "referenced_by": [
+        "doc_57_chunk_009",
+        "doc_57_chunk_010"
+      ]
+    }
+  },
+  "doc_58": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Flow diagram of systematic literature search. Nutrients 2025, 17, 2748 5 of 38 Studies that involved participants ( ≥18 years) receiving creatine supplementation with or without exercise training were included if they met the following criteria: (1) study design was a randomized controlled trial; (2) outcomes were muscular strength using",
+      "page": 4,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_002",
+        "doc_58_chunk_003",
+        "doc_58_chunk_004"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Study, participant, and intervention characteristics. Source, Year Study Characteristics Participant Characteristics Creatine Type and",
+      "page": 6,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_004",
+        "doc_58_chunk_005",
+        "doc_58_chunk_006",
+        "doc_58_chunk_007",
+        "doc_58_chunk_008",
+        "doc_58_chunk_009",
+        "doc_58_chunk_010",
+        "doc_58_chunk_011",
+        "doc_58_chunk_012",
+        "doc_58_chunk_013",
+        "doc_58_chunk_014"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Forest plot of effects of creatine supplementation plus exercise vs. control group on handgrip strength [85,86,91]. Data are reported as WMD (95% confidence limits). WMD, weighted mean differences. 3.5.3. Leg Press Strength Based on 31 intervention arms (21 studies), creatine supplementation combined",
+      "page": 18,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_016"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Forest plot of effects of creatine supplementation plus exercise vs. control group on leg press strength [6,30,31,34,38,41,44,47,55,56,60,64,77,83–86,88–90,92]. Data are reported as WMD (95% confidence limits). WMD, weighted mean differences. However, the Duval and Tweedie’s trim-and-fill method did not impute any missing studies, and the adjusted effect size remained unchanged. Sensitivity analysis using the",
+      "page": 19,
+      "images": {
+        "page_render": "Figure_3_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_016",
+        "doc_58_chunk_017"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. Forest plot of effects of creatine supplementation plus exercise vs. control group on squat. [29,30,35,37,40,42,45,49,54,58,61,62,66,67,70,76,80]. Data are reported as WMD (95% confidence limits). WMD, weighted mean differences. Subgroup analyses by age revealed significant increases in squat strength for younger adults [WMD = 6.46 kg (95% CI: 4.72 to 8.21), p = 0.001, 20 interventions] but not for older",
+      "page": 20,
+      "images": {
+        "page_render": "Figure_4_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_018",
+        "doc_58_chunk_019",
+        "doc_58_chunk_020"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5. Forest plot of effects of creatine supplementation plus exercise vs. control group on vertical jump [18,32,35,36,39,41,44,46,51,52,56,58,59,61,62,68,69,71,73,75,80,81,87]. Data are reported as WMD (95% confidence limits). WMD, weighted mean differences. Subgroup analyses by intervention duration revealed an increasing trend in vertical jump for long-term interventions ( ≥8 weeks) [WMD = 2.32 cm (95% CI: −0.01 to 4.65),",
+      "page": 21,
+      "images": {
+        "page_render": "Figure_5_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_020",
+        "doc_58_chunk_021",
+        "doc_58_chunk_022"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6. Forest plot of effects of creatine supplementation plus exercise vs. control group on Wingate peak power [16,19,43,44,49,50,53,61–63,78,79]. Data are reported as WMD (95% confidence limits). WMD, weighted mean differences. Subgroup analyses by training history revealed significantly greater increases in Wingate peak power for trained participants [WMD = 74.81 Watts (95% CI: 31.29 to 118.32),",
+      "page": 23,
+      "images": {
+        "page_render": "Figure_6_page.png"
+      },
+      "referenced_by": [
+        "doc_58_chunk_023",
+        "doc_58_chunk_024"
+      ]
+    }
+  },
+  "doc_59": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Eligibility criteria during project. 4 B. STANKIEWICZ ET AL. processed, and quantified using LabSolutions LCGC software (Shimadzu, Japan). The concentration of the vitamin D metabolite 25(OH)D",
+      "page": 3,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_59_chunk_002",
+        "doc_59_chunk_003"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Selected and measured markers of bone turnover and procalcitonine after the ultramarathon in runners who received a single high dose of vitamin D. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 5 3. Results",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        1240,
+        819
+      ],
+      "referenced_by": [
+        "doc_59_chunk_003",
+        "doc_59_chunk_004"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Percent changes in vitamin D 3 metabolite levels induced by vitamin D supplementation and ultramarathon running. Variable Group",
+      "page": 6,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_59_chunk_004",
+        "doc_59_chunk_005"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Changes in bone turnover marker and PCT levels after the ultramarathon in runners who received a single high dose of vitamin D (supplemented group, green) and runners who received the placebo (control group, black). Note: I, 24 h before the run; II, immediately after the run; and III, 24 h after the run. CTX, terminal telopeptide of type I collagen (A); FGF23, fibroblast growth factor 23 (B); PCT, procalcitonin (C); PINP, N-terminal propeptide of type I collagen (D); PTH, parathyroid hormone (E); sclerostin (F). * significant difference vs. supplemented group 24 h before the run; # significant",
+      "page": 6,
+      "images": {
+        "page_render": "Figure_3_page.png"
+      },
+      "referenced_by": [
+        "doc_59_chunk_004",
+        "doc_59_chunk_005"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Two-way ANOVA (2 groups × 3 repeated measures) of changes in bone turnover marker levels and PCT levels induced by ultramarathon run. Variable Effect F Df p Effect size (η 2 ) Post-hoc outcome",
+      "page": 6,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_59_chunk_004",
+        "doc_59_chunk_005"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Pearson’s correlation coefficient between vitamin D 3 levels, and bone turnover marker and procalcitonin levels 24 h before, immediately after, and 24 h after the run. Variable Blood simple",
+      "page": 8,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_59_chunk_004",
+        "doc_59_chunk_006"
+      ]
+    }
+  },
+  "doc_60": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Characteristics of ergogenic supplements used to directly enhance cycling performance. Supplement AIS group Function How it works Typical dose Evidence Beta-alanine A Buffers lactic acid, delaying fatigue in high- intensity efforts",
+      "page": 6,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_60_chunk_004",
+        "doc_60_chunk_005"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Primary benefits, uses and risks associated with supplements to directly or indirectly enhance cycling performance. Supplement Primary effect Most useful Major risk(s) Beta-alanine Intracellular buffering Short efforts (1 to 4 mins) Paraesthesia (tingling sensation), potential gastrointestinal discomfort",
+      "page": 8,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_60_chunk_004",
+        "doc_60_chunk_006",
+        "doc_60_chunk_014"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Documented and proposed supplement synergies and redundancies in cycling. Supplement combination Classification Primary mechanism(s) Evidence summary Practical notes Beta-alanine + Sodium bicarbonate Synergistic Intracellular + extracellular buffering Additive performance",
+      "page": 15,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_60_chunk_013"
+      ]
+    },
+    "Table_4": {
+      "type": "Table",
+      "number": "4",
+      "caption": "Table 4. Physiological testing to prioritise supplement use for cycling performance. Test Relevant supplement(s) Example application(s) Key use case VO2max Carbohydrates, carnitine, dietary nitrates, iron (if deficient), caffeine, exogenous ketones, multivitamin,",
+      "page": 24,
+      "images": {
+        "page_render": "Table_4_page.png"
+      },
+      "referenced_by": [
+        "doc_60_chunk_019",
+        "doc_60_chunk_020",
+        "doc_60_chunk_021"
+      ]
+    }
+  },
+  "doc_61": {
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Exercise-induced oxidative stress and the hormetic response. Conceptual model illustrating the dose–response relationship between the magnitude of exercise-induced stress and its physiological effects, with a specific focus on redox balance and adaptation. The x-axis represents increasing magnitude of exercise or stress exposure, while the y-axis reflects the net biological effect, ranging from null or negative to beneficial. At very low levels of stress (e.g. sedentary behavior or minimal physical activity), insufficient reactive oxygen species (ROS) signaling results in limited antioxidant defense",
+      "page": 4,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        3700,
+        2476
+      ],
+      "referenced_by": [
+        "doc_61_chunk_001",
+        "doc_61_chunk_002"
+      ]
+    },
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Classes of antioxidants. Antioxidant class Key examples/ subclasses Common food",
+      "page": 11,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_61_chunk_008",
+        "doc_61_chunk_009",
+        "doc_61_chunk_010"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Level of efficacy of common dietary antioxidant. Antioxidant Mechanism of action Potential benefits Dosage & duration Level of evidence to support efficacy Performance Antioxidant Alpha-lipoic acid Scavenges ROS, recycles glutathione,",
+      "page": 14,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_61_chunk_011",
+        "doc_61_chunk_012"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Purported antioxidants with limited data. Compound Purported mechanism of action Evidence strength Beta-carotene Scavenges singlet oxygen; precursor to vitamin A Limited/preclinical Melatonin Regulates sleep; indirect antioxidant effects Limited/preclinical Lycopene Quenches singlet oxygen; lipid peroxidation protection Limited/preclinical",
+      "page": 30,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_61_chunk_028"
+      ]
+    }
+  },
+  "doc_63": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Changes in serum AA, dihomo-gamma-linolenic acid, EPA, DHA, and EPA/AA before and after 8-week supplementation. PM group STG group AA (μg/mL) Before supplementation 197.8 ± 54.8 200.7 ± 62.2 After supplementation 186.6 ± 35.6 175.1 ± 51.1",
+      "page": 5,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_63_chunk_003",
+        "doc_63_chunk_004"
+      ]
+    },
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. Comparison of changes in the blood EPA concentration (A) and EPA/AA ratio (B) before and after 8 weeks of supplementation. Data are expressed as the mean ± standard deviation. AA, arachidonic acid; EPA, eicosapentaenoic acid. 6 T. SHIMIZU ET AL.",
+      "page": 6,
+      "images": {
+        "page_render": "Figure_1_page.png"
+      },
+      "referenced_by": [
+        "doc_63_chunk_005"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Changes in MVC, ROM, circumference, muscle thickness, echo intensity, squat jump, and countermovement jump before and after muscular endurance testing. Two-way ANOVA PM group STG group Interaction Time Group MVC torque (Nm) Before 274.0 ± 70.2 262.2 ± 38.9 p = 0.84 p = 0.00 p = 0.84",
+      "page": 7,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_63_chunk_004",
+        "doc_63_chunk_005",
+        "doc_63_chunk_006"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. Repetitions to exhaustion for each set (A) and the total number of repetitions (B) during the muscular endurance test in the PM and STG groups. Changes in blood lactate in the PM and STG groups before and immediately after exercise (C). Data are expressed as the mean ± standard deviation. PM, physical mixture; n.s., not significant; STG, structured triglyceride. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION",
+      "page": 7,
+      "images": {
+        "page_render": "Figure_2_page.png"
+      },
+      "referenced_by": [
+        "doc_63_chunk_005"
+      ]
+    }
+  },
+  "doc_64": {
+    "Table_1": {
+      "type": "Table",
+      "number": "1",
+      "caption": "Table 1. Characteristics of participants (n = 14). Characteristic Mean ± SD Age (year) 22 ± 2 Height (cm) 185 ± 8",
+      "page": 3,
+      "images": {
+        "page_render": "Table_1_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_002",
+        "doc_64_chunk_003"
+      ]
+    },
+    "Figure_1": {
+      "type": "Figure",
+      "number": "1",
+      "caption": "Figure 1. The protocol of taking supplements and performing tests during the three conditions. VAS: visual analog scale, EIMD: exercise-induced muscle damage.",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_1_xobj.png",
+        "page_render": "Figure_1_page.png"
+      },
+      "xobj_size": [
+        3700,
+        2605
+      ],
+      "referenced_by": [
+        "doc_64_chunk_004"
+      ]
+    },
+    "Figure_2": {
+      "type": "Figure",
+      "number": "2",
+      "caption": "Figure 2. The randomization process of the crossover design. JOURNAL OF THE INTERNATIONAL SOCIETY OF SPORTS NUTRITION 5 washout to limit carryover, controlling for order/period effects consistent with Latin-square principles [ 35 ]. Unblinding occurred only after data lock.",
+      "page": 5,
+      "images": {
+        "xobject": "Figure_2_xobj.png",
+        "page_render": "Figure_2_page.png"
+      },
+      "xobj_size": [
+        3700,
+        2605
+      ],
+      "referenced_by": [
+        "doc_64_chunk_004"
+      ]
+    },
+    "Table_2": {
+      "type": "Table",
+      "number": "2",
+      "caption": "Table 2. Polyphenolic compo- sition of 1000 ml of the pome- granate juice determined via HPLC analysis. Polyphenol mg/L (PPM)",
+      "page": 6,
+      "images": {
+        "page_render": "Table_2_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_004"
+      ]
+    },
+    "Table_3": {
+      "type": "Table",
+      "number": "3",
+      "caption": "Table 3. Means, standard deviation (SD), and relative changes (%RC) of the variables in the three conditions (n = 14). Variables BL PLA POMj %RC PLA/BL %RC POMj/BL",
+      "page": 8,
+      "images": {
+        "page_render": "Table_3_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_006"
+      ]
+    },
+    "Table_4": {
+      "type": "Table",
+      "number": "4",
+      "caption": "Table 4. Comparison of functional tests, knee extensor and flexor isokinetic and isometric strength parameters, between the three conditions (n = 14). Variables PLA POMj BL POMj BL PLA",
+      "page": 9,
+      "images": {
+        "page_render": "Table_4_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_006",
+        "doc_64_chunk_007",
+        "doc_64_chunk_009",
+        "doc_64_chunk_010",
+        "doc_64_chunk_011",
+        "doc_64_chunk_012"
+      ]
+    },
+    "Figure_3": {
+      "type": "Figure",
+      "number": "3",
+      "caption": "Figure 3. Individual responses, means, and standard deviations of the functional tests (VJH, HGS, TMB, BS, V-seat, and Wall-squat) in the three conditions. BL: baseline, PLA: placebo, POMj: pomegranate juice, VJH: vertical jump height, HGS: handgrip strength, TMB: throwing medicine ball, and BS: back-scratch. *Significant difference compared to the BL (p < 0.05). 10",
+      "page": 10,
+      "images": {
+        "xobject": "Figure_3_xobj.png",
+        "page_render": "Figure_3_page.png"
+      },
+      "xobj_size": [
+        3700,
+        1804
+      ],
+      "referenced_by": [
+        "doc_64_chunk_009",
+        "doc_64_chunk_010"
+      ]
+    },
+    "Figure_4": {
+      "type": "Figure",
+      "number": "4",
+      "caption": "Figure 4. Individual responses, means, and standard deviations of the knee extensor isokinetic (APT, RPT, TPT, AvRFD, and AvP at 30°/s and 180°/s) and isometric (MVIC at 45°) parameters under the three conditions. BL: baseline, PLA: placebo, POMj: pomegranate juice, APT: absolute peak torque, RPT: relative peak torque, TPT: time to peak torque, AvRFD: average rate of force development, AvP: average power, and MVIC: maximum voluntary isometric contraction. *Significant difference compared to the BL (p < 0.05).",
+      "page": 11,
+      "images": {
+        "page_render": "Figure_4_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_009",
+        "doc_64_chunk_010",
+        "doc_64_chunk_011"
+      ]
+    },
+    "Figure_5": {
+      "type": "Figure",
+      "number": "5",
+      "caption": "Figure 5. Individual responses, means, and standard deviations of the knee flexor isokinetic (APT, RPT, TPT, AvRFD, and AvP at 30°/s and 180°/s) and isometric (MVIC at 45°) parameters under the three conditions. BL: baseline, PLA: placebo, POMj: pomegranate juice, APT: absolute peak torque, RPT: relative peak torque, TPT: time to peak torque, AvRFD: average rate of force development, AvP: average power, MVIC: maximum voluntary isometric contraction. *Significant difference compared to the BL treatment (p < 0.05).",
+      "page": 11,
+      "images": {
+        "page_render": "Figure_5_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_011",
+        "doc_64_chunk_012"
+      ]
+    },
+    "Figure_6": {
+      "type": "Figure",
+      "number": "6",
+      "caption": "Figure 6. Average DOMS under various supplementation conditions. PLA: placebo, POMj: pomegranate juice, Baseline: before the EIMD; 0 h: immediately after the EIMD; 12 h: 12 hours after the EIMD; 24 h: 24 hours after the EIMD; and 48 h: 48 hours after the EIMD. “Significant differences” are mentioned in the results section. 12 G. REZAEI ET AL.",
+      "page": 8,
+      "images": {
+        "page_render": "Figure_6_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_006",
+        "doc_64_chunk_012"
+      ]
+    },
+    "Table_5": {
+      "type": "Table",
+      "number": "5",
+      "caption": "Table 5. Means, standard deviations (SD), and relative changes (%RC) of DOMS for PLA and POMj (n = 14). Time PLA (mm) POMj (mm) %RC",
+      "page": 13,
+      "images": {
+        "page_render": "Table_5_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_012",
+        "doc_64_chunk_013"
+      ]
+    },
+    "Table_6": {
+      "type": "Table",
+      "number": "6",
+      "caption": "Table 6. Individual-level performance changes based on SWC analysis across BL, PLA, and POMj conditions (n = 14). Variables SWC (0.2 × SD BL",
+      "page": 13,
+      "images": {
+        "page_render": "Table_6_page.png"
+      },
+      "referenced_by": [
+        "doc_64_chunk_012",
+        "doc_64_chunk_013"
+      ]
+    }
+  }
+}
